@@ -4,7 +4,7 @@
 \defgroup   system_init_gr   System and Clock Configuration
 \brief Functions for system and clock setup available in system_<i>device</i>.c.
 \details
-Arm provides a template file <b>system_<i>device</i>.c</b> that must be adapted by 
+ARM provides a template file <b>system_<i>device</i>.c</b> that must be adapted by 
 the silicon vendor to match their actual device. As a <b>minimum requirement</b>, 
 this file must provide:
  -  A device-specific system configuration function, \ref SystemInit().
@@ -13,13 +13,6 @@ this file must provide:
 The file configures the device and, typically, initializes the oscillator (PLL) that is part 
 of the microcontroller device. This file might export other functions or variables that provide 
 a more flexible configuration of the microcontroller system.
-
-\note Please pay special attention to the static variable \c SystemCoreClock. This variable might be
-used throughout the whole system initialization and runtime to calculate frequency/time related values.
-Thus one must assure that the variable always reflects the actual system clock speed. Be aware that
-a value stored to \c SystemCoreClock during low level initializaton (i.e. \c SystemInit()) might get
-overwritten by C libray startup code. Thus its highly recommended to call \ref SystemCoreClockUpdate
-at the beginning of the user \c main() routine.
 
 
 \section system_init_code_ex_sec Code Example     

@@ -3,13 +3,13 @@
  * Title:        arm_biquad_cascade_stereo_df2T_f32.c
  * Description:  Processing function for floating-point transposed direct form II Biquad cascade filter. 2 channels
  *
- * $Date:        10. December 2018
- * $Revision:    V.1.5.2
+ * $Date:        27. January 2017
+ * $Revision:    V.1.5.1
  *
  * Target Processor: Cortex-M cores
  * -------------------------------------------------------------------- */
 /*
- * Copyright (C) 2010-2018 ARM Limited or its affiliates. All rights reserved.
+ * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -156,70 +156,7 @@ uint32_t blockSize)
     float32_t d1a, d2a, d1b, d2b;                  /*  state variables           */
     uint32_t sample, stage = S->numStages;         /*  loop counters             */
 
-#if defined(ARM_MATH_CM0_FAMILY)
-    do
-    {
-        /* Reading the coefficients */
-        b0 = *pCoeffs++;
-        b1 = *pCoeffs++;
-        b2 = *pCoeffs++;
-        a1 = *pCoeffs++;
-        a2 = *pCoeffs++;
-
-        /*Reading the state values */
-        d1a = pState[0];
-        d2a = pState[1];
-        d1b = pState[2];
-        d2b = pState[3];
-
-
-        sample = blockSize;
-
-        while (sample > 0U)
-        {
-            /* Read the input */
-            Xn1a = *pIn++; //Channel a
-            Xn1b = *pIn++; //Channel b
-
-            /* y[n] = b0 * x[n] + d1 */
-            acc1a = (b0 * Xn1a) + d1a;
-            acc1b = (b0 * Xn1b) + d1b;
-
-            /* Store the result in the accumulator in the destination buffer. */
-            *pOut++ = acc1a;
-            *pOut++ = acc1b;
-
-            /* Every time after the output is computed state should be updated. */
-            /* d1 = b1 * x[n] + a1 * y[n] + d2 */
-            d1a = ((b1 * Xn1a) + (a1 * acc1a)) + d2a;
-            d1b = ((b1 * Xn1b) + (a1 * acc1b)) + d2b;
-
-            /* d2 = b2 * x[n] + a2 * y[n] */
-            d2a = (b2 * Xn1a) + (a2 * acc1a);
-            d2b = (b2 * Xn1b) + (a2 * acc1b);
-
-            /* decrement the loop counter */
-            sample--;
-        }
-
-        /* Store the updated state variables back into the state array */
-        *pState++ = d1a;
-        *pState++ = d2a;
-        *pState++ = d1b;
-        *pState++ = d2b;
-
-        /* The current stage input is given as the output to the next stage */
-        pIn = pDst;
-
-        /*Reset the output working pointer */
-        pOut = pDst;
-
-        /* decrement the loop counter */
-        stage--;
-
-    } while (stage > 0U);
-
-#else
+#if defined(ARM_MATH_CM7)
 
     float32_t Xn2a, Xn3a, Xn4a, Xn5a, Xn6a, Xn7a, Xn8a;         /*  Input State variables     */
     float32_t Xn2b, Xn3b, Xn4b, Xn5b, Xn6b, Xn7b, Xn8b;         /*  Input State variables     */
@@ -234,7 +171,7 @@ uint32_t blockSize)
         b2 = pCoeffs[2];
         a1 = pCoeffs[3];
         /* Apply loop unrolling and compute 8 output values simultaneously. */
-        sample = blockSize >> 3U;
+        sample = blockSize >> 3u;
         a2 = pCoeffs[4];
 
         /*Reading the state values */
@@ -243,11 +180,11 @@ uint32_t blockSize)
         d1b = pState[2];
         d2b = pState[3];
 
-        pCoeffs += 5U;
+        pCoeffs += 5u;
 
         /* First part of the processing with loop unrolling.  Compute 8 outputs at a time.
         ** a second loop below computes the remaining 1 to 7 samples. */
-        while (sample > 0U) {
+        while (sample > 0u) {
 
             /* y[n] = b0 * x[n] + d1 */
             /* d1 = b1 * x[n] + a1 * y[n] + d2 */
@@ -430,8 +367,8 @@ uint32_t blockSize)
             d2b += a2 * acc8b;
         }
 
-        sample = blockSize & 0x7U;
-        while (sample > 0U) {
+        sample = blockSize & 0x7u;
+        while (sample > 0u) {
             /* Read the input */
             Xn1a = *pIn++; //Channel a
             Xn1b = *pIn++; //Channel b
@@ -468,11 +405,260 @@ uint32_t blockSize)
         /* decrement the loop counter */
         stage--;
 
-        pState += 4U;
+        pState += 4u;
         /*Reset the output working pointer */
         pOut = pDst;
 
-    } while (stage > 0U);
+    } while (stage > 0u);
+
+#elif defined(ARM_MATH_CM0_FAMILY)
+
+    /* Run the below code for Cortex-M0 */
+
+    do
+    {
+        /* Reading the coefficients */
+        b0 = *pCoeffs++;
+        b1 = *pCoeffs++;
+        b2 = *pCoeffs++;
+        a1 = *pCoeffs++;
+        a2 = *pCoeffs++;
+
+        /*Reading the state values */
+        d1a = pState[0];
+        d2a = pState[1];
+        d1b = pState[2];
+        d2b = pState[3];
+
+
+        sample = blockSize;
+
+        while (sample > 0u)
+        {
+            /* Read the input */
+            Xn1a = *pIn++; //Channel a
+            Xn1b = *pIn++; //Channel b
+
+            /* y[n] = b0 * x[n] + d1 */
+            acc1a = (b0 * Xn1a) + d1a;
+            acc1b = (b0 * Xn1b) + d1b;
+
+            /* Store the result in the accumulator in the destination buffer. */
+            *pOut++ = acc1a;
+            *pOut++ = acc1b;
+
+            /* Every time after the output is computed state should be updated. */
+            /* d1 = b1 * x[n] + a1 * y[n] + d2 */
+            d1a = ((b1 * Xn1a) + (a1 * acc1a)) + d2a;
+            d1b = ((b1 * Xn1b) + (a1 * acc1b)) + d2b;
+
+            /* d2 = b2 * x[n] + a2 * y[n] */
+            d2a = (b2 * Xn1a) + (a2 * acc1a);
+            d2b = (b2 * Xn1b) + (a2 * acc1b);
+
+            /* decrement the loop counter */
+            sample--;
+        }
+
+        /* Store the updated state variables back into the state array */
+        *pState++ = d1a;
+        *pState++ = d2a;
+        *pState++ = d1b;
+        *pState++ = d2b;
+
+        /* The current stage input is given as the output to the next stage */
+        pIn = pDst;
+
+        /*Reset the output working pointer */
+        pOut = pDst;
+
+        /* decrement the loop counter */
+        stage--;
+
+    } while (stage > 0u);
+
+#else
+
+    float32_t Xn2a, Xn3a, Xn4a;                          /*  Input State variables     */
+    float32_t Xn2b, Xn3b, Xn4b;                          /*  Input State variables     */
+    float32_t acc2a, acc3a, acc4a;                       /*  accumulator               */
+    float32_t acc2b, acc3b, acc4b;                       /*  accumulator               */
+    float32_t p0a, p1a, p2a, p3a, p4a, A1a;
+    float32_t p0b, p1b, p2b, p3b, p4b, A1b;
+
+    /* Run the below code for Cortex-M4 and Cortex-M3 */
+    do
+    {
+        /* Reading the coefficients */
+        b0 = *pCoeffs++;
+        b1 = *pCoeffs++;
+        b2 = *pCoeffs++;
+        a1 = *pCoeffs++;
+        a2 = *pCoeffs++;
+
+        /*Reading the state values */
+        d1a = pState[0];
+        d2a = pState[1];
+        d1b = pState[2];
+        d2b = pState[3];
+
+        /* Apply loop unrolling and compute 4 output values simultaneously. */
+        sample = blockSize >> 2u;
+
+        /* First part of the processing with loop unrolling.  Compute 4 outputs at a time.
+        ** a second loop below computes the remaining 1 to 3 samples. */
+        while (sample > 0u) {
+
+            /* y[n] = b0 * x[n] + d1 */
+            /* d1 = b1 * x[n] + a1 * y[n] + d2 */
+            /* d2 = b2 * x[n] + a2 * y[n] */
+
+            /* Read the four inputs */
+            Xn1a = pIn[0];
+            Xn1b = pIn[1];
+            Xn2a = pIn[2];
+            Xn2b = pIn[3];
+            Xn3a = pIn[4];
+            Xn3b = pIn[5];
+            Xn4a = pIn[6];
+            Xn4b = pIn[7];
+            pIn += 8;
+
+            p0a = b0 * Xn1a;
+            p0b = b0 * Xn1b;
+            p1a = b1 * Xn1a;
+            p1b = b1 * Xn1b;
+            acc1a = p0a + d1a;
+            acc1b = p0b + d1b;
+            p0a = b0 * Xn2a;
+            p0b = b0 * Xn2b;
+            p3a = a1 * acc1a;
+            p3b = a1 * acc1b;
+            p2a = b2 * Xn1a;
+            p2b = b2 * Xn1b;
+            A1a = p1a + p3a;
+            A1b = p1b + p3b;
+            p4a = a2 * acc1a;
+            p4b = a2 * acc1b;
+            d1a = A1a + d2a;
+            d1b = A1b + d2b;
+            d2a = p2a + p4a;
+            d2b = p2b + p4b;
+
+            p1a = b1 * Xn2a;
+            p1b = b1 * Xn2b;
+            acc2a = p0a + d1a;
+            acc2b = p0b + d1b;
+            p0a = b0 * Xn3a;
+            p0b = b0 * Xn3b;
+            p3a = a1 * acc2a;
+            p3b = a1 * acc2b;
+            p2a = b2 * Xn2a;
+            p2b = b2 * Xn2b;
+            A1a = p1a + p3a;
+            A1b = p1b + p3b;
+            p4a = a2 * acc2a;
+            p4b = a2 * acc2b;
+            d1a = A1a + d2a;
+            d1b = A1b + d2b;
+            d2a = p2a + p4a;
+            d2b = p2b + p4b;
+
+            p1a = b1 * Xn3a;
+            p1b = b1 * Xn3b;
+            acc3a = p0a + d1a;
+            acc3b = p0b + d1b;
+            p0a = b0 * Xn4a;
+            p0b = b0 * Xn4b;
+            p3a = a1 * acc3a;
+            p3b = a1 * acc3b;
+            p2a = b2 * Xn3a;
+            p2b = b2 * Xn3b;
+            A1a = p1a + p3a;
+            A1b = p1b + p3b;
+            p4a = a2 * acc3a;
+            p4b = a2 * acc3b;
+            d1a = A1a + d2a;
+            d1b = A1b + d2b;
+            d2a = p2a + p4a;
+            d2b = p2b + p4b;
+
+            acc4a = p0a + d1a;
+            acc4b = p0b + d1b;
+            p1a = b1 * Xn4a;
+            p1b = b1 * Xn4b;
+            p3a = a1 * acc4a;
+            p3b = a1 * acc4b;
+            p2a = b2 * Xn4a;
+            p2b = b2 * Xn4b;
+            A1a = p1a + p3a;
+            A1b = p1b + p3b;
+            p4a = a2 * acc4a;
+            p4b = a2 * acc4b;
+            d1a = A1a + d2a;
+            d1b = A1b + d2b;
+            d2a = p2a + p4a;
+            d2b = p2b + p4b;
+
+            pOut[0] = acc1a;
+            pOut[1] = acc1b;
+            pOut[2] = acc2a;
+            pOut[3] = acc2b;
+            pOut[4] = acc3a;
+            pOut[5] = acc3b;
+            pOut[6] = acc4a;
+            pOut[7] = acc4b;
+            pOut += 8;
+
+            sample--;
+        }
+
+        sample = blockSize & 0x3u;
+        while (sample > 0u) {
+            Xn1a = *pIn++;
+            Xn1b = *pIn++;
+
+            p0a = b0 * Xn1a;
+            p0b = b0 * Xn1b;
+            p1a = b1 * Xn1a;
+            p1b = b1 * Xn1b;
+            acc1a = p0a + d1a;
+            acc1b = p0b + d1b;
+            p3a = a1 * acc1a;
+            p3b = a1 * acc1b;
+            p2a = b2 * Xn1a;
+            p2b = b2 * Xn1b;
+            A1a = p1a + p3a;
+            A1b = p1b + p3b;
+            p4a = a2 * acc1a;
+            p4b = a2 * acc1b;
+            d1a = A1a + d2a;
+            d1b = A1b + d2b;
+            d2a = p2a + p4a;
+            d2b = p2b + p4b;
+
+            *pOut++ = acc1a;
+            *pOut++ = acc1b;
+
+            sample--;
+        }
+
+        /* Store the updated state variables back into the state array */
+        *pState++ = d1a;
+        *pState++ = d2a;
+        *pState++ = d1b;
+        *pState++ = d2b;
+
+        /* The current stage input is given as the output to the next stage */
+        pIn = pDst;
+
+        /*Reset the output working pointer */
+        pOut = pDst;
+
+        /* decrement the loop counter */
+        stage--;
+
+    } while (stage > 0u);
 
 #endif
 

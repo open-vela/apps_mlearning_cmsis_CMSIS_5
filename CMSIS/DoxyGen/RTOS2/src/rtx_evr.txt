@@ -6,8 +6,14 @@
 RTX5 interfaces to the <a href="http://www.keil.com/pack/doc/compiler/EventRecorder/html/index.html" target="_blank"><b>Event Recorder</b></a> 
 to provide event information which helps you to understand and analyze the operation.
 
-To use the Event Recorder together with RTX5, it is required to create an image that generates event information. 
-The steps are described under \ref cre_rtx_proj_er.
+To use the Event Recorder together with RTX5, it is required to create an image that generates event information. The steps are:
+  - <a href="http://www.keil.com/pack/doc/compiler/EventRecorder/html/UseDebugViews.html#Add_Event_Recorder" target="_blank"><b>Add Event Recorder</b></a>: Select in the RTE management dialog the software component <b>Compiler:Event Recorder</b>.
+  - <a href="http://www.keil.com/pack/doc/compiler/EventRecorder/html/UseDebugViews.html#Debug_Variants" target="_blank"><b>Select Debug Variant</b></a>: Select in the RTE management dialog the \b Source variant for the software component <b>CMSIS:RTOS2 (API):Keil RTX5</b>.
+  - <a href="http://www.keil.com/pack/doc/compiler/EventRecorder/html/group__EventRecorder__Setup.htm" target="_blank"><b>Add Initialization Code</b></a>: Call the function <b>EventRecorderInitialize</b> in your application code.
+  - Build the application code and download it to the debug hardware.
+  
+Once the target application generates event information, it can be viewed in the µVision debugger using the \b Event
+ \b Recorder.
 
 @{
 */
@@ -135,9 +141,9 @@ The event \b KernelInitialize is generated when the function \ref osKernelInitia
 */
 
 /**
-\fn void EvrRtxKernelInitialized (void)
+\fn void EvrRtxKernelInitializeCompleted (void)
 \details
-The event \b KernelInitialized is generated when the function \ref osKernelInitialize successfully initializes the RTOS kernel.
+The event \b KernelInitializeCompleted is generated when the function \ref osKernelInitialize successfully initializes the RTOS kernel.
 */
 
 /**
@@ -152,14 +158,13 @@ The event \b KernelGetInfo is generated when the function \ref osKernelGetInfo i
 */
 
 /**
-\fn void EvrRtxKernelInfoRetrieved (const osVersion_t *version, const char *id_buf, uint32_t id_size)
+\fn void EvrRtxKernelInfoRetrieved (osVersion_t *version, char *id_buf)
 \details
 The event \b KernelInfoRetrieved is generated when the function \ref osKernelGetInfo successfully retrieves kernel information.
 
 \b Value in the Event Recorder shows:
-  - \b ver_api : API version.
-  - \b ver_kernel : kernel version.
-  - \b id : kernel identification string (Detail).
+  - \b version : memory address of buffer for retrieving version information.
+  - \b id_buf : memory address of buffer for retrieving kernel identification string.
 */
 
 /**
@@ -262,27 +267,27 @@ The event \b KernelResumed is generated when the function \ref osKernelResume su
 */
 
 /**
-\fn void EvrRtxKernelGetTickCount (uint32_t count)
+\fn void EvrRtxKernelGetTickCount (uint64_t count)
 \details
-The event \b KernelGetTickCount is generated when the function \ref osKernelGetTickCount is called.
+The event \b KernelGetTickCount is generated when the function \ref osKernelGetTickCount is called and its execution result is known.
 
 \b Value in the Event Recorder shows:
-  - \b count : retrieved kernel current tick count.
+  - \b count : retrieved kernel current tick count (0 in case of a failure).
 */
 
 /**
 \fn void EvrRtxKernelGetTickFreq (uint32_t freq)
 \details
-The event \b KernelGetTickFreq is generated when the function \ref osKernelGetTickFreq called.
+The event \b KernelGetTickFreq is generated when the function \ref osKernelGetTickFreq called and its execution result is known.
 
 \b Value in the Event Recorder shows:
-  - \b freq : retrieved frequency of the kernel tick in Hz.
+  - \b freq : retrieved frequency of the kernel tick in Hz (0 in case of a failure).
 */
 
 /**
 \fn void EvrRtxKernelGetSysTimerCount (uint32_t count)
 \details
-The event \b KernelGetSysTimerCount is generated when the function \ref osKernelGetSysTimerCount is called.
+The event \b KernelGetSysTimerCount is generated when the function \ref osKernelGetSysTimerCount is called and its execution result is known.
 
 \b Value in the Event Recorder shows:
   - \b count : retrieved kernel current system timer count as 32-bit value.
@@ -291,7 +296,7 @@ The event \b KernelGetSysTimerCount is generated when the function \ref osKernel
 /**
 \fn void EvrRtxKernelGetSysTimerFreq (uint32_t freq)
 \details
-The event \b KernelGetSysTimerFreq is generated when the function \ref osKernelGetSysTimerFreq is called.
+The event \b KernelGetSysTimerFreq is generated when the function \ref osKernelGetSysTimerFreq is called and its execution result is known.
 
 \b Value in the Event Recorder shows:
   - \b freq : retrieved frequency of the system timer in Hz.
@@ -311,7 +316,7 @@ The event \b KernelGetSysTimerFreq is generated when the function \ref osKernelG
 /**
 \fn void EvrRtxThreadError (osThreadId_t thread_id, int32_t status)
 \details
-The event \b ThreadError is generated when \ref CMSIS_RTOS_ThreadMgmt routines complete their execution due to an error.
+The event \b ThreadError is generated when \ref CMSIS_RTOS_ThreadFlagsMgmt and \ref CMSIS_RTOS_ThreadMgmt routines complete their execution due to an error.
 
 The status parameter indicates the execution status and can be one of the \ref osStatus_t "osStatus_t codes" or one
 of the extended execution status codes which are summarized in the table below.
@@ -349,10 +354,12 @@ The event \b ThreadNew is generated when the function \ref osThreadNew is called
   - \b func : memory address of thread function. 
   - \b argument : memory address of thread function start argument.
   - \b attr : memory address of Thread attributes or 0 when they are not specified.
+
+In case when \ref osThreadAttr_t "thread attributes" are provided in the API call they are also detailed in the Event Recorder.
 */
 
 /**
-\fn void EvrRtxThreadCreated (osThreadId_t thread_id, uint32_t thread_addr, const char *name)
+\fn void EvrRtxThreadCreated (osThreadId_t thread_id)
 \details
 The event \b ThreadCreated is generated when the function \ref osThreadNew successfully creates a thread object.
 
@@ -413,16 +420,6 @@ The event \b ThreadGetStackSpace is generated when the function \ref osThreadGet
 \fn void EvrRtxThreadSetPriority (osThreadId_t thread_id, osPriority_t priority)
 \details
 The event \b ThreadSetPriority is generated when the function \ref osThreadSetPriority is called.
-
-\b Value in the Event Recorder shows:
-  - \b thread_id : thread ID.
-  - \b priority : new priority value for the thread function. 
-*/
-
-/**
-\fn void EvrRtxThreadPriorityUpdated (osThreadId_t thread_id, osPriority_t priority)
-\details
-The event \b ThreadPriorityUpdated is generated when the function \ref osThreadSetPriority successfully updated the specified thread priority.
 
 \b Value in the Event Recorder shows:
   - \b thread_id : thread ID.
@@ -529,7 +526,7 @@ The event \b ThreadJoined is generated when the function \ref osThreadJoin succe
 /**
 \fn void EvrRtxThreadBlocked (osThreadId_t thread_id, uint32_t timeout)
 \details
-The event \b ThreadBlocked is generated when the current running thread execution is blocked.
+The event \b ThreadBlocked is generated when the current running thread operation is blocked.
 
 \b Value in the Event Recorder shows:
   - \b thread_id : thread ID.
@@ -539,7 +536,7 @@ The event \b ThreadBlocked is generated when the current running thread executio
 /**
 \fn void EvrRtxThreadUnblocked (osThreadId_t thread_id, uint32_t ret_val)
 \details
-The event \b ThreadUnblocked is generated when the blocked thread execution is unblocked.
+The event \b ThreadUnblocked is generated when the delayed thread operation is unblocked.
 
 \b Value in the Event Recorder shows:
   - \b thread_id : thread ID.
@@ -547,18 +544,9 @@ The event \b ThreadUnblocked is generated when the blocked thread execution is u
 */
 
 /**
-\fn void EvrRtxThreadPreempted (osThreadId_t thread_id)
+\fn void EvrRtxThreadSwitch (osThreadId_t thread_id)
 \details
-The event \b ThreadPreempted is generated when current running thread execution is preempted.
-
-\b Value in the Event Recorder shows:
-  - \b thread_id : thread ID.
-*/
-
-/**
-\fn void EvrRtxThreadSwitched (osThreadId_t thread_id)
-\details
-The event \b ThreadSwitched is generated when current running thread execution switches.
+The event \b ThreadSwitch is generated when the running thread switch is executed.
 
 \b Value in the Event Recorder shows:
   - \b thread_id : thread ID.
@@ -582,7 +570,7 @@ The event \b ThreadTerminate is generated when the function \ref osThreadTermina
 /**
 \fn void EvrRtxThreadDestroyed (osThreadId_t thread_id)
 \details
-The event \b ThreadDestroyed is generated when the function \ref osThreadExit or \ref osThreadTerminate successfully terminates the thread.
+The event \b ThreadDestroyed is generated when the functions \ref osThreadExit and \ref osThreadTerminate successfully terminate the thread.
 
 \b Value in the Event Recorder shows:
   - \b thread_id : thread ID.
@@ -609,137 +597,7 @@ The event \b ThreadEnumerate is generated when the function \ref osThreadEnumera
 */
 
 /**
-@}
-*/
-
-/**
-\defgroup rtx_evr_wait Generic Wait Functions
-\brief Events generated by generic wait functions 
-\details
-@{
-*/
-
-/**
-\fn void EvrRtxDelayError (int32_t status)
-\details
-The event \b DelayError is generated when \ref CMSIS_RTOS_Wait routines complete their execution due to an error.
-
-The status parameter indicates the execution status and can be one of the \ref osStatus_t "osStatus_t codes" or one
-of the extended execution status codes which are summarized in the table below.
-
-|      Extended Status Code     | Description |
-|:------------------------------|:------------|
-| osRtxErrorKernelNotReady      | Kernel scheduler is not in Ready state. |
-| osRtxErrorKernelNotRunning    | Kernel scheduler is not executing - there is no running thread. |
-| osRtxErrorInvalidControlBlock | Object control block with invalid alignment or size was specified. |
-| osRtxErrorInvalidDataMemory   | Object data memory with invalid alignment or size was specified. |
-| osRtxErrorInvalidThreadStack  | Thread stack memory with invalid alignment or size was specified. |
-| osRtxErrorInvalidPriority     | Invalid thread priority was specified. |
-| osRtxErrorThreadNotJoinable   | Specified thread is not joinable. |
-| osRtxErrorMutexNotOwned       | Specified mutex is not owned by the current running thread. |
-| osRtxErrorMutexNotLocked      | Specified mutex is not locked. |
-| osRtxErrorMutexLockLimit      | Maximum number of recursive mutex locks reached. |
-| osRtxErrorSemaphoreCountLimit | Semaphore count limit reached. |
-| osRtxErrorTZ_InitContext_S    | Secure context memory system initialization failed. |
-| osRtxErrorTZ_AllocContext_S   | Secure context memory allocation failed. |
-| osRtxErrorTZ_FreeContext_S    | Secure context memory deallocation failed. |
-| osRtxErrorTZ_LoadContext_S    | Secure context load failed. |
-| osRtxErrorTZ_SaveContext_S    | Secure context save failed. |
-
-\b Value in the Event Recorder shows:
-  - \b status : execution status code.
-*/
-
-/**
-\fn void EvrRtxDelay (uint32_t ticks)
-\details
-The event \b Delay is generated when the function \ref osDelay is called.
-
-\b Value in the Event Recorder shows:
-  - \b ticks : \ref CMSIS_RTOS_TimeOutValue "time ticks" value. 
-*/
-
-/**
-\fn void EvrRtxDelayUntil (uint32_t ticks)
-\details
-The event \b DelayUntil is generated when the function \ref osDelayUntil is called.
-
-\b Value in the Event Recorder shows:
-  - \b ticks : absolute delay time in ticks.
-*/
-
-/**
-\fn void EvrRtxDelayStarted (uint32_t ticks)
-\details
-The event \b DelayStarted is generated when \ref osDelay delay starts.
-
-\b Value in the Event Recorder shows:
-  - \b ticks : \ref CMSIS_RTOS_TimeOutValue "time ticks" value. 
-*/
-
-/**
-\fn void EvrRtxDelayUntilStarted (uint32_t ticks)
-\details
-The event \b DelayUntilStarted is generated when \ref osDelayUntil delay starts.
-
-\b Value in the Event Recorder shows:
-  - \b ticks : \ref CMSIS_RTOS_TimeOutValue "time ticks" value. 
-*/
-
-/**
-\fn void EvrRtxDelayCompleted (osThreadId_t thread_id)
-\details
-The event \b DelayCompleted is generated when \ref osDelay or \ref osDelayUntil delay expires.
-
-\b Value in the Event Recorder shows:
-  - \b thread_id : thread ID.
-*/
-
-/**
-@}
-*/
-
-/**
-\defgroup rtx_evr_thread_flags Thread Flags Functions
-\brief Events generated by thread flags functions 
-\details
-@{
-*/
-
-/**
-\fn void EvrRtxThreadFlagsError (osThreadId_t thread_id, int32_t status)
-\details
-The event \b ThreadFlagsError is generated when \ref CMSIS_RTOS_ThreadFlagsMgmt routines complete their execution due to an error.
-
-The status parameter indicates the execution status and can be one of the \ref osStatus_t "osStatus_t codes" or one
-of the extended execution status codes which are summarized in the table below.
-
-|      Extended Status Code     | Description |
-|:------------------------------|:------------|
-| osRtxErrorKernelNotReady      | Kernel scheduler is not in Ready state. |
-| osRtxErrorKernelNotRunning    | Kernel scheduler is not executing - there is no running thread. |
-| osRtxErrorInvalidControlBlock | Object control block with invalid alignment or size was specified. |
-| osRtxErrorInvalidDataMemory   | Object data memory with invalid alignment or size was specified. |
-| osRtxErrorInvalidThreadStack  | Thread stack memory with invalid alignment or size was specified. |
-| osRtxErrorInvalidPriority     | Invalid thread priority was specified. |
-| osRtxErrorThreadNotJoinable   | Specified thread is not joinable. |
-| osRtxErrorMutexNotOwned       | Specified mutex is not owned by the current running thread. |
-| osRtxErrorMutexNotLocked      | Specified mutex is not locked. |
-| osRtxErrorMutexLockLimit      | Maximum number of recursive mutex locks reached. |
-| osRtxErrorSemaphoreCountLimit | Semaphore count limit reached. |
-| osRtxErrorTZ_InitContext_S    | Secure context memory system initialization failed. |
-| osRtxErrorTZ_AllocContext_S   | Secure context memory allocation failed. |
-| osRtxErrorTZ_FreeContext_S    | Secure context memory deallocation failed. |
-| osRtxErrorTZ_LoadContext_S    | Secure context load failed. |
-| osRtxErrorTZ_SaveContext_S    | Secure context save failed. |
-
-\b Value in the Event Recorder shows:
-  - \b thread_id : thread ID.
-  - \b status : execution status code.
-*/
-
-/**
-\fn void EvrRtxThreadFlagsSet (osThreadId_t thread_id, uint32_t flags)
+\fn void EvrRtxThreadFlagsSet (osThreadId_t thread_id, int32_t flags)
 \details
 The event \b ThreadFlagsSet is generated when the function \ref osThreadFlagsSet is called.
 
@@ -749,7 +607,7 @@ The event \b ThreadFlagsSet is generated when the function \ref osThreadFlagsSet
 */
 
 /**
-\fn void EvrRtxThreadFlagsSetDone (osThreadId_t thread_id, uint32_t thread_flags)
+\fn void EvrRtxThreadFlagsSetDone (osThreadId_t thread_id, int32_t thread_flags)
 \details
 The event \b ThreadFlagsSetDone is generated when thread flags are successfully set.
 
@@ -759,7 +617,7 @@ The event \b ThreadFlagsSetDone is generated when thread flags are successfully 
 */
 
 /**
-\fn void EvrRtxThreadFlagsClear (uint32_t flags)
+\fn void EvrRtxThreadFlagsClear (int32_t flags)
 \details
 The event \b ThreadFlagsClear is generated when the function \ref osThreadFlagsClear is called.
 
@@ -768,7 +626,7 @@ The event \b ThreadFlagsClear is generated when the function \ref osThreadFlagsC
 */
 
 /**
-\fn void EvrRtxThreadFlagsClearDone (uint32_t thread_flags)
+\fn void EvrRtxThreadFlagsClearDone (int32_t thread_flags)
 \details
 The event \b ThreadFlagsClearDone is generated when the function \ref osThreadFlagsClear successfully clears thread flags.
 
@@ -777,7 +635,7 @@ The event \b ThreadFlagsClearDone is generated when the function \ref osThreadFl
 */
 
 /**
-\fn void EvrRtxThreadFlagsGet (uint32_t thread_flags)
+\fn void EvrRtxThreadFlagsGet (int32_t thread_flags)
 \details
 The event \b ThreadFlagsGet is generated when the function \ref osThreadFlagsGet is called and its execution result is known.
 
@@ -786,7 +644,7 @@ The event \b ThreadFlagsGet is generated when the function \ref osThreadFlagsGet
 */
 
 /**
-\fn void EvrRtxThreadFlagsWait (uint32_t flags, uint32_t options, uint32_t timeout)
+\fn void EvrRtxThreadFlagsWait (int32_t flags, uint32_t options, uint32_t timeout)
 \details
 The event \b ThreadFlagsWait is generated when the function \ref osThreadFlagsWait is called.
 
@@ -797,7 +655,7 @@ The event \b ThreadFlagsWait is generated when the function \ref osThreadFlagsWa
 */
 
 /**
-\fn void EvrRtxThreadFlagsWaitPending (uint32_t flags, uint32_t options, uint32_t timeout)
+\fn void EvrRtxThreadFlagsWaitPending (int32_t flags, uint32_t options, uint32_t timeout)
 \details
 The event \b ThreadFlagsWaitPending is generated when the function \ref osThreadFlagsWait starts waiting for thread flags to become signaled.
 
@@ -808,16 +666,13 @@ The event \b ThreadFlagsWaitPending is generated when the function \ref osThread
 */
 
 /**
-\fn void EvrRtxThreadFlagsWaitTimeout (osThreadId_t thread_id)
+\fn void EvrRtxThreadFlagsWaitTimeout (void)
 \details
 The event \b ThreadFlagsWaitTimeout is generated when wait for thread flags to become signaled is aborted due to expired wait timeout.
-
-\b Value in the Event Recorder shows:
-  - \b thread_id : thread ID.
 */
 
 /**
-\fn void EvrRtxThreadFlagsWaitCompleted (uint32_t flags, uint32_t options, uint32_t thread_flags, osThreadId_t thread_id)
+\fn void EvrRtxThreadFlagsWaitCompleted (int32_t flags, uint32_t options, int32_t thread_flags)
 \details
 The event \b ThreadFlagsWaitCompleted is generated when waiting for thread flags ends because requested flags were signaled.
 
@@ -825,11 +680,10 @@ The event \b ThreadFlagsWaitCompleted is generated when waiting for thread flags
   - \b flags : flags thread was waiting for.
   - \b option : flags options (refer to \ref osThreadFlagsWait "thread flags options").
   - \b thread_flags : thread flags before clearing.
-  - \b thread_id : thread ID.
 */
 
 /**
-\fn void EvrRtxThreadFlagsWaitNotCompleted (uint32_t flags, uint32_t options)
+\fn void EvrRtxThreadFlagsWaitNotCompleted (int32_t flags, uint32_t options)
 \details
 The event \b ThreadFlagsWaitNotCompleted is generated when the function \ref osThreadFlagsWait returns without timeout and specified thread flags were not signaled.
 
@@ -839,198 +693,27 @@ The event \b ThreadFlagsWaitNotCompleted is generated when the function \ref osT
 */
 
 /**
-@}
-*/
-
-/**
-\defgroup rtx_evr_event_flags Event Flags Functions
-\brief Events generated by event flag functions 
+\fn void EvrRtxThreadDelay (uint32_t ticks)
 \details
-@{
-*/
-
-/**
-\fn void EvrRtxEventFlagsError (osEventFlagsId_t ef_id, int32_t status)
-\details
-The event \b EventFlagsError is generated when \ref CMSIS_RTOS_EventFlags routines complete their execution due to an error.
-
-The status parameter indicates the execution status and can be one of the \ref osStatus_t "osStatus_t codes" or one
-of the extended execution status codes which are summarized in the table below.
-
-|      Extended Status Code     | Description |
-|:------------------------------|:------------|
-| osRtxErrorKernelNotReady      | Kernel scheduler is not in Ready state. |
-| osRtxErrorKernelNotRunning    | Kernel scheduler is not executing - there is no running thread. |
-| osRtxErrorInvalidControlBlock | Object control block with invalid alignment or size was specified. |
-| osRtxErrorInvalidDataMemory   | Object data memory with invalid alignment or size was specified. |
-| osRtxErrorInvalidThreadStack  | Thread stack memory with invalid alignment or size was specified. |
-| osRtxErrorInvalidPriority     | Invalid thread priority was specified. |
-| osRtxErrorThreadNotJoinable   | Specified thread is not joinable. |
-| osRtxErrorMutexNotOwned       | Specified mutex is not owned by the current running thread. |
-| osRtxErrorMutexNotLocked      | Specified mutex is not locked. |
-| osRtxErrorMutexLockLimit      | Maximum number of recursive mutex locks reached. |
-| osRtxErrorSemaphoreCountLimit | Semaphore count limit reached. |
-| osRtxErrorTZ_InitContext_S    | Secure context memory system initialization failed. |
-| osRtxErrorTZ_AllocContext_S   | Secure context memory allocation failed. |
-| osRtxErrorTZ_FreeContext_S    | Secure context memory deallocation failed. |
-| osRtxErrorTZ_LoadContext_S    | Secure context load failed. |
-| osRtxErrorTZ_SaveContext_S    | Secure context save failed. |
+The event \b ThreadDelay is generated when the function \ref osDelay is called.
 
 \b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-  - \b status : execution status code.
+  - \b ticks : \ref CMSIS_RTOS_TimeOutValue "time ticks" value. 
 */
 
 /**
-\fn void EvrRtxEventFlagsNew (const osEventFlagsAttr_t *attr)
+\fn void EvrRtxThreadDelayUntil (uint64_t ticks)
 \details
-The event \b EventFlagsNew is generated when the function \ref osEventFlagsNew is called.
+The event \b ThreadDelayUntil is generated when the function \ref osDelayUntil is called.
 
 \b Value in the Event Recorder shows:
-  - \b attr : memory address of Event Flags attributes or 0 when they are not specified.
+  - \b ticks : absolute delay time in ticks.
 */
 
 /**
-\fn void EvrRtxEventFlagsCreated (osEventFlagsId_t ef_id, const char *name)
+\fn void EvrRtxThreadDelayCompleted (void)
 \details
-The event \b EventFlagsCreated is generated when the function \ref osEventFlagsNew successfully creates a event flags object.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-*/
-
-/**
-\fn void EvrRtxEventFlagsGetName (osEventFlagsId_t ef_id, const char *name)
-\details
-The event \b EventFlagsGetName is generated when the function \ref osEventFlagsGetName is called and its execution result is known.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-  - \b name : retrieved memory address of name string (0 in case of a failure).
-*/
-
-/**
-\fn void EvrRtxEventFlagsSet (osEventFlagsId_t ef_id, uint32_t flags)
-\details
-The event \b EventFlagsSet is generated when the function \ref osEventFlagsSet is called.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-  - \b flags : flags that shall be set.
-*/
-
-/**
-\fn void EvrRtxEventFlagsSetDone (osEventFlagsId_t ef_id, uint32_t event_flags)
-\details
-The event \b EventFlagsSetDone is generated when event flags are successfully set.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-  - \b event_flags : event flags after setting.
-*/
-
-/**
-\fn void EvrRtxEventFlagsClear (osEventFlagsId_t ef_id, uint32_t flags)
-\details
-The event \b EventFlagsClear is generated when the function \ref osEventFlagsClear is called.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-  - \b flags : flags that shall be cleared.
-*/
-
-/**
-\fn void EvrRtxEventFlagsClearDone (osEventFlagsId_t ef_id, uint32_t event_flags)
-\details
-The event \b EventFlagsClearDone is generated when the function \ref osEventFlagsClear successfully clears the event flags.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-  - \b event_flags : event flags before clearing.
-*/
-
-/**
-\fn void EvrRtxEventFlagsGet (osEventFlagsId_t ef_id, uint32_t event_flags)
-\details
-The event \b EventFlagsGet is generated when the function \ref osEventFlagsGet is called and its execution result is known.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-  - \b event_flags : retrieved current event flags.
-*/
-
-/**
-\fn void EvrRtxEventFlagsWait (osEventFlagsId_t ef_id, uint32_t flags, uint32_t options, uint32_t timeout)
-\details
-The event \b EventFlagsWait is generated when the function \ref osEventFlagsWait is called.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-  - \b flags : flags to wait for. 
-  - \b options : flags options (refer to \ref osEventFlagsWait "event flags options").
-  - \b timeout : \ref CMSIS_RTOS_TimeOutValue.
-*/
-
-/**
-\fn void EvrRtxEventFlagsWaitPending (osEventFlagsId_t ef_id, uint32_t flags, uint32_t options, uint32_t timeout)
-\details
-The event \b EventFlagsWaitPending is generated when the function \ref osEventFlagsWait starts waiting for event flags to become signaled.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-  - \b flags : flags to wait for.
-  - \b options : flags options (refer to \ref osEventFlagsWait "event flags options").
-  - \b timeout : \ref CMSIS_RTOS_TimeOutValue.
-*/
-
-/**
-\fn void EvrRtxEventFlagsWaitTimeout (osEventFlagsId_t ef_id)
-\details
-The event \b EventFlagsWaitTimeout is generated when wait for event flags to become signaled is aborted due to expired wait timeout.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-*/
-
-/**
-\fn void EvrRtxEventFlagsWaitCompleted (osEventFlagsId_t ef_id, uint32_t flags, uint32_t options, uint32_t event_flags)
-\details
-The event \b EventFlagsWaitCompleted is generated when waiting for event flags ends because requested flags were signaled.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-  - \b flags : flags to wait for.
-  - \b options : flags option (refer to \ref osEventFlagsWait "event flags options").
-  - \b event_flags : event flags before clearing or 0 if specified flags have not been set.
-*/
-
-/**
-\fn void EvrRtxEventFlagsWaitNotCompleted (osEventFlagsId_t ef_id, uint32_t flags, uint32_t options)
-\details
-The event \b EventFlagsWaitNotCompleted is generated when the function \ref osEventFlagsWait returns without timeout and specified event flags were not signaled.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-  - \b flags : flags to wait for.
-  - \b options : flags options (refer to \ref osEventFlagsWait "event flags options").
-*/
-
-/**
-\fn void EvrRtxEventFlagsDelete (osEventFlagsId_t ef_id)
-\details
-The event \b EventFlagsDelete is generated when the function \ref osEventFlagsDelete is called.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
-*/
-
-/**
-\fn void EvrRtxEventFlagsDestroyed (osEventFlagsId_t ef_id)
-\details
-The event \b EventFlagsDestroyed is generated when the function \ref osEventFlagsDelete successfully deletes the event flags object.
-
-\b Value in the Event Recorder shows:
-  - \b ef_id : event flags ID.
+The event \b ThreadDelayCompleted is generated when thread delay expires.
 */
 
 /**
@@ -1096,10 +779,12 @@ The event \b TimerNew is generated when the function \ref osTimerNew is called.
   - \b type : timer type: osTimerOnce for one-shot or osTimerPeriodic for periodic behavior.
   - \b argument : memory address of argument to the timer call back function.
   - \b attr : memory address of Timer attributes or 0 when they are not specified.
+
+In case when \ref osTimerAttr_t "timer attributes" are provided in the API call they are also detailed in the Event Recorder.
 */
 
 /**
-\fn void EvrRtxTimerCreated (osTimerId_t timer_id, const char *name)
+\fn void EvrRtxTimerCreated (osTimerId_t timer_id)
 \details
 The event \b TimerCreated is generated when the function \ref osTimerNew successfully creates a timer object.
 
@@ -1187,6 +872,203 @@ The event \b TimerDestroyed is generated when the function \ref osTimerDelete su
 */
 
 /**
+\defgroup rtx_evr_event_flasg Event Flags Functions
+\brief Events generated by event flag functions 
+\details
+@{
+*/
+
+/**
+\fn void EvrRtxEventFlagsError (osEventFlagsId_t ef_id, int32_t status)
+\details
+The event \b EventFlagsError is generated when \ref CMSIS_RTOS_EventFlags routines complete their execution due to an error.
+
+The status parameter indicates the execution status and can be one of the \ref osStatus_t "osStatus_t codes" or one
+of the extended execution status codes which are summarized in the table below.
+
+|      Extended Status Code     | Description |
+|:------------------------------|:------------|
+| osRtxErrorKernelNotReady      | Kernel scheduler is not in Ready state. |
+| osRtxErrorKernelNotRunning    | Kernel scheduler is not executing - there is no running thread. |
+| osRtxErrorInvalidControlBlock | Object control block with invalid alignment or size was specified. |
+| osRtxErrorInvalidDataMemory   | Object data memory with invalid alignment or size was specified. |
+| osRtxErrorInvalidThreadStack  | Thread stack memory with invalid alignment or size was specified. |
+| osRtxErrorInvalidPriority     | Invalid thread priority was specified. |
+| osRtxErrorThreadNotJoinable   | Specified thread is not joinable. |
+| osRtxErrorMutexNotOwned       | Specified mutex is not owned by the current running thread. |
+| osRtxErrorMutexNotLocked      | Specified mutex is not locked. |
+| osRtxErrorMutexLockLimit      | Maximum number of recursive mutex locks reached. |
+| osRtxErrorSemaphoreCountLimit | Semaphore count limit reached. |
+| osRtxErrorTZ_InitContext_S    | Secure context memory system initialization failed. |
+| osRtxErrorTZ_AllocContext_S   | Secure context memory allocation failed. |
+| osRtxErrorTZ_FreeContext_S    | Secure context memory deallocation failed. |
+| osRtxErrorTZ_LoadContext_S    | Secure context load failed. |
+| osRtxErrorTZ_SaveContext_S    | Secure context save failed. |
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+  - \b status : execution status code.
+*/
+
+/**
+\fn void EvrRtxEventFlagsNew (const osEventFlagsAttr_t *attr)
+\details
+The event \b EventFlagsNew is generated when the function \ref osEventFlagsNew is called.
+
+\b Value in the Event Recorder shows:
+  - \b attr : memory address of Event Flags attributes or 0 when they are not specified.
+
+In case when \ref osEventFlagsAttr_t "event flags attributes" are provided in the API call they are also detailed in the Event Recorder.
+*/
+
+/**
+\fn void EvrRtxEventFlagsCreated (osEventFlagsId_t ef_id)
+\details
+The event \b EventFlagsCreated is generated when the function \ref osEventFlagsNew successfully creates a event flags object.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+*/
+
+/**
+\fn void EvrRtxEventFlagsGetName (osEventFlagsId_t ef_id, const char *name)
+\details
+The event \b EventFlagsGetName is generated when the function \ref osEventFlagsGetName is called and its execution result is known.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+  - \b name : retrieved memory address of name string (0 in case of a failure).
+*/
+
+/**
+\fn void EvrRtxEventFlagsSet (osEventFlagsId_t ef_id, int32_t flags)
+\details
+The event \b EventFlagsSet is generated when the function \ref osEventFlagsSet is called.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+  - \b flags : flags that shall be set.
+*/
+
+/**
+\fn void EvrRtxEventFlagsSetDone (osEventFlagsId_t ef_id, int32_t event_flags)
+\details
+The event \b EventFlagsSetDone is generated when event flags are successfully set.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+  - \b event_flags : event flags after setting.
+*/
+
+/**
+\fn void EvrRtxEventFlagsClear (osEventFlagsId_t ef_id, int32_t flags)
+\details
+The event \b EventFlagsClear is generated when the function \ref osEventFlagsClear is called.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+  - \b flags : flags that shall be cleared.
+*/
+
+/**
+\fn void EvrRtxEventFlagsClearDone (osEventFlagsId_t ef_id, int32_t event_flags)
+\details
+The event \b EventFlagsClearDone is generated when the function \ref osEventFlagsClear successfully clears the event flags.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+  - \b event_flags : event flags before clearing.
+*/
+
+/**
+\fn void EvrRtxEventFlagsGet (osEventFlagsId_t ef_id, int32_t event_flags)
+\details
+The event \b EventFlagsGet is generated when the function \ref osEventFlagsGet is called and its execution result is known.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+  - \b event_flags : retrieved current event flags.
+*/
+
+/**
+\fn void EvrRtxEventFlagsWait (osEventFlagsId_t ef_id, int32_t flags, uint32_t options, uint32_t timeout)
+\details
+The event \b EventFlagsWait is generated when the function \ref osEventFlagsWait is called.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+  - \b flags : flags to wait for. 
+  - \b options : flags options (refer to \ref osEventFlagsWait "event flags options").
+  - \b timeout : \ref CMSIS_RTOS_TimeOutValue.
+*/
+
+/**
+\fn void EvrRtxEventFlagsWaitPending (osEventFlagsId_t ef_id, int32_t flags, uint32_t options, uint32_t timeout)
+\details
+The event \b EventFlagsWaitPending is generated when the function \ref osEventFlagsWait starts waiting for event flags to become signaled.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+  - \b flags : flags to wait for.
+  - \b options : flags options (refer to \ref osEventFlagsWait "event flags options").
+  - \b timeout : \ref CMSIS_RTOS_TimeOutValue.
+*/
+
+/**
+\fn void EvrRtxEventFlagsWaitTimeout (osEventFlagsId_t ef_id);
+\details
+The event \b EventFlagsWaitTimeout is generated when wait for event flags to become signaled is aborted due to expired wait timeout.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+*/
+
+/**
+\fn void EvrRtxEventFlagsWaitCompleted (osEventFlagsId_t ef_id, int32_t flags, uint32_t options, int32_t event_flags)
+\details
+The event \b EventFlagsWaitCompleted is generated when waiting for event flags ends because requested flags were signaled.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+  - \b flags : flags to wait for.
+  - \b options : flags option (refer to \ref osEventFlagsWait "event flags options").
+  - \b event_flags : event flags before clearing or 0 if specified flags have not been set.
+*/
+
+/**
+\fn void EvrRtxEventFlagsWaitNotCompleted (osEventFlagsId_t ef_id, int32_t flags, uint32_t options)
+\details
+The event \b EventFlagsWaitNotCompleted is generated when the function \ref osEventFlagsWait returns without timeout and specified event flags were not signaled.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+  - \b flags : flags to wait for.
+  - \b options : flags options (refer to \ref osEventFlagsWait "event flags options").
+*/
+
+/**
+\fn void EvrRtxEventFlagsDelete (osEventFlagsId_t ef_id)
+\details
+The event \b EventFlagsDelete is generated when the function \ref osEventFlagsDelete is called.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+*/
+
+/**
+\fn void EvrRtxEventFlagsDestroyed (osEventFlagsId_t ef_id)
+\details
+The event \b EventFlagsDestroyed is generated when the function \ref osEventFlagsDelete successfully deletes the event flags object.
+
+\b Value in the Event Recorder shows:
+  - \b ef_id : event flags ID.
+*/
+
+/**
+@}
+*/
+
+/**
 \defgroup rtx_evr_mutex Mutex Functions
 \brief Events generated by mutex functions 
 \details
@@ -1232,10 +1114,12 @@ The event \b MutexNew is generated when the function \ref osMutexNew is called.
 
 \b Value in the Event Recorder shows:
   - \b attr : memory address of Mutex attributes or 0 when they are not specified.
+
+In case when \ref osMutexAttr_t "mutex attributes" are provided in the API call they are also detailed in the Event Recorder.
 */
 
 /**
-\fn void EvrRtxMutexCreated (osMutexId_t mutex_id, const char *name)
+\fn void EvrRtxMutexCreated (osMutexId_t mutex_id)
 \details
 The event \b MutexCreated is generated when the function \ref osMutexNew successfully creates a mutex object.
 
@@ -1400,10 +1284,12 @@ The event \b SemaphoreNew is generated when the function \ref osSemaphoreNew is 
   - \b max_count : maximum number of available tokens. 
   - \b initial_count : initial number of available tokens.
   - \b attr : memory address of Semaphore attributes or 0 when they are not specified.
+
+In case when \ref osSemaphoreAttr_t "semaphore attributes" are provided in the API call they are also detailed in the Event Recorder.
 */
 
 /**
-\fn void EvrRtxSemaphoreCreated (osSemaphoreId_t semaphore_id, const char *name)
+\fn void EvrRtxSemaphoreCreated (osSemaphoreId_t semaphore_id)
 \details
 The event \b SemaphoreCreated is generated when the function \ref osSemaphoreNew successfully creates a semaphore object.
 
@@ -1451,13 +1337,12 @@ The event \b SemaphoreAcquireTimeout is generated when wait for semaphore to bec
 */
 
 /**
-\fn void EvrRtxSemaphoreAcquired (osSemaphoreId_t semaphore_id, uint32_t tokens)
+\fn void EvrRtxSemaphoreAcquired (osSemaphoreId_t semaphore_id)
 \details
 The event \b SemaphoreAcquired is generated when the function \ref osSemaphoreAcquire successfully acquires the semaphore token.
 
 \b Value in the Event Recorder shows:
   - \b semaphore_id : semaphore ID.
-  - \b tokens : available tokens.
 */
 
 /**
@@ -1479,13 +1364,12 @@ The event \b SemaphoreRelease is generated when the function \ref osSemaphoreRel
 */
 
 /**
-\fn void EvrRtxSemaphoreReleased (osSemaphoreId_t semaphore_id, uint32_t tokens)
+\fn void EvrRtxSemaphoreReleased (osSemaphoreId_t semaphore_id)
 \details
 The event \b SemaphoreReleased is generated when the function \ref osSemaphoreRelease successfully releases the semaphore token.
 
 \b Value in the Event Recorder shows:
   - \b semaphore_id : semaphore ID.
-  - \b tokens : available tokens.
 */
 
 /**
@@ -1568,10 +1452,12 @@ The event \b MemoryPoolNew is generated when the function \ref osMemoryPoolNew i
   - \b block_count : maximum number of memory blocks in memory pool.
   - \b block_size : memory block size in bytes.
   - \b attr : memory address of Memory Pool attributes or 0 when they are not specified.
+
+In case when \ref osMemoryPoolAttr_t "memory pool attributes" are provided in the API call they are also detailed in the Event Recorder.
 */
 
 /**
-\fn void EvrRtxMemoryPoolCreated (osMemoryPoolId_t mp_id, const char *name)
+\fn void EvrRtxMemoryPoolCreated (osMemoryPoolId_t mp_id)
 \details
 The event \b MemoryPoolCreated is generated when the function \ref osMemoryPoolNew successfully creates a memory pool object.
 
@@ -1777,10 +1663,12 @@ The event \b MessageQueueNew is generated when the function \ref osMessageQueueN
   - \b msg_count : maximum number of messages in queue.
   - \b msg_size : maximum message size in bytes.
   - \b attr : memory address of Message Queue attributes or 0 when they are not specified.
+
+In case when \ref osMessageQueueAttr_t "message queue attributes" are provided in the API call they are also detailed in the Event Recorder.
 */
 
 /**
-\fn void EvrRtxMessageQueueCreated (osMessageQueueId_t mq_id, const char *name)
+\fn void EvrRtxMessageQueueCreated (osMessageQueueId_t mq_id)
 \details
 The event \b MessageQueueCreated is generated when the function \ref osMessageQueueNew successfully creates a message queue object.
 

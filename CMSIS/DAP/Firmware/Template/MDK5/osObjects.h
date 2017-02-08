@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2016 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,38 +17,26 @@
  *
  * ----------------------------------------------------------------------
  *
- * $Date:        1. December 2017
- * $Revision:    V2.0.0
+ * $Date:        20. May 2015
+ * $Revision:    V1.10
  *
  * Project:      CMSIS-DAP Template MDK5
- * Title:        osObjects.h CMSIS-DAP RTOS2 Objects
+ * Title:        osObjects.h CMSIS-DAP RTOS Objects
  *
  *---------------------------------------------------------------------------*/
 
 #ifndef __osObjects_h__
 #define __osObjects_h__
 
-#include "cmsis_os2.h"
+#include "cmsis_os.h"
 
 #ifdef osObjectsExternal
-extern osThreadId_t DAP_ThreadId;
-extern osThreadId_t SWO_ThreadId;
+extern osThreadId HID0_ThreadId;
 #else
-const osThreadAttr_t DAP_ThreadAttr = {
-  .priority = osPriorityNormal
-};
-const osThreadAttr_t SWO_ThreadAttr = {
-  .priority = osPriorityAboveNormal
-};
-extern osThreadId_t DAP_ThreadId;
-       osThreadId_t DAP_ThreadId;
-extern osThreadId_t SWO_ThreadId;
-       osThreadId_t SWO_ThreadId;
+       osThreadId HID0_ThreadId;
 #endif
 
-extern void DAP_Thread (void *argument);
-extern void SWO_Thread (void *argument);
-
-extern void app_main (void *argument);
+extern void HID0_Thread (void const *arg);
+osThreadDef(HID0_Thread, osPriorityNormal, 1U, 512U);
 
 #endif  /* __osObjects_h__ */

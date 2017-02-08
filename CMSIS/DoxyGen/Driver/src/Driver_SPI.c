@@ -1,3 +1,13 @@
+/* -----------------------------------------------------------------------------
+ * Copyright (c) 2013-2014 ARM Limited. All rights reserved.
+ *  
+ * $Date:        2. January 2014
+ * $Revision:    V2.00
+ *  
+ * Project:      SPI Driver API
+ * -------------------------------------------------------------------------- */
+
+
 /**
 \defgroup spi_interface_gr SPI Interface
 \brief Driver API for SPI Bus Peripheral (%Driver_SPI.h)
@@ -7,7 +17,7 @@ the interface is often used to connect peripheral components at board (PCB) leve
 Slave (SCLK and SS are inputs). Wikipedia offers more information about 
 the <a href="http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus" target="_blank"><b>Serial Peripheral Interface Bus</b></a>.
 
-<b>Block Diagram</b>
+**Block Diagram**
 
 The SPI Driver API defines a <b>SPI</b> interface for middleware components. The SPI Driver supports multiple
 slaves, but if only one slave is connected, then the Slave Select signal can be omitted.
@@ -29,7 +39,7 @@ SCLK   | Serial Clock                        | Serial clock output from Master. 
 MISO   | Master&nbsp;In,&nbsp;Slave&nbsp;Out | MISO input of the Master connects to MISO output of the Slave.
 
 
-<b>SPI API</b>
+**SPI API**
 
 The following header files define the Application Programming Interface (API) for the SPI interface:
   - \b %Driver_SPI.h : Driver API for SPI Bus Peripheral
@@ -38,13 +48,13 @@ The driver implementation is a typical part of the Device Family Pack (DFP) that
 peripherals of the microcontroller family.
 
 
-<b>Driver Functions</b>
+**Driver Functions**
 
 The driver functions are published in the access struct as explained in \ref DriverFunctions
   - \ref ARM_DRIVER_SPI : access struct for SPI driver functions
 
   
-<b>Example Code</b>
+**Example Code**
 
 The following example code shows the usage of the SPI interface.
 
@@ -557,14 +567,14 @@ The following events can be generated:
                                                                     or \ref ARM_SPI_Transfer 
                                                                     to indicate that all the data has been transferred. 
 																	The driver is ready for the next transfer operation. </td>     
-  <td> <i>always supported</i> </td>
+  <td> <i>allways supported</i> </td>
 </tr>
 <tr>
   <td> \ref ARM_SPI_EVENT_DATA_LOST         </td><td>  1  </td><td> Occurs in slave mode when data is requested/sent by master 
                                                                     but send/receive/transfer operation has not been started and 
                                                                     indicates that data is lost. Occurs also in master mode when
                                                                     driver cannot transfer data fast enough.             </td>     
-  <td> <i>always supported</i> </td>
+  <td> <i>allways supported</i> </td>
 </tr>
 <tr>
   <td> \ref ARM_SPI_EVENT_MODE_FAULT        </td><td>  2  </td><td> Occurs in master mode when Slave Select is deactivated and 

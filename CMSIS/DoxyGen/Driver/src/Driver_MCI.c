@@ -1,3 +1,13 @@
+/* -----------------------------------------------------------------------------
+ * Copyright (c) 2013-2014 ARM Limited. All rights reserved.
+ *  
+ * $Date:        2. January 2014
+ * $Revision:    V2.00
+ *  
+ * Project:      MCI Driver API
+ * -------------------------------------------------------------------------- */
+
+
 /**
 \defgroup mci_interface_gr MCI Interface
 \brief    Driver API for Memory Card Interface using SD/MMC interface (%Driver_MCI.h)
@@ -14,7 +24,7 @@ es that are directly soldered to the PCB (eMMC).
 - The SD Association provides detailed documentation under <a href="http://www.sdcard.org">www.sdcard.org</a>.
 - The MultiMediaCard Association (merged with JEDEC) provides detailed documentation under <a href="http://www.jedec.org">www.jedec.org</a>.
 
-<b>Block Diagram</b>
+**Block Diagram**
 
 The MCI driver allows you to exchange data of the SD/MMC memory via SD/MMC interface.
 
@@ -32,7 +42,7 @@ The following modes are supported by SD/MMC memory cards:
 \image html SD_4BitBusMode.png  "SD memory connected via 4-bit SD Bus Mode"
 
 
-<b>MCI API</b>
+**MCI API**
 
 The following header files define the Application Programming Interface (API) for the MCI interface:
   - \b %Driver_MCI.h : Driver API for Memory Card Interface using SD/MMC interface
@@ -44,21 +54,22 @@ peripherals of the microcontroller family.
 For parameters, the value marked with (default) is the setting after the driver initialization.
 
  
-<b>Driver Functions</b>
+**Driver Functions**
 
 The driver functions are published in the access struct as explained in \ref DriverFunctions
   - \ref ARM_DRIVER_MCI : access struct for MCI driver functions
-
-
-<b>Example Code</b>
-
-The following example code shows the usage of the MCI interface.
-
-\include MCI_Demo.c
-
 @{
 */
+/*
+A typical setup sequence for the driver is shown below:
 
+<b>Example Code:</b>
+
+\todo example
+
+
+
+*/
 
 /*************   Structures ******************************************************************************************************/
 /** 
@@ -468,10 +479,10 @@ The following values:
 
 Parameter \em voltage                 | Description                   | supported when ARM_MCI_CAPABILITIES
 :-------------------------------------|:------------------------------|-----------------------------------------
-\ref ARM_MCI_POWER_VDD_OFF            | VDD (VCC) turned off          | <i>always supported</i>
+\ref ARM_MCI_POWER_VDD_OFF            | VDD (VCC) turned off          | <i>allways supported</i>
 \ref ARM_MCI_POWER_VDD_3V3            | VDD (VCC) = \token{3.3V}      | data field \em vdd = \token{1}
 \ref ARM_MCI_POWER_VDD_1V8            | VDD (VCC) = \token{1.8V}      | data field \em vdd_1v8 = \token{1} 
-\ref ARM_MCI_POWER_VCCQ_OFF           | eMMC VCCQ turned off          | <i>always supported</i>
+\ref ARM_MCI_POWER_VCCQ_OFF           | eMMC VCCQ turned off          | <i>allways supported</i>
 \ref ARM_MCI_POWER_VCCQ_3V3           | eMMC VCCQ = \token{3.3V}      | data field \em vccq = \token{1}
 \ref ARM_MCI_POWER_VCCQ_1V8           | eMMC VCCQ = \token{1.8V}      | data field \em vccq_1v8 = \token{1}
 \ref ARM_MCI_POWER_VCCQ_1V2           | eMMC VCCQ = \token{1.2V}      | data field \em vccq_1v2 = \token{1}

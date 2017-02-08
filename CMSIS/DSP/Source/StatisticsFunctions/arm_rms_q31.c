@@ -3,13 +3,13 @@
  * Title:        arm_rms_q31.c
  * Description:  Root Mean Square of the elements of a Q31 vector
  *
- * $Date:        10. December 2018
- * $Revision:    V.1.5.2
+ * $Date:        27. January 2017
+ * $Revision:    V.1.5.1
  *
  * Target Processor: Cortex-M cores
  * -------------------------------------------------------------------- */
 /*
- * Copyright (C) 2010-2018 ARM Limited or its affiliates. All rights reserved.
+ * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -63,7 +63,7 @@ void arm_rms_q31(
   uint32_t blockSize,
   q31_t * pResult)
 {
-  uint64_t sum = 0;                              /* accumulator (can get never negative. changed type from q63 to uint64 */
+  q63_t sum = 0;                                 /* accumulator */
   q31_t in;                                      /* Temporary variable to store the input */
   uint32_t blkCnt;                               /* loop counter */
 
@@ -73,11 +73,11 @@ void arm_rms_q31(
   q31_t in1, in2, in3, in4;                      /* Temporary input variables */
 
   /*loop Unrolling */
-  blkCnt = blockSize >> 2U;
+  blkCnt = blockSize >> 2u;
 
   /* First part of the processing with loop unrolling.  Compute 8 outputs at a time.
    ** a second loop below computes the remaining 1 to 7 samples. */
-  while (blkCnt > 0U)
+  while (blkCnt > 0u)
   {
     /* C = A[0] * A[0] + A[1] * A[1] + A[2] * A[2] + ... + A[blockSize-1] * A[blockSize-1] */
     /* Compute sum of the squares and then store the result in a temporary variable, sum */
@@ -99,7 +99,7 @@ void arm_rms_q31(
 
 
     /* update source buffer to process next samples */
-    pSrc += 4U;
+    pSrc += 4u;
 
     /* Decrement the loop counter */
     blkCnt--;
@@ -107,7 +107,7 @@ void arm_rms_q31(
 
   /* If the blockSize is not a multiple of 8, compute any remaining output samples here.
    ** No loop unrolling is used. */
-  blkCnt = blockSize % 0x4U;
+  blkCnt = blockSize % 0x4u;
 
 #else
   /* Run the below code for Cortex-M0 */
@@ -116,7 +116,7 @@ void arm_rms_q31(
 
 #endif /* #if defined (ARM_MATH_DSP) */
 
-  while (blkCnt > 0U)
+  while (blkCnt > 0u)
   {
     /* C = A[0] * A[0] + A[1] * A[1] + A[2] * A[2] + ... + A[blockSize-1] * A[blockSize-1] */
     /* Compute sum of the squares and then store the results in a temporary variable, sum */

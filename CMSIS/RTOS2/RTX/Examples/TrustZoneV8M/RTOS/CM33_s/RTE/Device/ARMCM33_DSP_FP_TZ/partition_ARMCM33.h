@@ -1,11 +1,11 @@
 /**************************************************************************//**
  * @file     partition_ARMCM33.h
  * @brief    CMSIS-CORE Initial Setup for Secure / Non-Secure Zones for ARMCM33
- * @version  V5.3.1
- * @date     09. July 2018
+ * @version  V5.00
+ * @date     04. November 2016
  ******************************************************************************/
 /*
- * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
+ * Copyright (c) 2009-2016 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -316,45 +316,9 @@
 */
 
 /*
-// <e>Setup behaviour of Floating Point Unit
+// <o>Floating Point Unit usage <0=> Secure state only <1=> Secure and Non-Secure state 
 */
-#define TZ_FPU_NS_USAGE 1
-
-/*
-// <o>Floating Point Unit usage
-//     <0=> Secure state only
-//     <3=> Secure and Non-Secure state
-//   <i> Value for SCB->NSACR register bits CP10, CP11
-*/
-#define SCB_NSACR_CP10_11_VAL       3
-
-/*
-// <o>Treat floating-point registers as Secure
-//     <0=> Disabled
-//     <1=> Enabled
-//   <i> Value for FPU->FPCCR register bit TS
-*/
-#define FPU_FPCCR_TS_VAL            0
-
-/*
-// <o>Clear on return (CLRONRET) accessibility
-//     <0=> Secure and Non-Secure state
-//     <1=> Secure state only
-//   <i> Value for FPU->FPCCR register bit CLRONRETS
-*/
-#define FPU_FPCCR_CLRONRETS_VAL     0
-
-/*
-// <o>Clear floating-point caller saved registers on exception return
-//     <0=> Disabled
-//     <1=> Enabled
-//   <i> Value for FPU->FPCCR register bit CLRONRET
-*/
-#define FPU_FPCCR_CLRONRET_VAL      1
-
-/*
-// </e>
-*/
+#define TZ_FPU_NS_USAGE 1 
 
 /*
 // <h>Setup Interrupt Target
@@ -734,7 +698,7 @@
 #define NVIC_INIT_ITNS8    0
 
 /*
-// Interrupts 256..287
+// Interrupts 0..31
 //   <o.0>  Interrupt 256 <0=> Secure state <1=> Non-Secure state
 //   <o.1>  Interrupt 257 <0=> Secure state <1=> Non-Secure state
 //   <o.2>  Interrupt 258 <0=> Secure state <1=> Non-Secure state
@@ -780,7 +744,7 @@
 #define NVIC_INIT_ITNS9    0
 
 /*
-// Interrupts 288..319
+// Interrupts 32..63
 //   <o.0>  Interrupt 288 <0=> Secure state <1=> Non-Secure state
 //   <o.1>  Interrupt 289 <0=> Secure state <1=> Non-Secure state
 //   <o.2>  Interrupt 290 <0=> Secure state <1=> Non-Secure state
@@ -826,7 +790,7 @@
 #define NVIC_INIT_ITNS10   0
 
 /*
-// Interrupts 320..351
+// Interrupts 64..95
 //   <o.0>  Interrupt 320 <0=> Secure state <1=> Non-Secure state
 //   <o.1>  Interrupt 321 <0=> Secure state <1=> Non-Secure state
 //   <o.2>  Interrupt 322 <0=> Secure state <1=> Non-Secure state
@@ -872,7 +836,7 @@
 #define NVIC_INIT_ITNS11   0
 
 /*
-// Interrupts 352..383
+// Interrupts 96..127
 //   <o.0>  Interrupt 352 <0=> Secure state <1=> Non-Secure state
 //   <o.1>  Interrupt 353 <0=> Secure state <1=> Non-Secure state
 //   <o.2>  Interrupt 354 <0=> Secure state <1=> Non-Secure state
@@ -918,7 +882,7 @@
 #define NVIC_INIT_ITNS12   0
 
 /*
-// Interrupts 384..415
+// Interrupts 128..159
 //   <o.0>  Interrupt 384 <0=> Secure state <1=> Non-Secure state
 //   <o.1>  Interrupt 385 <0=> Secure state <1=> Non-Secure state
 //   <o.2>  Interrupt 386 <0=> Secure state <1=> Non-Secure state
@@ -964,7 +928,7 @@
 #define NVIC_INIT_ITNS13   0
 
 /*
-// Interrupts 416..447
+// Interrupts 160..191
 //   <o.0>  Interrupt 416 <0=> Secure state <1=> Non-Secure state
 //   <o.1>  Interrupt 417 <0=> Secure state <1=> Non-Secure state
 //   <o.2>  Interrupt 418 <0=> Secure state <1=> Non-Secure state
@@ -1010,7 +974,7 @@
 #define NVIC_INIT_ITNS14   0
 
 /*
-// Interrupts 448..479
+// Interrupts 192..223
 //   <o.0>  Interrupt 448 <0=> Secure state <1=> Non-Secure state
 //   <o.1>  Interrupt 449 <0=> Secure state <1=> Non-Secure state
 //   <o.2>  Interrupt 450 <0=> Secure state <1=> Non-Secure state
@@ -1056,7 +1020,7 @@
 #define NVIC_INIT_ITNS15   0
 
 /*
-// Interrupts 480..511
+// Interrupts 224..255
 //   <o.0>  Interrupt 480 <0=> Secure state <1=> Non-Secure state
 //   <o.1>  Interrupt 481 <0=> Secure state <1=> Non-Secure state
 //   <o.2>  Interrupt 482 <0=> Secure state <1=> Non-Secure state
@@ -1170,23 +1134,15 @@ __STATIC_INLINE void TZ_SAU_Setup (void)
                    ((SCB_CSR_DEEPSLEEPS_VAL     << SCB_SCR_SLEEPDEEPS_Pos)     & SCB_SCR_SLEEPDEEPS_Msk);
 
     SCB->AIRCR = (SCB->AIRCR & ~(SCB_AIRCR_VECTKEY_Msk   | SCB_AIRCR_SYSRESETREQS_Msk |
-                                 SCB_AIRCR_BFHFNMINS_Msk | SCB_AIRCR_PRIS_Msk          ))                    |
+                                 SCB_AIRCR_BFHFNMINS_Msk |  SCB_AIRCR_PRIS_Msk)        )                     |
                    ((0x05FAU                    << SCB_AIRCR_VECTKEY_Pos)      & SCB_AIRCR_VECTKEY_Msk)      |
                    ((SCB_AIRCR_SYSRESETREQS_VAL << SCB_AIRCR_SYSRESETREQS_Pos) & SCB_AIRCR_SYSRESETREQS_Msk) |
                    ((SCB_AIRCR_PRIS_VAL         << SCB_AIRCR_PRIS_Pos)         & SCB_AIRCR_PRIS_Msk)         |
                    ((SCB_AIRCR_BFHFNMINS_VAL    << SCB_AIRCR_BFHFNMINS_Pos)    & SCB_AIRCR_BFHFNMINS_Msk);
   #endif /* defined (SCB_CSR_AIRCR_INIT) && (SCB_CSR_AIRCR_INIT == 1U) */
 
-  #if defined (__FPU_USED) && (__FPU_USED == 1U) && \
-      defined (TZ_FPU_NS_USAGE) && (TZ_FPU_NS_USAGE == 1U)
-
-    SCB->NSACR = (SCB->NSACR & ~(SCB_NSACR_CP10_Msk | SCB_NSACR_CP10_Msk)) |
-                   ((SCB_NSACR_CP10_11_VAL << SCB_NSACR_CP10_Pos) & (SCB_NSACR_CP10_Msk | SCB_NSACR_CP11_Msk));
-
-    FPU->FPCCR = (FPU->FPCCR & ~(FPU_FPCCR_TS_Msk | FPU_FPCCR_CLRONRETS_Msk | FPU_FPCCR_CLRONRET_Msk)) |
-                   ((FPU_FPCCR_TS_VAL        << FPU_FPCCR_TS_Pos       ) & FPU_FPCCR_TS_Msk       ) |
-                   ((FPU_FPCCR_CLRONRETS_VAL << FPU_FPCCR_CLRONRETS_Pos) & FPU_FPCCR_CLRONRETS_Msk) |
-                   ((FPU_FPCCR_CLRONRET_VAL  << FPU_FPCCR_CLRONRET_Pos ) & FPU_FPCCR_CLRONRET_Msk );
+  #if defined (__FPU_USED) && (__FPU_USED == 1U) && defined (TZ_FPU_NS_USAGE) && (TZ_FPU_NS_USAGE == 1U)
+    SCB->NSACR |= (0x3U << 10U);  /* enable non-secure access to CP10 and CP11 */
   #endif
 
   #if defined (NVIC_INIT_ITNS0) && (NVIC_INIT_ITNS0 == 1U)

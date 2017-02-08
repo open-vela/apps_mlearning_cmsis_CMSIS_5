@@ -2,7 +2,7 @@
 /** 
 \page pdsc_examples_pg  /package/examples element
 
-The element \ref element_example describes fully defined examples contained in the Pack.
+The element \ref element_example describes fully defined examples contained in the PACK.
 An example lists the files that belong to an example. The example itself and each individual file may
 refer to a \ref element_condition "condition" that must resolve to true; if it is false the example or file will be ignored.
 The board element is used to reference to one or more board descriptions using the board vendor and name an example is targeted for.
@@ -19,7 +19,7 @@ Each example can specify attributes listing related components using Class (Ccla
         <environment name="iar" load="IAR/Blinky.ewarm" />
       </project>
       <attributes>
-        <component Cclass="CMSIS" Cgroup="Core"/>
+        <component Cclass="CMSIS" Cgroup="CORE"/>
         <component Cclass="Device" Cgroup="Startup"/>
         <keyword>Blinky</keyword>
         <keyword>Getting Started</keyword>
@@ -34,7 +34,7 @@ Each example can specify attributes listing related components using Class (Ccla
 
 \section element_examples /package/examples
 
-Grouping element for examples. No more than one such group can exist in a Pack.
+Grouping element for examples. No more than one such group can exist in a PACK.
 
 <table class="cmtable" summary="Element: Example">
   <tr>
@@ -64,9 +64,9 @@ Grouping element for examples. No more than one such group can exist in a Pack.
 
 \section element_example /package/examples/example
 
-An example section is used to provide the required information for accessing an example project contained in a Pack. All examples contained in the installed packs can be 
+An example section is used to provide the required information for accessing an example project contained in a PACK. All examples contained in the installed packs can be 
 listed including a brief description. A selected example will get copied into a user selected destination folder. Based on the user selected environment the respective project 
-file will be loaded. The ID of an example is the combination of the Pack vendor, the board information and the example name and version. Examples with the same ID are
+file will be loaded. The ID of an example is the combination of the PACK vendor, the board information and the example name and version. Examples with the same ID are
 treated as a single example.
 
 <table class="cmtable" summary="Element: Example">
@@ -115,14 +115,6 @@ treated as a single example.
     <td>Example version number.  The version format is described in \ref VersionType "Version Type".</td>
 	</td>
     <td>VersionType</td>
-    <td>optional</td>
-  </tr>
-  <tr>
-    <td>public</td>
-    <td>Set publishing permissions for the documentation. If \tagem{public} is \token{true}, then the vendor gives permission 
-        to extract the documentation from the pack and publish it on a web-page. Links to web pages are assumed to be public.
-        The default value is \token{false}.</td>
-    <td>xs:boolean</td>
     <td>optional</td>
   </tr>
   <tr>
@@ -322,7 +314,7 @@ The environment element describes the name of the environment and the project fi
     <category>Example Project</category>
     <category>For a specific board</category>
 	...
-    <component Cclass="CMSIS" Cgroup="Core"/>
+    <component Cclass="CMSIS" Cgroup="CORE"/>
     <component Cclass="Device" Cgroup="Startup"/>
 	...
 	<keyword>Blinky</keyword>
@@ -379,7 +371,7 @@ This can be used to list all related components within an example.
 \code
 <attributes>
   ...
-  <component Cclass="CMSIS" Cgroup="Core"/>
+  <component Cclass="CMSIS" Cgroup="CORE"/>
   <component Cclass="Device" Cgroup="Startup"/>
   ...
 </attributes>

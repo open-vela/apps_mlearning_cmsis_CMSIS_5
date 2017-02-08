@@ -3,13 +3,13 @@
  * Title:        arm_mat_scale_q31.c
  * Description:  Multiplies a Q31 matrix by a scalar
  *
- * $Date:        10. December 2018
- * $Revision:    V.1.5.2
+ * $Date:        27. January 2017
+ * $Revision:    V.1.5.1
  *
  * Target Processor: Cortex-M cores
  * -------------------------------------------------------------------- */
 /*
- * Copyright (C) 2010-2018 ARM Limited or its affiliates. All rights reserved.
+ * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -64,24 +64,24 @@ arm_status arm_mat_scale_q31(
   uint32_t numSamples;                           /* total number of elements in the matrix */
   int32_t totShift = shift + 1;                  /* shift to apply after scaling */
   uint32_t blkCnt;                               /* loop counters  */
-  arm_status status;                             /* status of matrix scaling */
+  arm_status status;                             /* status of matrix scaling      */
   q31_t in1, in2, out1;                          /* temporary variabels */
 
 #if defined (ARM_MATH_DSP)
 
   q31_t in3, in4, out2, out3, out4;              /* temporary variables */
 
-#endif /* #ifndef ARM_MATH_DSP */
+#endif //      #ifndef ARM_MAT_CM0
 
 #ifdef ARM_MATH_MATRIX_CHECK
-  /* Check for matrix mismatch */
+  /* Check for matrix mismatch  */
   if ((pSrc->numRows != pDst->numRows) || (pSrc->numCols != pDst->numCols))
   {
     /* Set status as ARM_MATH_SIZE_MISMATCH */
     status = ARM_MATH_SIZE_MISMATCH;
   }
   else
-#endif /* #ifdef ARM_MATH_MATRIX_CHECK */
+#endif //    #ifdef ARM_MATH_MATRIX_CHECK
   {
     /* Total number of samples in the input matrix */
     numSamples = (uint32_t) pSrc->numRows * pSrc->numCols;
@@ -91,11 +91,11 @@ arm_status arm_mat_scale_q31(
     /* Run the below code for Cortex-M4 and Cortex-M3 */
 
     /* Loop Unrolling */
-    blkCnt = numSamples >> 2U;
+    blkCnt = numSamples >> 2u;
 
     /* First part of the processing with loop unrolling.  Compute 4 outputs at a time.
      ** a second loop below computes the remaining 1 to 3 samples. */
-    while (blkCnt > 0U)
+    while (blkCnt > 0u)
     {
       /* C(m,n) = A(m,n) * k */
       /* Read values from input */
@@ -138,8 +138,8 @@ arm_status arm_mat_scale_q31(
       *(pOut + 3) = out4;
 
       /* update pointers to process next sampels */
-      pIn += 4U;
-      pOut += 4U;
+      pIn += 4u;
+      pOut += 4u;
 
 
       /* Decrement the numSamples loop counter */
@@ -148,7 +148,7 @@ arm_status arm_mat_scale_q31(
 
     /* If the numSamples is not a multiple of 4, compute any remaining output samples here.
      ** No loop unrolling is used. */
-    blkCnt = numSamples % 0x4U;
+    blkCnt = numSamples % 0x4u;
 
 #else
 
@@ -159,7 +159,7 @@ arm_status arm_mat_scale_q31(
 
 #endif /* #if defined (ARM_MATH_DSP) */
 
-    while (blkCnt > 0U)
+    while (blkCnt > 0u)
     {
       /* C(m,n) = A(m,n) * k */
       /* Scale, saturate and then store the results in the destination buffer. */

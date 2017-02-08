@@ -1,3 +1,13 @@
+/* -----------------------------------------------------------------------------
+ * Copyright (c) 2013-2014 ARM Limited. All rights reserved.
+ *  
+ * $Date:        2. January 2014
+ * $Revision:    V2.00
+ *  
+ * Project:      Flash Driver API
+ * -------------------------------------------------------------------------- */
+
+
 /**
 \defgroup flash_interface_gr Flash Interface
 \brief    Driver API for Flash Device Interface (%Driver_Flash.h)
@@ -8,27 +18,31 @@ characteristic of these Flash devices allow a direct code execution
 (<a href="http://en.wikipedia.org/wiki/Execute_in_place" target="_blank">XIP</a>) and data storage in a single memory
 product.
 
-<b>Flash API</b>
+**Flash API**
 
-The Flash API provides a generic API suitable for Flashes with NOR memory cells independent from the actual interface
+The \b Flash \b API provides a generic API suitable for Flashes with NOR memory cells independent from the actual interface
 to the MCU (memory bus, SPI, ...). <a href="http://en.wikipedia.org/wiki/Flash_memory#Serial_flash" target="_blank">SPI</a>
 flashes are typically not named NOR flashes but have usually same flash cell properties. 
 
 The following header files define the Application Programming Interface (API) for the Flash interface:
   - \b %Driver_Flash.h : Driver API for Flash Device Interface
 
-<b>Driver Functions</b>
+
+**Driver Functions**
 
 The driver functions are published in the access struct as explained in \ref DriverFunctions
   - \ref ARM_DRIVER_FLASH : access struct for Flash driver functions
+
 @{
+*/
+/*
+\todo provide more text for the driver implementation above
 
 A typical setup sequence for the driver is shown below:
 
 <b>Example Code:</b>
 
-\include Flash_Demo.c
-*/
+\todo example
 *******************************************************************************************************************/
 
 

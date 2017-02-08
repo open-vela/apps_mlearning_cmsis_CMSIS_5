@@ -9,7 +9,7 @@ typical content of a DFP is:
   - \ref cp_Components "Software Components" that configure the device and basic device drivers, in particular:
     - CMSIS-compliant \ref cp_System_Startp required to setup the C run-time library, device clock, and memory interface.
     - Peripheral Driver Interfaces that provide software routines for physical device peripherals used by middleware stacks.
-      Drivers may adhere to the <a class=el href="http://www.keil.com/cmsis/driver" target="_blank">CMSIS-Driver</a> standard.
+	  Drivers may adhere to the	<a class=el href="http://www.keil.com/cmsis/driver" target="_blank">CMSIS-Driver</a> standard.
   - One or more \ref cp_SVD "System View Description Files" describing the programmer's view of the device's
     peripherals.
   - \ref cp_FlashProgrammingAlgorithm for erasing and downloading code into on-chip Flash.
@@ -125,7 +125,7 @@ further details. Afterwards, install the Pack in your development tool.
 We will address this problem in the next section.
 
 \section cp_System_Startp System and Startup Files
-<a href="../../Core/html/index.html">CMSIS-Core (Cortex-M)</a> defines the following files to be used by
+<a class=el href="http://www.keil.com/cmsis/core" target="_blank">CMSIS-CORE</a> defines the following files to be used by
 an embedded application:
 - \c startup_<device>.s with reset handler and exception vectors. It is executed after reset and calls \c SystemInit and may
   contain stack and heap configurations for the user application.
@@ -136,8 +136,8 @@ an embedded application:
 
 \image html SystemStartupFiles.png  "System and startup files in relation to user code"
 
-\note <a href="../../Core/html/templates_pg.html">CMSIS-Core (Cortex-M)</a>
-    explains the structure of the system and startup files and how to create them.
+\note <a class=el href="http://www.keil.com/pack/doc/CMSIS/Core/html/_templates_pg.html" target="_blank">CMSIS-CORE</a>
+	  explains the structure of the system and startup files and how to create them.
 
 Copy the \e content of the <b>02_System_and_Startup</b> directory of the \b Pack_with_Device_Support.zip file to the
 <b>Files</b> directory in your working environment:
@@ -146,10 +146,10 @@ Copy the \e content of the <b>02_System_and_Startup</b> directory of the \b Pack
 Add a \c \<conditions\> section in your PDSC with the following (the \ref cp_Conditions "conditions" section
 provides more information on this step):
 \code{.xml}
-    <condition id="MVCM3 CMSIS-Core">
+    <condition id="MVCM3 CMSIS-CORE">
       <!-- conditions selecting Devices -->
-      <description>MyVendor MVCM3 Series devices and CMSIS-Core (Cortex-M)</description>
-      <require Cclass="CMSIS" Cgroup="Core"/>
+      <description>MyVendor MVCM3 Series devices and CMSIS-CORE</description>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
       <require Dvendor="Generic:5" Dname="MVCM3*"/>
     </condition>
     <condition id="Startup ARM">
@@ -172,7 +172,7 @@ provides more information on this step):
 Add a \c \<components\> section in your PDSC with the following (the \ref cp_Components "components" section
 provides more information on this step):
 \code
-    <component Cclass="Device" Cgroup="Startup" Cversion="1.0.0" condition="MVCM3 CMSIS-Core">
+    <component Cclass="Device" Cgroup="Startup" Cversion="1.0.0" condition="MVCM3 CMSIS-CORE">
       <description>System Startup for MyVendor MVCM3 Series</description>
       <files>
         <!--  include folder -->
@@ -237,7 +237,7 @@ Open the file MVCM3xxx.svd in the <b>Files\\SVD</b> directory in an editor and c
   <name>MVCM3xxx</name>                  <!-- name of part-->
   <series>MVCM3xxx</series>              <!-- device series the device belongs to -->
   <version>1.2</version>                 <!-- version of this description, adding CMSIS-SVD 1.1 tags -->
-  <description>Arm 32-bit Cortex-M3 Microcontroller based device, CPU clock up to 100 MHz.</description>
+  <description>ARM 32-bit Cortex-M3 Microcontroller based device, CPU clock up to 100 MHz.</description>
 \endcode
 </li>
 <li>
@@ -250,7 +250,7 @@ C:\temp\working_dfp>SVDConv.exe Files\SVD\MVCM3xxx.svd --generate=header –-fie
 You should see some output of SVDConv similar to this:
 \verbatim
 CMSIS-SVD SVD Consistency Checker / Header File Generator V2.86g
-Copyright (C) 2010 - 2014 Arm Ltd and Arm Germany GmbH. All rights reserved.
+Copyright (C) 2010 - 2014 ARM Ltd and ARM Germany GmbH. All rights reserved.
 Options: "Files\SVD\MVCM3xxx.svd" --generate=header --fields=macro
 Reading file: "Files\SVD\MVCM3xxx.svd"
  
@@ -465,7 +465,7 @@ Finally, \ref cp_Components "software components" and \ref cp_Examples "example 
 <li>
 Add the following lines to the PDSC file in the \elem{components} section:
 \code
-<component Cclass="Device" Cgroup="HAL" Csub="GPIO" Cversion="1.0.0" condition="MVCM3 CMSIS-Core">
+<component Cclass="Device" Cgroup="HAL" Csub="GPIO" Cversion="1.0.0" condition="MVCM3 CMSIS-CORE">
   <description>GPIO HAL for MyVendor MVCM3 Series</description>
   <files>
     <file category="header" name="Device/Include/GPIO.h"/>
@@ -473,7 +473,7 @@ Add the following lines to the PDSC file in the \elem{components} section:
   </files>
 </component>
 
-<component Cclass="Device" Cgroup="HAL" Csub="ADC" Cversion="1.0.0" condition="MVCM3 CMSIS-Core">
+<component Cclass="Device" Cgroup="HAL" Csub="ADC" Cversion="1.0.0" condition="MVCM3 CMSIS-CORE">
   <description>ADC HAL for MyVendor MVCM3 Series</description>
   <files>
     <file category="header" name="Device/Include/ADC.h"/>
@@ -481,7 +481,7 @@ Add the following lines to the PDSC file in the \elem{components} section:
   </files>
 </component>
 
-<component Cclass="CMSIS Driver" Cgroup="I2C" Cversion="1.0.0" condition="MVCM3 CMSIS-Core" maxInstances="3">
+<component Cclass="CMSIS Driver" Cgroup="I2C" Cversion="1.0.0" condition="MVCM3 CMSIS-CORE" maxInstances="3">
   <description>I2C Driver for MVCM3 Series</description>
   <RTE_Components_h>
     #define RTE_Drivers_I2C0                /* Driver I2C0 */
@@ -494,7 +494,7 @@ Add the following lines to the PDSC file in the \elem{components} section:
   </files>
 </component>
 
-<component Cclass="CMSIS Driver" Cgroup="UART" Cversion="1.0.0" condition="MVCM3 CMSIS-Core" maxInstances="5">
+<component Cclass="CMSIS Driver" Cgroup="UART" Cversion="1.0.0" condition="MVCM3 CMSIS-CORE" maxInstances="5">
   <description>UART Driver for MVCM3 Series</description>
   <RTE_Components_h>
     #define RTE_Drivers_UART0               /* Driver UART0 */

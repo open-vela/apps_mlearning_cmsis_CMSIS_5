@@ -1,12 +1,12 @@
 /**************************************************************************//**
  * @file     system_ARMv8MBL.c
  * @brief    CMSIS Device System Source File for
- *           ARMv8MBL Device
- * @version  V5.3.1
- * @date     09. July 2018
+ *           ARMv8MBL Device Series
+ * @version  V5.00
+ * @date     07. September 2016
  ******************************************************************************/
 /*
- * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
+ * Copyright (c) 2009-2016 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -32,9 +32,9 @@
 /*----------------------------------------------------------------------------
   Define clocks
  *----------------------------------------------------------------------------*/
-#define  XTAL            (50000000UL)     /* Oscillator frequency */
+#define  XTAL            ( 5000000UL)      /* Oscillator frequency */
 
-#define  SYSTEM_CLOCK    (XTAL / 2U)
+#define  SYSTEM_CLOCK    (5U * XTAL)
 
 
 /*----------------------------------------------------------------------------
@@ -47,7 +47,7 @@
 /*----------------------------------------------------------------------------
   System Core Clock Variable
  *----------------------------------------------------------------------------*/
-uint32_t SystemCoreClock = SYSTEM_CLOCK;  /* System Core Clock Frequency */
+uint32_t SystemCoreClock = SYSTEM_CLOCK;
 
 
 /*----------------------------------------------------------------------------

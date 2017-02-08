@@ -5,6 +5,8 @@ MEMORY
   RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 256K
 }
 
+/* Library configurations */
+GROUP(libgcc.a libc.a libm.a libnosys.a)
 
 /* Linker script to place sections and symbol values. Should be used together
  * with other linker script that defines memory regions FLASH and RAM.
@@ -31,10 +33,13 @@ MEMORY
  *   __bss_end__
  *   __end__
  *   end
+ *   __HeapBase
  *   __HeapLimit
  *   __StackLimit
  *   __StackTop
  *   __stack
+ *   __Vectors_End
+ *   __Vectors_Size
  */
 ENTRY(Reset_Handler)
 
@@ -43,6 +48,10 @@ SECTIONS
 	.text :
 	{
 		KEEP(*(.vectors))
+		__Vectors_End = .;
+		__Vectors_Size = __Vectors_End - __Vectors;
+		__end__ = .;
+
 		*(.text*)
 
 		KEEP(*(.init))
@@ -67,17 +76,6 @@ SECTIONS
 		KEEP(*(.eh_frame*))
 	} > FLASH
 
-/* SG veneers:
-   All SG veneers are placed in the special output section .gnu.sgstubs. Its start address
-   must be set, either with the command line option ‘--section-start’ or in a linker script,
-   to indicate where to place these veneers in memory.
- */
-/*
-    .gnu.sgstubs :
-    {
-        . = ALIGN(32);
-    } > FLASH
-*/
 	.ARM.extab :
 	{
 		*(.ARM.extab* .gnu.linkonce.armextab.*)
@@ -124,10 +122,7 @@ SECTIONS
 	} > FLASH
 	*/
 
-	/* Location counter can end up 2byte aligned with narrow Thumb code but
-	   __etext is assumed by startup code to be the LMA of a section in RAM
-	   which must be 4byte aligned */
-	__etext = ALIGN (4);
+	__etext = .;
 
 	.data : AT (__etext)
 	{
@@ -175,18 +170,19 @@ SECTIONS
 
 	.heap (COPY):
 	{
+		__HeapBase = .;
 		__end__ = .;
-		PROVIDE(end = .);
-		*(.heap*)
+		end = __end__;
+		KEEP(*(.heap*))
 		__HeapLimit = .;
 	} > RAM
 
-	/* .stack_dummy section doesn't contain any symbols. It is only
+	/* .stack_dummy section doesn't contains any symbols. It is only
 	 * used for linker to calculate size of stack sections, and assign
 	 * values to stack symbols later */
 	.stack_dummy (COPY):
 	{
-		*(.stack*)
+		KEEP(*(.stack*))
 	} > RAM
 
 	/* Set stack top to end of RAM, and stack limit move down by

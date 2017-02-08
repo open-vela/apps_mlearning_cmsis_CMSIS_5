@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Arm Limited. All rights reserved.
+ * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -31,8 +31,8 @@
 /// Put Object into ISR Queue.
 /// \param[in]  object          object.
 /// \return 1 - success, 0 - failure.
-static uint32_t isr_queue_put (os_object_t *object) {
-#if (EXCLUSIVE_ACCESS == 0)
+static uint32_t isr_queue_put (void *object) {
+#if (__EXCLUSIVE_ACCESS == 0U)
   uint32_t primask = __get_PRIMASK();
 #else
   uint32_t n;
@@ -42,7 +42,7 @@ static uint32_t isr_queue_put (os_object_t *object) {
 
   max = osRtxInfo.isr_queue.max;
 
-#if (EXCLUSIVE_ACCESS == 0)
+#if (__EXCLUSIVE_ACCESS == 0U)
   __disable_irq();
 
   if (osRtxInfo.isr_queue.cnt < max) {
@@ -74,33 +74,37 @@ static uint32_t isr_queue_put (os_object_t *object) {
 
 /// Get Object from ISR Queue.
 /// \return object or NULL.
-static os_object_t *isr_queue_get (void) {
-#if (EXCLUSIVE_ACCESS != 0)
-  uint32_t     n;
+static void *isr_queue_get (void) {
+#if (__EXCLUSIVE_ACCESS == 0U)
+  uint32_t primask = __get_PRIMASK();
+#else
+  uint32_t n;
 #endif
-  uint16_t     max;
-  os_object_t *ret;
+  uint16_t max;
+  void    *ret;
 
   max = osRtxInfo.isr_queue.max;
 
-#if (EXCLUSIVE_ACCESS == 0)
+#if (__EXCLUSIVE_ACCESS == 0U)
   __disable_irq();
 
   if (osRtxInfo.isr_queue.cnt != 0U) {
     osRtxInfo.isr_queue.cnt--;
-    ret = osRtxObject(osRtxInfo.isr_queue.data[osRtxInfo.isr_queue.out]);
+    ret = osRtxInfo.isr_queue.data[osRtxInfo.isr_queue.out];
     if (++osRtxInfo.isr_queue.out == max) {
       osRtxInfo.isr_queue.out = 0U;
     }
   } else {
     ret = NULL;
   }
-
-  __enable_irq();
+  
+  if (primask == 0U) {
+    __enable_irq();
+  }
 #else
   if (atomic_dec16_nz(&osRtxInfo.isr_queue.cnt) != 0U) {
     n = atomic_inc16_lim(&osRtxInfo.isr_queue.out, max);
-    ret = osRtxObject(osRtxInfo.isr_queue.data[n]);
+    ret = osRtxInfo.isr_queue.data[n];
   } else {
     ret = NULL;
   }
@@ -113,19 +117,14 @@ static os_object_t *isr_queue_get (void) {
 //  ==== Library Functions ====
 
 /// Tick Handler.
-//lint -esym(714,osRtxTick_Handler) "Referenced by Exception handlers"
-//lint -esym(759,osRtxTick_Handler) "Prototype in header"
-//lint -esym(765,osRtxTick_Handler) "Global scope"
 void osRtxTick_Handler (void) {
   os_thread_t *thread;
 
-  OS_Tick_AcknowledgeIRQ();
+  osRtxSysTimerAckIRQ();
   osRtxInfo.kernel.tick++;
 
   // Process Timers
-  if (osRtxInfo.timer.tick != NULL) {
-    osRtxInfo.timer.tick();
-  }
+  osRtxTimerTick();
 
   // Process Thread Delays
   osRtxThreadDelayTick();
@@ -149,7 +148,6 @@ void osRtxTick_Handler (void) {
           if ((thread != NULL) && (thread->priority == osRtxInfo.thread.robin.thread->priority)) {
             osRtxThreadListRemove(thread);
             osRtxThreadReadyPut(osRtxInfo.thread.robin.thread);
-            EvrRtxThreadPreempted(osRtxInfo.thread.robin.thread);
             osRtxThreadSwitch(thread);
             osRtxInfo.thread.robin.thread = thread;
             osRtxInfo.thread.robin.tick   = osRtxInfo.thread.robin.timeout;
@@ -161,9 +159,6 @@ void osRtxTick_Handler (void) {
 }
 
 /// Pending Service Call Handler.
-//lint -esym(714,osRtxPendSV_Handler) "Referenced by Exception handlers"
-//lint -esym(759,osRtxPendSV_Handler) "Prototype in header"
-//lint -esym(765,osRtxPendSV_Handler) "Global scope"
 void osRtxPendSV_Handler (void) {
   os_object_t *object;
 
@@ -174,22 +169,21 @@ void osRtxPendSV_Handler (void) {
     }
     switch (object->id) {
       case osRtxIdThread:
-        osRtxInfo.post_process.thread(osRtxThreadObject(object));
+        osRtxInfo.post_process.thread((os_thread_t *)object);
         break;
       case osRtxIdEventFlags:
-        osRtxInfo.post_process.event_flags(osRtxEventFlagsObject(object));
+        osRtxInfo.post_process.event_flags((os_event_flags_t *)object);
         break;
       case osRtxIdSemaphore:
-        osRtxInfo.post_process.semaphore(osRtxSemaphoreObject(object));
+        osRtxInfo.post_process.semaphore((os_semaphore_t *)object);
         break;
       case osRtxIdMemoryPool:
-        osRtxInfo.post_process.memory_pool(osRtxMemoryPoolObject(object));
+        osRtxInfo.post_process.memory_pool((os_memory_pool_t *)object);
         break;
       case osRtxIdMessage:
-        osRtxInfo.post_process.message(osRtxMessageObject(object));
+        osRtxInfo.post_process.message_queue((os_message_t *)object);
         break;
       default:
-        // Should never come here
         break;
     }
   }
@@ -208,6 +202,54 @@ void osRtxPostProcess (os_object_t *object) {
       osRtxInfo.kernel.pendSV = 1U;
     }
   } else {
-    (void)osRtxErrorNotify(osRtxErrorISRQueueOverflow, object);
+    osRtxErrorNotify(osRtxErrorISRQueueOverflow, object);
   }
+}
+
+
+//  ==== Public API ====
+
+/// Setup System Timer.
+__WEAK int32_t osRtxSysTimerSetup (void) {
+
+  // Setup SysTick Timer
+  SysTick_Setup(osRtxInfo.kernel.sys_freq / osRtxConfig.tick_freq);
+
+  return SysTick_IRQn;                  // Return IRQ number of SysTick
+}
+
+/// Enable System Timer.
+__WEAK void osRtxSysTimerEnable (void) {
+  SysTick_Enable();
+}
+
+/// Disable System Timer.
+__WEAK void osRtxSysTimerDisable (void) {
+  SysTick_Disable();
+}
+
+/// Acknowledge System Timer IRQ.
+__WEAK void osRtxSysTimerAckIRQ (void) {
+  SysTick_GetOvf();
+}
+
+/// Get System Timer count.
+__WEAK uint32_t osRtxSysTimerGetCount (void) {
+  uint32_t tick;
+  uint32_t val;
+
+  tick = (uint32_t)osRtxInfo.kernel.tick;
+  val  = SysTick_GetVal();
+  if (SysTick_GetOvf()) {
+    val = SysTick_GetVal();
+    tick++;
+  }
+  val += tick * SysTick_GetPeriod();
+
+  return val;
+}
+
+/// Get System Timer frequency.
+__WEAK uint32_t osRtxSysTimerGetFreq (void) {
+  return osRtxInfo.kernel.sys_freq;
 }

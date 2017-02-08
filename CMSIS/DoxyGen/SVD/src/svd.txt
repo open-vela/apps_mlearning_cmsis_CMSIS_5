@@ -4,7 +4,7 @@
 Introduction
 ------------
 The CMSIS System View Description format(CMSIS-SVD) formalizes the description of the system
-contained in Arm Cortex-M processor-based microcontrollers, in particular, the memory mapped
+contained in ARM Cortex-M processor-based microcontrollers, in particular, the memory mapped
 registers of peripherals.
 The detail contained in system view descriptions is comparable to the data in device 
 reference manuals. The information ranges from high level functional 
@@ -189,9 +189,6 @@ CMSIS-SVD files can be used to generate:
   - Checks the syntactical and structural compliance with the specified CMSIS-SVD format.
   - Checks the consistency, correctness, and completeness of the CMSIS-SVD file against the CMSIS-SVD schema file.
   - Generates CMSIS-compliant device header files, which can be used for software development.
-  
-\note Consider using \-\-strict option to receive all pedantic warnings. Some rules are skipped by default due to
-  backward compatibility reasons. All newly developed/updated SVD files should rather respect all rules.
 
 
 Operation
@@ -236,7 +233,7 @@ SVDConv.exe <SVD_file> <options>
   </tr>
   <tr>
     <td> \-\-generate=partition </td>
-    <td>Generate Partition file for Cortex-M Security Extensions (Armv8-M)</td>
+    <td>Generate Partition file for Cortex-M Security Extensions (ARMv8M)</td>
     <td>Generates the device partition file. The name of the generated file is composed of <em>partition_</em> and the value of the device <em>\<name></em>
     (for example, <em>partition_CMSDK_ARMv8MBL.h</em>).
     Refer to \ref elem_device. The content of the file uses Configuration Wizard annotations and is derived 
@@ -265,11 +262,6 @@ SVDConv.exe <SVD_file> <options>
     <td>ANSI Bit-field Structs</td>
     <td>Generates MISRA-compliant structures for each bitfield. The generated code <b>is not CMSIS-compliant</b>!
     Must be used in combination with <i>\-\-generate=header</i>.</td>
-  </tr>
-  <tr>
-    <td> \-\-strict</td>
-    <td>Strict error checking</td>
-    <td>\b RECOMMENDED! Applies strict error checking and generates a lot more messages.</td>
   </tr>
 </table>
 
@@ -424,10 +416,6 @@ in the order they were specified in the SVD file.
 On each level, the tag \tagem{description} provides verbose information about the respective element. 
 The description field plays an important part in improving software development productivity as it gives 
 instant access to information that otherwise would need to be looked up in the device documentation.
-
-All multiple whitespace characters (space, tab, linefeed, carriage return) may be removed from the description
-by any tool for further processing (i.e. SVDConv does). In order to preserve explicit linebreaks one has to
-use the linefeed escape sequence (i.e. \\n).
 
 &nbsp;
 */

@@ -28,7 +28,7 @@ CAN 2.0B supports:
   - \ref Remote_Frame requests
   
 \anchor CAN_FD
-<b>CAN FD</b>
+**CAN FD**
 
 Support for CAN FD depends on the hardware.  
 A CMSIS-Driver that supports CAN FD has the capability \ref ARM_CAN_CAPABILITIES data field \b fd_mode = \token{1}, which can be
@@ -40,7 +40,7 @@ CAN FD supports:
 
 CAN FD does not support \ref Remote_Frame requests.
 
-<b>Block Diagram</b>
+**Block Diagram**
 
 The CAN Driver API defines a <b>CAN</b> interface for middleware components. The CAN Driver supports multiple
 nodes, which are able to send and receive messages, but not simultaneously.
@@ -57,12 +57,12 @@ The driver implementation is a typical part of the Device Family Pack (DFP) that
 peripherals of the microcontroller family.
 
 
-<b>Driver Functions</b>
+**Driver Functions**
 
 The driver functions are published in the access struct as explained in \ref DriverFunctions
   - \ref ARM_DRIVER_CAN : access struct for CAN driver functions
 
-<b>Example Code</b>
+**Example Code**
 
 The following example code shows the usage of the CAN interface.
 
@@ -189,6 +189,10 @@ Function                           | Description
 Each CAN message object may have different capabilities. Before using a CAN message object, call the 
 function \ref ARM_CAN_ObjectGetCapabilities to verify the available features.
 
+\if TODO_later
+ARM_CAN_ObjectGetCapabilities may depend on the mode (CAN_FD does not support RTR).  Let's clarify that once we have several implementations
+\endif
+
 
 \section can_filtering CAN Message Filtering
 
@@ -253,6 +257,20 @@ Example: accept any message in object #4 regardless of the ID.
   if (status != ARM_DRIVER_OK) ... // error handling
 \endcode
 
+\if TODO_later
+  - it seems that this needs to be broken up into 4 different cases.
+
+If object does not support \ref ARM_CAN_OBJ_RX_RTR_TX_DATA setting, which can be checked in 
+message object's capabilities by using \ref ARM_CAN_ObjectGetCapabilities function, then RTR can be received on receive object but no automatism for 
+data message response is available in that case.
+
+If object does not support \ref ARM_CAN_OBJ_TX_RTR_RX_DATA
+setting, which can be checked in message object's capabilities by using \ref ARM_CAN_ObjectGetCapabilities function, then RTR can be sent on transmit object but no 
+automatism for data message reception is available in that case.
+
+ARM_CAN_ObjectGetCapabilities may depend on the mode (CAN_FD does not support RTR).  Let's clarify that once we have several implementations
+\endif
+
 \section Remote_Frame Remote Frame
 
 In general, data transmission is performed on an autonomous basis with the data source node sending out Data Frames.
@@ -260,7 +278,7 @@ In general, data transmission is performed on an autonomous basis with the data 
 However, sending a <b>Remote Frame</b> allows a destination node to request the data from the source node.
 The examples below shows the data exchange using a <b>Remote Transmission Request (RTR)</b>.
 
-<b>Example for automatic Data Message response on RTR</b>
+**Example for automatic Data Message response on RTR**
 
 For automatic data message response on an RTR, the object is configured with the function \ref ARM_CAN_ObjectConfigure \em obj_cfg = \ref ARM_CAN_OBJ_RX_RTR_TX_DATA.
 
@@ -288,7 +306,7 @@ and the related \em obj_idx.
 \endcode
 
  
-<b>Example for automatic Data Message reception using RTR</b>
+**Example for automatic Data Message reception using RTR**
 
 For automatic data message reception on an RTR, the object is configured with the function \ref ARM_CAN_ObjectConfigure \em obj_cfg = \ref ARM_CAN_OBJ_TX_RTR_RX_DATA. 
 
@@ -396,7 +414,6 @@ The following callback notification unit events are generated:
 \def ARM_CAN_UNIT_STATE_INACTIVE
 \def ARM_CAN_UNIT_STATE_ACTIVE
 \def ARM_CAN_UNIT_STATE_PASSIVE
-\def ARM_CAN_UNIT_STATE_BUS_OFF
 \def ARM_CAN_LEC_NO_ERROR
 \def ARM_CAN_LEC_BIT_ERROR
 \def ARM_CAN_LEC_STUFF_ERROR
@@ -415,8 +432,6 @@ The CAN driver generates callback unit events that are notified via the function
 
 The following callback notification unit events are generated:
 @{
-\def ARM_CAN_EVENT_UNIT_INACTIVE
-\sa \ref ARM_CAN_SignalUnitEvent
 \def ARM_CAN_EVENT_UNIT_ACTIVE
 \sa \ref ARM_CAN_SignalUnitEvent
 \def ARM_CAN_EVENT_UNIT_WARNING
@@ -964,6 +979,50 @@ When the \b object is deactivated, it is not used for data communication.
 
 \sa ARM_CAN_ObjectSetFilter
 **************************************************************************************************************************/
+/*
+TODO_later:
+we add this info later (once we have a CAN FD implementation)
+Hi Reinhard, 
+
+here is the explanation regarding message object structure fields:
+
+Send:
+
+  Send Data Message using MessageSend function (parameters usage):
+  id = id
+  rtr = 0
+  edl = for CAN FD it specifies if extended data length encoding of DLC is used
+  brs = for CAN FD it specifies if baud rate switching is used during data phase
+  esi - not used
+ dlc - not used
+  data = pointer to data to be sent
+  size = number of data bytes to send (up to 8 for CAN, up to 64 for CAN FD)
+  function returns number data bytes accepted to be sent or -error
+
+  Send RTR Message using MessageSend function (parameters usage):
+  id = id
+  rtr = 1
+  edl - not used (CAN FD does not support RTR)
+  brs - not used (CAN FD does not support RTR)
+  esi - not used
+ dlc = number of requested data bytes (up to 8 for CAN)
+  data - not used
+  size - not used
+  function returns 0 or -error
+
+Receive:
+
+  Read received message using MessageRead function (updated information):
+  id = updated with received id
+  rtr = updated with RTR information (if data message received = 0, if RTR message received = 1)
+  edl = for CAN FD it specifies if received message has extended data length used for DLC encoding
+  brs = for CAN FD it specifies if baud rate switching was used during data reception
+  esi = for CAN FD it specifies Error State Indicator (if message was received with error)
+ dlc = DLC of received message, for RTR it specifies number of requested data bytes, for data message it specifies number of data bytes received
+  function returns number of data bytes read or -error (if RTR was read it returns 0)
+
+
+*/
 
 int32_t ARM_CAN_MessageSend (uint32_t obj_idx, ARM_CAN_MSG_INFO *msg_info, const uint8_t *data, uint8_t size)  {
   return ARM_DRIVER_OK;
@@ -1079,10 +1138,9 @@ The following defines give information about the current unit involvement in bus
 
 Unit State                             | Description
 :--------------------------------------|:------------
-\ref ARM_CAN_UNIT_STATE_INACTIVE       | Unit state: Not active on the bus. Unit is in initialization state.
-\ref ARM_CAN_UNIT_STATE_ACTIVE         | Unit state: Active on the bus. Unit can generate active error frames.
-\ref ARM_CAN_UNIT_STATE_PASSIVE        | Unit state: Error passive. Unit is interacting on the bus but does not send active error frames.
-\ref ARM_CAN_UNIT_STATE_BUS_OFF        | Unit state: Bus-off. Unit does not participate on the bus but monitors it and can recover to active state.
+\ref ARM_CAN_UNIT_STATE_INACTIVE       | Unit is not active on bus (initialize or error bus off).
+\ref ARM_CAN_UNIT_STATE_ACTIVE         | Unit is active on bus (can generate active error frame).
+\ref ARM_CAN_UNIT_STATE_PASSIVE        | Error passive (can not generate active error frame). Unit is interacting on the bus but does not send active error or overload frames.
 
 The following defines are error codes of the last error that happened on the bus:
 
@@ -1111,11 +1169,10 @@ The following callback notifications are generated:
 
 Parameter \em event                | Value |Description
 :----------------------------------|:-----:|:-------------------------------------------------
-\ref ARM_CAN_EVENT_UNIT_INACTIVE   |   0   | Unit entered Inactive state.
-\ref ARM_CAN_EVENT_UNIT_ACTIVE     |   1   | Unit entered Error Active state.
-\ref ARM_CAN_EVENT_UNIT_WARNING    |   2   | Unit entered Error Warning state (one or both error counters >= \token{96}).
-\ref ARM_CAN_EVENT_UNIT_PASSIVE    |   3   | Unit entered Error Passive state.
-\ref ARM_CAN_EVENT_UNIT_BUS_OFF    |   4   | Unit entered Bus-off state.
+\ref ARM_CAN_EVENT_UNIT_ACTIVE     |   0   | Unit became active on the bus.
+\ref ARM_CAN_EVENT_UNIT_WARNING    |   1   | Unit error counter reached >= \token{96}.
+\ref ARM_CAN_EVENT_UNIT_PASSIVE    |   2   | Unit became passive on the bus.
+\ref ARM_CAN_EVENT_UNIT_BUS_OFF    |   3   | Unit became inactive on the bus.
 
 \sa \ref ARM_CAN_GetStatus 
 *******************************************************************************************************************/

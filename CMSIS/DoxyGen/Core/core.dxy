@@ -32,19 +32,19 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "CMSIS-Core (Cortex-M)"
+PROJECT_NAME           = CMSIS-CORE
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = "Version 5.2.0"
+PROJECT_NUMBER         = "Version 5.0.1"
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "CMSIS-Core support for Cortex-M processor-based devices"
+PROJECT_BRIEF          = "CMSIS-CORE support for Cortex-M processor-based devices"
 
 # With the PROJECT_LOGO tag one can specify an logo or icon that is included in
 # the documentation. The maximum height of the logo should not exceed 55 pixels
@@ -606,14 +606,13 @@ GENERATE_BUGLIST       = NO
 # the documentation.
 # The default value is: YES.
 
-GENERATE_DEPRECATEDLIST= YES
+GENERATE_DEPRECATEDLIST= NO
 
 # The ENABLED_SECTIONS tag can be used to enable conditional documentation
 # sections, marked by \if <section_label> ... \endif and \cond <section_label>
 # ... \endcond blocks.
 
-ENABLED_SECTIONS       = ARMv8M \
-                         ARMSC
+ENABLED_SECTIONS       = 
 
 # The MAX_INITIALIZER_LINES tag determines the maximum number of lines that the
 # initial value of a variable or macro / define can have for it to appear in the
@@ -755,7 +754,6 @@ INPUT                  = src/Overview.txt \
                          src/UsingTrustZone.txt \
                          src/Template.txt \
                          src/MISRA.txt \
-                         src/Ref_VersionControl.txt \
                          src/Ref_CompilerControl.txt \
                          src/Ref_Peripheral.txt \
                          src/Ref_SystemAndClock.txt \
@@ -764,7 +762,6 @@ INPUT                  = src/Overview.txt \
                          src/Ref_cmInstr.txt \
                          src/Ref_cm4_simd.txt \
                          src/Ref_FPU.txt \
-                         src/Ref_MPU.txt \
                          src/Ref_Systick.txt \
                          src/Ref_Debug.txt \
                          src/Ref_Trustzone.txt \

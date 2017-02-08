@@ -10,13 +10,13 @@
       <TargetName>CM0_LE</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6100001::V6.10.1::.\ARMCLANG</pCCUsed>
-      <uAC6>1</uAC6>
+      <pArmCC>6060000::V6.6::.\ARMCLANG</pArmCC>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM0</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.3.1-dev4</PackID>
+          <PackID>ARM.CMSIS.5.0.1</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("Cortex-M0") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -184,7 +184,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -312,7 +311,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -325,10 +324,9 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
+            <v6LangP>0</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -441,11 +439,6 @@
               <FileName>rtx_evr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
-            </File>
-            <File>
-              <FileName>os_systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -640,13 +633,13 @@
       <TargetName>CM3_LE</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6100001::V6.10.1::.\ARMCLANG</pCCUsed>
-      <uAC6>1</uAC6>
+      <pArmCC>6060000::V6.6::.\ARMCLANG</pArmCC>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM3</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.3.1-dev4</PackID>
+          <PackID>ARM.CMSIS.5.0.1</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("Cortex-M3") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -814,7 +807,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -942,7 +934,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -955,10 +947,9 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
+            <v6LangP>0</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -1071,11 +1062,6 @@
               <FileName>rtx_evr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
-            </File>
-            <File>
-              <FileName>os_systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1270,13 +1256,13 @@
       <TargetName>CM4F_LE</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6100001::V6.10.1::.\ARMCLANG</pCCUsed>
-      <uAC6>1</uAC6>
+      <pArmCC>6060000::V6.6::.\ARMCLANG</pArmCC>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM4_FP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.3.1-dev4</PackID>
+          <PackID>ARM.CMSIS.5.0.1</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -1444,7 +1430,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -1572,7 +1557,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -1585,10 +1570,9 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
+            <v6LangP>0</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -1701,11 +1685,6 @@
               <FileName>rtx_evr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
-            </File>
-            <File>
-              <FileName>os_systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1900,13 +1879,13 @@
       <TargetName>ARMv8MBL_LE</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6100001::V6.10.1::.\ARMCLANG</pCCUsed>
-      <uAC6>1</uAC6>
+      <pArmCC>6060000::V6.6::.\ARMCLANG</pArmCC>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MBL</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.3.1-dev4</PackID>
+          <PackID>ARM.CMSIS.5.0.1</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MBL") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -2074,7 +2053,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -2202,7 +2180,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -2215,10 +2193,9 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
+            <v6LangP>0</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -2331,11 +2308,6 @@
               <FileName>rtx_evr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
-            </File>
-            <File>
-              <FileName>os_systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2530,13 +2502,13 @@
       <TargetName>ARMv8MBL_NS_LE</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6100001::V6.10.1::.\ARMCLANG</pCCUsed>
-      <uAC6>1</uAC6>
+      <pArmCC>6060000::V6.6::.\ARMCLANG</pArmCC>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MBL</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.3.1-dev4</PackID>
+          <PackID>ARM.CMSIS.5.0.1</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MBL") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -2704,7 +2676,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -2832,7 +2803,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -2845,10 +2816,9 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
+            <v6LangP>0</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -2856,7 +2826,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>EVR_RTX_DISABLE DOMAIN_NS=1</Define>
+              <Define>EVR_RTX_DISABLE __DOMAIN_NS=1U</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\Config;..\..\..\Include;..\..\..\..\Include</IncludePath>
             </VariousControls>
@@ -2874,7 +2844,7 @@
             <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls>--no_hide_all</MiscControls>
-              <Define>DOMAIN_NS=1</Define>
+              <Define>__DOMAIN_NS=1</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -2961,11 +2931,6 @@
               <FileName>rtx_evr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
-            </File>
-            <File>
-              <FileName>os_systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3160,13 +3125,13 @@
       <TargetName>ARMv8MML_LE</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6100001::V6.10.1::.\ARMCLANG</pCCUsed>
-      <uAC6>1</uAC6>
+      <pArmCC>6060000::V6.6::.\ARMCLANG</pArmCC>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.3.1-dev4</PackID>
+          <PackID>ARM.CMSIS.5.0.1</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MML") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -3334,7 +3299,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -3462,7 +3426,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -3475,10 +3439,9 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
+            <v6LangP>0</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -3591,11 +3554,6 @@
               <FileName>rtx_evr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
-            </File>
-            <File>
-              <FileName>os_systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3790,13 +3748,13 @@
       <TargetName>ARMv8MML_NS_LE</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6100001::V6.10.1::.\ARMCLANG</pCCUsed>
-      <uAC6>1</uAC6>
+      <pArmCC>6060000::V6.6::.\ARMCLANG</pArmCC>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.3.1-dev4</PackID>
+          <PackID>ARM.CMSIS.5.0.1</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MML") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -3964,7 +3922,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -4092,7 +4049,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -4105,10 +4062,9 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
+            <v6LangP>0</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -4116,7 +4072,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>EVR_RTX_DISABLE DOMAIN_NS=1</Define>
+              <Define>EVR_RTX_DISABLE __DOMAIN_NS=1U</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\Config;..\..\..\Include;..\..\..\..\Include</IncludePath>
             </VariousControls>
@@ -4134,7 +4090,7 @@
             <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls>--no_hide_all</MiscControls>
-              <Define>DOMAIN_NS=1</Define>
+              <Define>__DOMAIN_NS=1</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -4221,11 +4177,6 @@
               <FileName>rtx_evr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
-            </File>
-            <File>
-              <FileName>os_systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4420,13 +4371,13 @@
       <TargetName>ARMv8MML_SP_LE</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6100001::V6.10.1::.\ARMCLANG</pCCUsed>
-      <uAC6>1</uAC6>
+      <pArmCC>6060000::V6.6::.\ARMCLANG</pArmCC>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML_SP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.3.1-dev4</PackID>
+          <PackID>ARM.CMSIS.5.0.1</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MML") FPU3(SFPU) CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -4594,7 +4545,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -4722,7 +4672,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -4735,10 +4685,9 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
+            <v6LangP>0</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -4851,11 +4800,6 @@
               <FileName>rtx_evr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
-            </File>
-            <File>
-              <FileName>os_systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -5050,13 +4994,13 @@
       <TargetName>ARMv8MML_SP_NS_LE</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6100001::V6.10.1::.\ARMCLANG</pCCUsed>
-      <uAC6>1</uAC6>
+      <pArmCC>6060000::V6.6::.\ARMCLANG</pArmCC>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML_SP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.3.1-dev4</PackID>
+          <PackID>ARM.CMSIS.5.0.1</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MML") FPU3(SFPU) CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -5224,7 +5168,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -5352,7 +5295,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -5365,10 +5308,9 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
+            <v6LangP>0</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -5376,7 +5318,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>EVR_RTX_DISABLE DOMAIN_NS=1</Define>
+              <Define>EVR_RTX_DISABLE __DOMAIN_NS=1U</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\Config;..\..\..\Include;..\..\..\..\Include</IncludePath>
             </VariousControls>
@@ -5394,7 +5336,7 @@
             <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls>--no_hide_all</MiscControls>
-              <Define>DOMAIN_NS=1</Define>
+              <Define>__DOMAIN_NS=1</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -5481,11 +5423,6 @@
               <FileName>rtx_evr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
-            </File>
-            <File>
-              <FileName>os_systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -5681,8 +5618,8 @@
   <RTE>
     <apis/>
     <components>
-      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.0.2" condition="ARMv6_7_8-M Device">
-        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.1.0"/>
+      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.0.0" condition="Cortex-M ARMv8-M Device">
+        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.0.0-Beta4"/>
         <targetInfos>
           <targetInfo name="ARMv8MBL_LE"/>
           <targetInfo name="ARMv8MBL_NS_LE"/>

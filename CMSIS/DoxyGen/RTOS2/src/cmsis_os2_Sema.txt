@@ -13,12 +13,10 @@ semaphores, access to a group of identical peripherals can be managed (for examp
 \image html "Semaphore.png" "CMSIS-RTOS Semaphore"
 
 A semaphore object should be initialized to the maximum number of available tokens. This number of available resources is
-specified as parameter of the \ref osSemaphoreNew function. Each time a semaphore token is obtained with \ref osSemaphoreAcquire
-(in \em available state), the semaphore count is decremented. When the semaphore count is 0 (i.e. \em depleted state), no
-more semaphore tokens can be obtained. The thread/ISR that tries to obtain the semaphore token needs to wait until the next
-token is free. Semaphores are released with \ref osSemaphoreRelease incrementing the semaphore count.
-
-\image html "semaphore_states.png" "CMSIS-RTOS Semaphore States"
+specified as parameter of the \ref osSemaphoreNew function. Each time a semaphore token is obtained with
+\ref osSemaphoreAcquire, the semaphore count is decremented. When the semaphore count is 0, no semaphore token can be
+obtained. The thread/ISR that tries to obtain the semaphore token needs to wait until the next token is free. Semaphores are
+released with \ref osSemaphoreRelease incrementing the semaphore count.
 
 \note The functions \ref osSemaphoreAcquire, \ref osSemaphoreGetCount, and \ref osSemaphoreRelease can be called from
 \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
@@ -47,57 +45,16 @@ threads that might access the resource:
 osSemaphoreId_t multiplex_id;
  
 void thread_n (void)
-{
-  multiplex_id = osSemaphoreNew(3, 3, NULL);
-  while(1)
-    {
-      osSemaphoreAcquire(multiplex_id, osWaitForever);
-      // do something
-      osSemaphoreRelease(multiplex_id);
-    }
-}
-\endcode
-
-<b>Producer/Consumer Semaphore</b>
-
-The producer-consumer problem can be solved using two semaphores.
-
-A first semaphore (\token{empty_id}) counts down the available (empty) buffers, i.e.
-the producer thread can wait for available buffer slots by acquiring from this one.
-
-A second semaphore (\token{filled_id}) counts up the used (filled) buffers, i.e.
-the consumer thread can wait for available data by acquiring from this one.
-
-It is crucial for the correct behaviour that the threads acquire and release on both
-semaphores in the given sequence. According to this example one can have multiple
-producer and/or consumer threads running concurrently.
-
-\code
-#define BUFFER_SIZE 10
-osSemaphoreId_t empty_id = osSemaphoreNew(BUFFER_SIZE, BUFFER_SIZE, NULL);
-osSemaphoreId_t filled_id = osSemaphoreNew(BUFFER_SIZE, 0, NULL);
-
-void producer_thread (void)
-{
-  while(1)
   {
-    osSemaphoreAcquire(empty_id, osWaitForever);
-    // produce data
-    osSemaphoreRelease(filled_id);
+    multiplex_id = osSemaphoreNew(3, 3, NULL);
+    while(1)
+      {
+        osSemaphoreAcquire(multiplex_id, osWaitForever);
+        // do something
+        osSemaphoreRelease(multiplex_id);
+      }
   }
-}
-
-void consumer_thread (void)
-{
-  while(1)
-  {
-    osSemaphoreAcquire(filled_id, osWaitForever);
-    // consume data
-    osSemaphoreRelease(empty_id);
-  }
-}
 \endcode
-
 @{
 */
 
@@ -105,14 +62,11 @@ void consumer_thread (void)
 /**
 \typedef  osSemaphoreId_t
 \details
-Returned by:
-- \ref osSemaphoreNew
 */
 
 /**
 \struct osSemaphoreAttr_t
 \details
-Specifies the following attributes for the \ref osSemaphoreNew function.
 */
 
 /*=======0=========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1====*/
@@ -120,8 +74,7 @@ Specifies the following attributes for the \ref osSemaphoreNew function.
 \fn osSemaphoreId_t osSemaphoreNew (uint32_t max_count, uint32_t initial_count, const osSemaphoreAttr_t *attr)
 \details
 The function \b osSemaphoreNew creates and initializes a semaphore object that is used to manage access to shared resources
-and returns the pointer to the semaphore object identifier or \token{NULL} in case of an error. It can be safely called
-before the RTOS is started (call to \ref osKernelStart), but not before it is initialized (call to \ref osKernelInitialize).
+and returns the pointer to the semaphore object identifier or \token{NULL} in case of an error.
 
 The parameter \em max_count specifies the maximum number of available tokens. A \em max_count value of 1 creates a binary
 semaphore.
@@ -164,7 +117,7 @@ void Thread_Semaphore (void *argument)
   while (1) {
     ; // Insert thread code here...
  
-    val = osSemaphoreAcquire (sid_Thread_Semaphore, 10);   // wait for max. 10 ticks for semaphore token to get available
+    val = osSemaphoreAcquire (sid_Thread_Semaphore, 10);   // wait 10 mSec
     switch (val) {
     case osOK:
       ; // Use protected code here...
@@ -201,19 +154,19 @@ semaphore_id or \token{NULL} in case of an error.
 The blocking function \b osSemaphoreAcquire waits until a token of the semaphore object specified by parameter
 \a semaphore_id becomes available. If a token is available, the function instantly returns and decrements the token count. 
 
-The parameter \a timeout specifies how long the system waits to acquire the token. While the system waits, the thread
-that is calling this function is put into the \ref ThreadStates "BLOCKED" state. The parameter \ref CMSIS_RTOS_TimeOutValue
-"timeout" can have the following values:
- - when \a timeout is \token{0}, the function returns instantly (i.e. try semantics).
+The parameter \a timeout specifies how long the system waits to acquire the token. While the system waits, the thread/ISR
+that is calling this function is put into the \b BLOCKED state. The parameter \ref CMSIS_RTOS_TimeOutValue "timeout" can have
+the following values:
+ - when \a timeout is \token{0}, the function returns instantly.
  - when \a timeout is set to \b osWaitForever the function will wait for an infinite time until the semaphore becomes
-   available (i.e. wait semantics).
- - all other values specify a time in kernel ticks for a timeout (i.e. timed-wait semantics).
+   available.
+ - all other values specify a time in kernel ticks for a timeout.
 
 Possible \ref osStatus_t return values:
- - \em osOK: the token has been obtained and the token count decremented.
+ - \em osOK: the token has been obtained.
  - \em osErrorTimeout: the token could not be obtained in the given time.
  - \em osErrorResource: the token could not be obtained when no \a timeout was specified.
- - \em osErrorParameter: the parameter \a semaphore_id is \token{NULL} or invalid.
+ - \em osErrorParameter: the parameter \a semaphore_id is incorrect.
 
 \note May be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines" if the parameter \a timeout is set to
 \token{0}.
@@ -227,14 +180,13 @@ Refer to \ref osSemaphoreNew.
 /**
 \fn osStatus_t osSemaphoreRelease (osSemaphoreId_t semaphore_id)
 \details
-The function \b osSemaphoreRelease releases a token of the semaphore object specified by parameter \a semaphore_id. Tokens
-can only be released up to the maximum count specified at creation time, see \ref osSemaphoreNew. Other threads that
-currently wait for a token of this semaphore object will be put into the \ref ThreadStates "READY" state.
+The function \b osSemaphoreRelease releases a token of the semaphore object specified by parameter \a semaphore_id. Other
+threads/ISRs that currently wait for a token of this semaphore object will be put into the \b READY state.
 
 Possible \ref osStatus_t return values:
- - \em osOK: the token has been released and the count incremented.
- - \em osErrorResource: the token could not be released (maximum token count has been reached).
- - \em osErrorParameter: the parameter \a semaphore_id is \token{NULL} or invalid.
+ - \em osOK: the token has been correctly released and the count increased.
+ - \em osErrorResource: the maximum token count has been reached.
+ - \em osErrorParameter: the parameter \a semaphore_id is incorrect.
 
 \note This function may be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 
@@ -247,8 +199,8 @@ Refer to \ref osSemaphoreNew.
 /**
 \fn uint32_t osSemaphoreGetCount (osSemaphoreId_t semaphore_id)
 \details
-The function \b osSemaphoreGetCount returns the number of available tokens of the semaphore object specified by parameter
-\a semaphore_id. In case of an error it returns \token{0}.
+The function \b osSemaphoreGetCount returns the count of available semaphores of the semaphore object specified by parameter
+\a semaphore_id. In case of an error, it returns \token{0}.
 
 \note This function may be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 */
@@ -264,34 +216,9 @@ semaphore may be created again using the function \ref osSemaphoreNew.
 Possible \ref osStatus_t return values:
  - \em osOK: the semaphore object has been deleted.
  - \em osErrorParameter: the parameter \a semaphore_id is \token{NULL} or invalid.
- - \em osErrorResource: the semaphore is in an invalid state.
+ - \em osErrorResource: the semaphore specified by parameter \em semaphore_id is in an invalid semaphore state.
  - \em osErrorISR: \b osSemaphoreDelete cannot be called from interrupt service routines.
 
 \note This function \b cannot be called from \ref CMSIS_RTOS_ISR_Calls "Interrupt Service Routines".
 */
 /// @}
-
-// these struct members must stay outside the group to avoid double entries in documentation
-/**
-\var osSemaphoreAttr_t::attr_bits
-\details
-Reserved for future use (must be set to '0' for future compatibility).
-
-\var osSemaphoreAttr_t::cb_mem
-\details
-Pointer to a memory for the semaphore control block object. Refer to \ref StaticObjectMemory for more information.
-
-Default: \token{NULL} to use \ref CMSIS_RTOS_MemoryMgmt_Automatic for the semaphore control block.
-
-\var osSemaphoreAttr_t::cb_size
-\details
-The size (in bytes) of memory block passed with \ref cb_mem. For RTX, the minimum value is defined with \ref osRtxSemaphoreCbSize (higher values are permitted).
-
-Default: \token{0} as the default is no memory provided with \ref cb_mem.
-
-\var osSemaphoreAttr_t::name
-\details
-Pointer to a constant string with a human readable name (displayed during debugging) of the semaphore object.
-
-Default: \token{NULL} no name specified.
-*/

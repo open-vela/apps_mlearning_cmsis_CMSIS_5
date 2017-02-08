@@ -10,13 +10,12 @@
       <TargetName>cortexM0l</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM0</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x40000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M0") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -184,7 +183,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -325,7 +323,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -336,7 +333,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING</Define>
+              <Define>ARM_MATH_CM0, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -353,8 +350,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM0_FAMILY</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM0</MiscControls>
+              <Define>ARM_MATH_CM0</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -1795,13 +1792,12 @@
       <TargetName>cortexM0b</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM0</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x40000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M0") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -1969,7 +1965,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -2110,7 +2105,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -2121,7 +2115,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, ARM_MATH_BIG_ENDIAN</Define>
+              <Define>ARM_MATH_CM0, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, ARM_MATH_BIG_ENDIAN</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -2138,8 +2132,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM0_FAMILY</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM0</MiscControls>
+              <Define>ARM_MATH_CM0</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -3580,13 +3574,12 @@
       <TargetName>cortexM3l</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM3</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x40000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M3") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -3754,7 +3747,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -3895,7 +3887,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -3906,7 +3897,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING</Define>
+              <Define>ARM_MATH_CM3, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -3923,8 +3914,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM3</MiscControls>
+              <Define>ARM_MATH_CM3</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -5365,13 +5356,12 @@
       <TargetName>cortexM3b</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM3</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x40000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M3") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -5539,7 +5529,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -5680,7 +5669,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -5691,7 +5679,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, ARM_MATH_BIG_ENDIAN</Define>
+              <Define>ARM_MATH_CM3, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, ARM_MATH_BIG_ENDIAN</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -5708,8 +5696,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM3</MiscControls>
+              <Define>ARM_MATH_CM3</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -7150,13 +7138,12 @@
       <TargetName>cortexM4l</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM4</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x80000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M4") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -7324,7 +7311,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -7465,7 +7451,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -7476,7 +7461,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING</Define>
+              <Define>ARM_MATH_CM4, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -7493,8 +7478,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM4</MiscControls>
+              <Define>ARM_MATH_CM4</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -8935,13 +8920,12 @@
       <TargetName>cortexM4b</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM4</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x80000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M4") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -9109,7 +9093,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -9250,7 +9233,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -9261,7 +9243,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, ARM_MATH_BIG_ENDIAN</Define>
+              <Define>ARM_MATH_CM4, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, ARM_MATH_BIG_ENDIAN</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -9278,8 +9260,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM4</MiscControls>
+              <Define>ARM_MATH_CM4</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -10720,13 +10702,12 @@
       <TargetName>cortexM4lf</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM4_FP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x80000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -10894,7 +10875,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -11035,7 +11015,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -11046,7 +11025,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--fpmode=ieee_full</MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING</Define>
+              <Define>ARM_MATH_CM4, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, __FPU_PRESENT=1U</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -11063,8 +11042,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM4</MiscControls>
+              <Define>ARM_MATH_CM4</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -12505,13 +12484,12 @@
       <TargetName>cortexM4bf</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM4_FP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x80000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -12679,7 +12657,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -12820,7 +12797,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -12831,7 +12807,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, ARM_MATH_BIG_ENDIAN</Define>
+              <Define>ARM_MATH_CM4, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, __FPU_PRESENT=1U, ARM_MATH_BIG_ENDIAN</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -12848,8 +12824,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM4</MiscControls>
+              <Define>ARM_MATH_CM4</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -14290,13 +14266,12 @@
       <TargetName>cortexM7l</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM7</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x80000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M7") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -14464,7 +14439,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -14605,7 +14579,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -14616,7 +14589,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING</Define>
+              <Define>ARM_MATH_CM7, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -14633,8 +14606,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM7</MiscControls>
+              <Define>ARM_MATH_CM7</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -16075,13 +16048,12 @@
       <TargetName>cortexM7b</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM7</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x80000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M7") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -16249,7 +16221,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -16390,7 +16361,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -16401,7 +16371,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, ARM_MATH_BIG_ENDIAN</Define>
+              <Define>ARM_MATH_CM7, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, ARM_MATH_BIG_ENDIAN</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -16418,8 +16388,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM7</MiscControls>
+              <Define>ARM_MATH_CM7</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -17860,13 +17830,12 @@
       <TargetName>cortexM7lfsp</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM7_SP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x80000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M7") FPU3(SFPU) CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -18034,7 +18003,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -18175,7 +18143,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -18186,7 +18153,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--fpmode=ieee_full</MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING</Define>
+              <Define>ARM_MATH_CM7, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, __FPU_PRESENT=1U</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -18203,8 +18170,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM7</MiscControls>
+              <Define>ARM_MATH_CM7</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -19645,13 +19612,12 @@
       <TargetName>cortexM7bfsp</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM7_SP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x80000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M7") FPU3(SFPU) CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -19819,7 +19785,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -19960,7 +19925,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -19971,7 +19935,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--fpmode=ieee_full</MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, ARM_MATH_BIG_ENDIAN</Define>
+              <Define>ARM_MATH_CM7, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, __FPU_PRESENT=1U, ARM_MATH_BIG_ENDIAN</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -19988,8 +19952,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM7</MiscControls>
+              <Define>ARM_MATH_CM7</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -21430,13 +21394,12 @@
       <TargetName>cortexM7lfdp</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM7_DP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x80000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M7") FPU3(DFPU) CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -21604,7 +21567,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>3</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -21745,7 +21707,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -21756,7 +21717,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--fpmode=ieee_full</MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING</Define>
+              <Define>ARM_MATH_CM7, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, __FPU_PRESENT=1U</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -21773,8 +21734,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM7</MiscControls>
+              <Define>ARM_MATH_CM7</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -23215,13 +23176,12 @@
       <TargetName>cortexM7bfdp</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM7_DP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x00000000,0x80000) IRAM(0x20000000,0x20000) CPUTYPE("Cortex-M7") FPU3(DFPU) CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -23389,7 +23349,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>3</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -23530,7 +23489,6 @@
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -23541,7 +23499,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--fpmode=ieee_full</MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, ARM_MATH_BIG_ENDIAN</Define>
+              <Define>ARM_MATH_CM7, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, __FPU_PRESENT=1U, ARM_MATH_BIG_ENDIAN</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -23558,8 +23516,8 @@
             <useXO>0</useXO>
             <uClangAs>0</uClangAs>
             <VariousControls>
-              <MiscControls>--cpreproc</MiscControls>
-              <Define></Define>
+              <MiscControls>--cpreproc --cpreproc_opts=-D,ARM_MATH_CM7</MiscControls>
+              <Define>ARM_MATH_CM7</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -25000,13 +24958,12 @@
       <TargetName>ARMv8MBLl</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6110000::V6.11::.\ARMCLANG 6.11</pCCUsed>
-      <uAC6>1</uAC6>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MBL</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IRAM2(0x20200000,0x00020000) IROM(0x00000000,0x00200000) IROM2(0x00200000,0x00200000) CPUTYPE("ARMV8MBL") TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -25174,7 +25131,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>1</hadIROM2>
             <StupSel>8</StupSel>
@@ -25305,28 +25261,27 @@
             <Optim>4</Optim>
             <oTime>1</oTime>
             <SplitLS>0</SplitLS>
-            <OneElfS>1</OneElfS>
+            <OneElfS>0</OneElfS>
             <Strict>0</Strict>
             <EnumInt>0</EnumInt>
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>3</wLevel>
+            <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE</Define>
+              <Define>ARM_MATH_ARMV8MBL, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -25344,7 +25299,7 @@
             <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls>--cpreproc</MiscControls>
-              <Define>__CC_ARM ARM_MATH_CM0_FAMILY</Define>
+              <Define>ARM_MATH_ARMV8MBL __CC_ARM</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -26785,13 +26740,12 @@
       <TargetName>ARMv8MMLl</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6110000::V6.11::.\ARMCLANG 6.11</pCCUsed>
-      <uAC6>1</uAC6>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MML") TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -26959,7 +26913,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -27090,28 +27043,27 @@
             <Optim>4</Optim>
             <oTime>1</oTime>
             <SplitLS>0</SplitLS>
-            <OneElfS>1</OneElfS>
+            <OneElfS>0</OneElfS>
             <Strict>0</Strict>
             <EnumInt>0</EnumInt>
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>3</wLevel>
+            <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE</Define>
+              <Define>ARM_MATH_ARMV8MML, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -27129,7 +27081,7 @@
             <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls>--cpreproc</MiscControls>
-              <Define>__CC_ARM</Define>
+              <Define>ARM_MATH_ARMV8MML __CC_ARM</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -28570,13 +28522,12 @@
       <TargetName>ARMv8MMLlfsp</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6110000::V6.11::.\ARMCLANG 6.11</pCCUsed>
-      <uAC6>1</uAC6>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML_SP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MML") FPU3(SFPU) TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -28744,7 +28695,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -28875,28 +28825,27 @@
             <Optim>4</Optim>
             <oTime>1</oTime>
             <SplitLS>0</SplitLS>
-            <OneElfS>1</OneElfS>
+            <OneElfS>0</OneElfS>
             <Strict>0</Strict>
             <EnumInt>0</EnumInt>
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>3</wLevel>
+            <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE</Define>
+              <Define>ARM_MATH_ARMV8MML, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE, __FPU_PRESENT=1U</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -28914,7 +28863,7 @@
             <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls>--cpreproc</MiscControls>
-              <Define>__CC_ARM</Define>
+              <Define>ARM_MATH_ARMV8MML __CC_ARM</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -30355,13 +30304,12 @@
       <TargetName>ARMv8MMLlfdp</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6110000::V6.11::.\ARMCLANG 6.11</pCCUsed>
-      <uAC6>1</uAC6>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML_DP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MML") FPU3(DFPU) TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -30529,7 +30477,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>3</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -30660,28 +30607,27 @@
             <Optim>4</Optim>
             <oTime>1</oTime>
             <SplitLS>0</SplitLS>
-            <OneElfS>1</OneElfS>
+            <OneElfS>0</OneElfS>
             <Strict>0</Strict>
             <EnumInt>0</EnumInt>
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>3</wLevel>
+            <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE</Define>
+              <Define>ARM_MATH_ARMV8MML, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE, __FPU_PRESENT=1U</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -30699,7 +30645,7 @@
             <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls>--cpreproc</MiscControls>
-              <Define>__CC_ARM</Define>
+              <Define>ARM_MATH_ARMV8MML __CC_ARM</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -32140,13 +32086,12 @@
       <TargetName>ARMv8MMLld</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6110000::V6.11::.\ARMCLANG 6.11</pCCUsed>
-      <uAC6>1</uAC6>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML_DSP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IRAM2(0x20200000,0x00020000) IROM(0x00000000,0x00200000) IROM2(0x00200000,0x00200000) CPUTYPE("ARMV8MML") DSP TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -32314,7 +32259,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>1</hadIROM2>
             <StupSel>8</StupSel>
@@ -32445,28 +32389,27 @@
             <Optim>4</Optim>
             <oTime>1</oTime>
             <SplitLS>0</SplitLS>
-            <OneElfS>1</OneElfS>
+            <OneElfS>0</OneElfS>
             <Strict>0</Strict>
             <EnumInt>0</EnumInt>
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>3</wLevel>
+            <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE</Define>
+              <MiscControls>-Wno-gnu-statement-expression -Xclang -target-feature -Xclang +t2xtpk</MiscControls>
+              <Define>ARM_MATH_ARMV8MML, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE, __DSP_PRESENT=1U</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -32484,7 +32427,7 @@
             <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls>--cpreproc</MiscControls>
-              <Define>__CC_ARM</Define>
+              <Define>ARM_MATH_ARMV8MML __CC_ARM</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -33925,13 +33868,12 @@
       <TargetName>ARMv8MMLldfsp</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6110000::V6.11::.\ARMCLANG 6.11</pCCUsed>
-      <uAC6>1</uAC6>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML_DSP_SP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IRAM2(0x20200000,0x00020000) IROM(0x00000000,0x00200000) IROM2(0x00200000,0x00200000) CPUTYPE("ARMV8MML") FPU3(SFPU) DSP TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -34099,7 +34041,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>2</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>1</hadIROM2>
             <StupSel>8</StupSel>
@@ -34230,28 +34171,27 @@
             <Optim>4</Optim>
             <oTime>1</oTime>
             <SplitLS>0</SplitLS>
-            <OneElfS>1</OneElfS>
+            <OneElfS>0</OneElfS>
             <Strict>0</Strict>
             <EnumInt>0</EnumInt>
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>3</wLevel>
+            <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE</Define>
+              <MiscControls>-Wno-gnu-statement-expression -Xclang -target-feature -Xclang +t2xtpk</MiscControls>
+              <Define>ARM_MATH_ARMV8MML, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE, __DSP_PRESENT=1U, __FPU_PRESENT=1U</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -34269,7 +34209,7 @@
             <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls>--cpreproc</MiscControls>
-              <Define>__CC_ARM</Define>
+              <Define>ARM_MATH_ARMV8MML __CC_ARM</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -35710,13 +35650,12 @@
       <TargetName>ARMv8MMLldfdp</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6110000::V6.11::.\ARMCLANG 6.11</pCCUsed>
-      <uAC6>1</uAC6>
+      <pCCUsed>6060000::V6.6::.\ARMCLANG</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML_DSP_DP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.5.0-dev56</PackID>
+          <PackID>ARM.CMSIS.5.0.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IRAM2(0x20200000,0x00020000) IROM(0x00000000,0x00200000) IROM2(0x00200000,0x00200000) CPUTYPE("ARMV8MML") FPU3(DFPU) DSP TZ CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -35884,7 +35823,6 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>3</RvdsVP>
-            <RvdsMve>0</RvdsMve>
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>1</hadIROM2>
             <StupSel>8</StupSel>
@@ -36015,28 +35953,27 @@
             <Optim>4</Optim>
             <oTime>1</oTime>
             <SplitLS>0</SplitLS>
-            <OneElfS>1</OneElfS>
+            <OneElfS>0</OneElfS>
             <Strict>0</Strict>
             <EnumInt>0</EnumInt>
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>3</wLevel>
+            <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
-            <uGnu>0</uGnu>
             <useXO>0</useXO>
-            <v6Lang>3</v6Lang>
-            <v6LangP>3</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
+            <vShortEn>0</vShortEn>
+            <vShortWch>0</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
-              <Define>ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE</Define>
+              <MiscControls>-Wno-gnu-statement-expression -Xclang -target-feature -Xclang +t2xtpk</MiscControls>
+              <Define>ARM_MATH_ARMV8MML, ARM_MATH_MATRIX_CHECK, ARM_MATH_ROUNDING, UNALIGNED_SUPPORT_DISABLE, __DSP_PRESENT=1U, __FPU_PRESENT=1U</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Include;..\..\..\Core\Include;..\..\..\Include</IncludePath>
             </VariousControls>
@@ -36054,7 +35991,7 @@
             <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls>--cpreproc</MiscControls>
-              <Define>__CC_ARM</Define>
+              <Define>ARM_MATH_ARMV8MML __CC_ARM</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>
@@ -37492,11 +37429,5 @@
       </Groups>
     </Target>
   </Targets>
-
-  <RTE>
-    <apis/>
-    <components/>
-    <files/>
-  </RTE>
 
 </Project>

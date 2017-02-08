@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2016 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,23 +17,22 @@
  *
  * ----------------------------------------------------------------------
  *
- * $Date:        1. December 2017
- * $Revision:    V2.0.0
+ * $Date:        20. May 2015
+ * $Revision:    V1.10
  *
  * Project:      CMSIS-DAP Template MDK5
- * Title:        main.c CMSIS-DAP Main module
+ * Title:        main.c RTX CMSIS-DAP Main module
  *
  *---------------------------------------------------------------------------*/
 
-#include "cmsis_os2.h"
+#include "cmsis_os.h"
 #include "osObjects.h"
 #include "rl_usb.h"
 #include "DAP_config.h"
 #include "DAP.h"
 
-// Application Main program
-__NO_RETURN void app_main (void *argument) {
-  (void)argument;
+// Main program
+int main (void) {
 
   DAP_Setup();                          // DAP Setup 
 
@@ -48,24 +47,9 @@ __NO_RETURN void app_main (void *argument) {
   LED_RUNNING_OUT(0U);                  // Turn off Target Running LED
   LED_CONNECTED_OUT(0U);                // Turn off Debugger Connected LED
 
-  // Create DAP Thread
-  DAP_ThreadId = osThreadNew(DAP_Thread, NULL, &DAP_ThreadAttr);
+  // Create HID Thread
+  HID0_ThreadId = osThreadCreate(osThread(HID0_Thread), NULL);
 
-  // Create SWO Thread
-  SWO_ThreadId = osThreadNew(SWO_Thread, NULL, &SWO_ThreadAttr);
-
-  osDelay(osWaitForever);
-  for (;;) {};
-}
-
-int main (void) {
-
-  SystemCoreClockUpdate();
-  osKernelInitialize();                 // Initialize CMSIS-RTOS
-  osThreadNew(app_main, NULL, NULL);    // Create application main thread
-  if (osKernelGetState() == osKernelReady) {
-    osKernelStart();                    // Start thread execution
-  }
-
-  for (;;) {};
+  osThreadSetPriority(osThreadGetId(), osPriorityIdle);
+  for (;;);                             // Endless Loop
 }

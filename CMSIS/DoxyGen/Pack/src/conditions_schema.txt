@@ -31,15 +31,15 @@ be ignored.
       <accept Dcore="SC300"/>
     </condition>
 
-    <condition id="CMSIS-Core">                     <!-- defines the condition with the ID "CMSIS-Core" -->
+    <condition id="CMSIS-CORE">                     <!-- defines the condition with the ID "CMSIS-CORE" -->
       <description>True if the component Device Startup is selected and the device has a Cortex-M processor</description>
       <require Cclass="Device" Cgroup="Startup"/>   <!-- needs a software component Device Startup AND ... -->
       <require condition="Cortex-M"/>               <!-- ... needs that condition with ID=Cortex-M to be true. -->
     </condition>
 
     <condition id="CMSIS-DSP">                      <!-- defines the condition with the ID "CMSIS-DSP" -->
-      <description>True if CMSIS-Core == TRUE and either GCC or ARMCC and device running in little-endian byte ordering</description>
-      <require condition="CMSIS-Core"/>             <!-- needs a software component Device Startup AND ... -->
+      <description>True if CMSIS-CORE == TRUE and either GCC or ARMCC and device running in little-endian byte ordering</description>
+      <require condition="CMSIS-CORE"/>             <!-- needs a software component Device Startup AND ... -->
       <accept Tcompiler="GCC"/>                     <!-- ... works either with the GCC compiler OR ... -->
       <accept Tcompiler="ARMCC"/>                   <!-- ... the ARMCC compiler AND ... -->
       <require Dendian="Little-endian"/>            <!-- ... requires a device running in little-endian byte ordering -->
@@ -183,33 +183,33 @@ A \ref element_condition "condition" becomes \token{true} when:
     <th>Use</th>
   </tr>
   <tr>
+    <td>Dfamily<b>*</b></td>
+    <td>Specifies the device family name (for example: STM32F2 Series).</td>
+    <td>xs:string</td>
+    <td>optional</td>
+  </tr>
+  <tr>
+    <td>DsubFamily<b>*</b></td>
+    <td>Specifies the device sub-family name (for example: STM32F205 Series).</td>
+    <td>xs:string</td>
+    <td>optional</td>
+  </tr>
+  <tr>
+    <td>Dvariant<b>*</b></td>
+    <td>Specifies the variant name of a device (for example: Step A).</td>
+    <td>xs:string</td>
+    <td>optional</td>
+  </tr>
+  <tr>
     <td>Dvendor</td>
     <td>Specifies the silicon vendor of the device. Use predefined values as listed in the table \ref DeviceVendorEnum "Device Vendor".</td>
     <td>DeviceVendorEnum</td>
     <td>optional</td>
   </tr>
   <tr>
-    <td>Dfamily<b>*</b></td>
-    <td><b>DEPRECATED**</b> Specifies the device family name (for example: STM32F2 Series).</td>
-    <td>xs:string</td>
-    <td>optional</td>
-  </tr>
-  <tr>
-    <td>DsubFamily<b>*</b></td>
-    <td><b>DEPRECATED**</b>Specifies the device sub-family name (for example: STM32F205 Series).</td>
-    <td>xs:string</td>
-    <td>optional</td>
-  </tr>
-  <tr>
     <td>Dname<b>*</b></td>
     <td>Specifies the name of the device. 
    </td>
-    <td>xs:string</td>
-    <td>optional</td>
-  </tr>
-  <tr>
-    <td>Dvariant<b>*</b></td>
-    <td><b>DEPRECATED**</b>Specifies the variant name of a device (for example: Step A).</td>
     <td>xs:string</td>
     <td>optional</td>
   </tr>
@@ -245,7 +245,7 @@ A \ref element_condition "condition" becomes \token{true} when:
   </tr>
   <tr>
     <td>Dsecure</td>
-    <td>Specifies whether the application is configured to run in secure or non-secure mode. Predefined values can be used as listed in the table \ref DsecureEnum "Software Model Secure".</td>
+    <td>Specifies whether Digital Signal Processing (DSP) instruction set must be supported by the device or not. Predefined values can be uses as listed in the table \ref DdspEnum "Device DSP".</td>
     <td>DsecureEnum</td>
     <td>optional</td>
   </tr> 
@@ -328,9 +328,9 @@ A \ref element_condition "condition" becomes \token{true} when:
   <tr>
     <td>Toptions</td>
     <td>Specifies compiler specific options being active. For <em>Tcompiler="ARMCC"</em> available Toptions are:
-        - <b>AC5</b>: Arm Compiler Version 5 is in used
-        - <b>AC6</b>: Arm Compiler Version 6 (armclang) is in use
-        - <b>AC6LTO</b>: Arm Compiler Version 6 with Link Time Optimization (LTO) is in use
+        - <b>AC5</b>: ARM Compiler Version 5 is in used
+        - <b>AC6</b>: ARM Compiler Version 6 (aka: ARM Clang 6) is in use
+        - <b>AC6LTO</b>: ARM Compiler Version 6 with Link Time Optimization (aka: LTO) is in use
         
         This attribute can be used to select compatible libraries for the selected compiler version or optimization mode.
     </td>
@@ -350,10 +350,8 @@ A \ref element_condition "condition" becomes \token{true} when:
        - '?'  matches any single character
        - [abc] matches any character in the set (a,b,c)
    
-<b>**)</b> These attributes must not be used in conditions because
-           - 'Dfamily' and 'DsubFamily' turn out to be volatile.
-           - conditions shall only filter for selectable devices. 'Dvariant'effectively is just an alias for 'Dname'. 
-             Once a \<variant> tag exists, the \<device> tag no longer represents a selectable device.
+  
+   
    
 <p>&nbsp;</p>
 
@@ -372,8 +370,8 @@ The tokens can be used in the elements:
   </tr>
   <tr>
     <td class="XML-Token">GCC</td>
-    <td>GNU Tools for Arm Embedded Processors. 
-    Refer to <a href="https://launchpad.net/gcc-arm-embedded/4.7" target="_blank">Arm GCC</a>.</td>
+    <td>GNU Tools for ARM Embedded Processors. 
+    Refer to <a href="https://launchpad.net/gcc-arm-embedded/4.7" target="_blank">ARM GCC</a>.</td>
   </tr>
   <tr>
     <td class="XML-Token">G++</td>
@@ -381,9 +379,9 @@ The tokens can be used in the elements:
   </tr>
   <tr>
     <td class="XML-Token">ARMCC</td>
-    <td>Arm Compiler for C and C++. 
+    <td>ARM compiler for C and C++. 
     Refer to <a href="http://infocenter.arm.com/help/topic/com.arm.doc.subset.swdev.coretools/index.html" target="_blank">
-    Arm Compiler</a>.</td>
+    ARM Compiler from ARM</a>.</td>
   </tr>
   <tr>
     <td class="XML-Token">IAR</td>

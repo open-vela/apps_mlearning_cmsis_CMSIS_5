@@ -73,7 +73,7 @@ void ref_conv_q31(
     }
 
     /* Store the output in the destination buffer */
-    pDst[i] = (q31_t)(sum >> 31U);
+    pDst[i] = (q31_t)(sum >> 31u);
   }
 }
 
@@ -106,7 +106,7 @@ void ref_conv_fast_q31(
     }
 
     /* Store the output in the destination buffer */
-    pDst[i] = (q31_t)(sum << 1U);
+    pDst[i] = (q31_t)(sum << 1u);
   }
 }
 
@@ -166,7 +166,7 @@ void ref_conv_q15(
     }
 
     /* Store the output in the destination buffer */
-    pDst[i] = ref_sat_q15(sum >> 15U);
+    pDst[i] = ref_sat_q15(sum >> 15u);
   }
 }
 
@@ -202,7 +202,7 @@ arm_status ref_conv_partial_fast_opt_q15(
     }
 
     /* Store the output in the destination buffer */
-    pDst[i] = ref_sat_q15(sum >> 15U);
+    pDst[i] = ref_sat_q15(sum >> 15u);
   }
 	
   return ARM_MATH_SUCCESS;
@@ -236,7 +236,7 @@ void ref_conv_fast_q15(
     }
 
     /* Store the output in the destination buffer */
-    pDst[i] = sum >> 15U;
+    pDst[i] = sum >> 15u;
   }
 }
 
@@ -270,7 +270,7 @@ void ref_conv_fast_opt_q15(
     }
 
     /* Store the output in the destination buffer */
-    pDst[i] = ref_sat_q15(sum >> 15U);
+    pDst[i] = ref_sat_q15(sum >> 15u);
   }
 }
 

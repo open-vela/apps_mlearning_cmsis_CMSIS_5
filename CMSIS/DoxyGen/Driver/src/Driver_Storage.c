@@ -1,3 +1,13 @@
+/* -----------------------------------------------------------------------------
+ * Copyright (c) 2013-2016 ARM Limited. All rights reserved.
+ *
+ * $Date:        7. March 2016
+ * $Revision:    V1.00
+ *
+ * Project:      Storage Driver API
+ * -------------------------------------------------------------------------- */
+
+
 /**
 \defgroup storage_interface_gr Storage Interface
 \brief    Driver API for Storage Device Interface (%Driver_Storage.h)
@@ -23,13 +33,13 @@ storage driver.
 
 \image html storage_sw_stack.png
 
-<b>Storage API</b>
+**Storage API**
 
 The following header files define the Application Programming Interface (API) for the Flash interface:
   - \b %Driver_Storage.h : Driver API for Storage Device Interface
 
 
-<b>Driver Functions</b>
+**Driver Functions**
 
 The driver functions are published in the access struct as explained in \ref StorageDriverFunctions
   - \ref ARM_DRIVER_STORAGE : access struct for Storage driver functions
@@ -615,7 +625,7 @@ and then read it back to be verified. It handles both synchronous and
 asynchronous driver implementations.
 
 \code
-// Copyright (c) 2006-2016, Arm Limited, All Rights Reserved
+// Copyright (c) 2006-2016, ARM Limited, All Rights Reserved
 // SPDX-License-Identifier: Apache-2.0
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); you may

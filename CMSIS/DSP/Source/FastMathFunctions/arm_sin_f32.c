@@ -40,7 +40,7 @@
  * Computes the trigonometric sine function using a combination of table lookup
  * and linear interpolation.  There are separate functions for
  * Q15, Q31, and floating-point data types.
- * The input to the floating-point version is in radians and in the range [0 2*pi) while the
+ * The input to the floating-point version is in radians while the
  * fixed-point Q15 and Q31 have a scaled input with the range
  * [0 +0.9999] mapping to [0 2*pi).  The fixed-point range is chosen so that a
  * value of 2*pi wraps around to 0.
@@ -78,11 +78,6 @@ float32_t arm_sin_f32(
   int32_t n;
   float32_t findex;
 
-  /* Special case for small negative inputs */
-  if ((x < 0.0f) && (x >= -1.9e-7f)) {
-     return x;
-  }
-
   /* input x is in radians */
   /* Scale the input to [0 1] range from [0 2*PI] , divide input by 2*pi */
   in = x * 0.159154943092f;
@@ -100,9 +95,14 @@ float32_t arm_sin_f32(
   in = in - (float32_t) n;
 
   /* Calculation of index of the table */
-  findex = (float32_t) FAST_MATH_TABLE_SIZE * in;
+  findex = (float32_t)FAST_MATH_TABLE_SIZE * in;
+  index = (uint16_t)findex;
 
-  index = ((uint16_t)findex) & 0x1ff;
+  /* when "in" is exactly 1, we need to rotate the index down to 0 */
+  if (index >= FAST_MATH_TABLE_SIZE) {
+    index = 0;
+    findex -= (float32_t)FAST_MATH_TABLE_SIZE;
+  }
 
   /* fractional value calculation */
   fract = findex - (float32_t) index;

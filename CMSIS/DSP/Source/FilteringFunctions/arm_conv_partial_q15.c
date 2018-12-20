@@ -3,13 +3,13 @@
  * Title:        arm_conv_partial_q15.c
  * Description:  Partial convolution of Q15 sequences
  *
- * $Date:        27. January 2017
- * $Revision:    V.1.5.1
+ * $Date:        10. December 2018
+ * $Revision:    V.1.5.2
  *
  * Target Processor: Cortex-M cores
  * -------------------------------------------------------------------- */
 /*
- * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+ * Copyright (C) 2010-2018 ARM Limited or its affiliates. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -66,7 +66,7 @@ arm_status arm_conv_partial_q15(
 {
 
 
-#if (defined(ARM_MATH_CM7) || defined(ARM_MATH_CM4) || defined(ARM_MATH_CM3)) && !defined(UNALIGNED_SUPPORT_DISABLE)
+#if !defined(ARM_MATH_CM0_Family) && !defined(UNALIGNED_SUPPORT_DISABLE)
 
   /* Run the below code for Cortex-M4 and Cortex-M3 */
 
@@ -277,12 +277,13 @@ arm_status arm_conv_partial_q15(
     /* Working pointer of inputA */
     if ((int32_t)firstIndex - (int32_t)srcBLen + 1 > 0)
     {
-      px = pIn1 + firstIndex - srcBLen + 1;
+      pSrc1 = pIn1 + firstIndex - srcBLen + 1;
     }
     else
     {
-      px = pIn1;
+      pSrc1 = pIn1;
     }
+    px = pSrc1;
 
     /* Working pointer of inputB */
     pSrc2 = pIn2 + (srcBLen - 1U);
@@ -488,14 +489,7 @@ arm_status arm_conv_partial_q15(
       count += 4U;
 
       /* Update the inputA and inputB pointers for next MAC calculation */
-      if ((int32_t)firstIndex - (int32_t)srcBLen + 1 > 0)
-      {
-        px = pIn1 + firstIndex - srcBLen + 1 + count;
-      }
-      else
-      {
-        px = pIn1 + count;
-      }
+      px = pSrc1 + count;
       py = pSrc2;
 
         /* Decrement the loop counter */
@@ -548,14 +542,7 @@ arm_status arm_conv_partial_q15(
         count++;
 
         /* Update the inputA and inputB pointers for next MAC calculation */
-        if ((int32_t)firstIndex - (int32_t)srcBLen + 1 > 0)
-        {
-          px = pIn1 + firstIndex - srcBLen + 1 + count;
-        }
-        else
-        {
-          px = pIn1 + count;
-        }
+        px = pSrc1 + count;
         py = pSrc2;
 
         /* Decrement the loop counter */
@@ -592,14 +579,7 @@ arm_status arm_conv_partial_q15(
         count++;
 
         /* Update the inputA and inputB pointers for next MAC calculation */
-        if ((int32_t)firstIndex - (int32_t)srcBLen + 1 > 0)
-        {
-          px = pIn1 + firstIndex - srcBLen + 1 + count;
-        }
-        else
-        {
-          px = pIn1 + count;
-        }
+        px = pSrc1 + count;
         py = pSrc2;
 
         /* Decrement the loop counter */
@@ -786,7 +766,7 @@ arm_status arm_conv_partial_q15(
   }
   return (status);
 
-#endif /* #if (defined(ARM_MATH_CM7) || defined(ARM_MATH_CM4) || defined(ARM_MATH_CM3)) && !defined(UNALIGNED_SUPPORT_DISABLE) */
+#endif /* #if !defined(ARM_MATH_CM0_Family) && !defined(UNALIGNED_SUPPORT_DISABLE) */
 
 }
 

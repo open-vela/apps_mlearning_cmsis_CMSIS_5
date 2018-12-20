@@ -91,10 +91,6 @@ int main (void) {
  
   // System Initialization
   SystemCoreClockUpdate();
-#ifdef RTE_Compiler_EventRecorder
-  // Initialize and start Event Recorder
-  EventRecorderInitialize(EventRecordError, 1U);
-#endif
   // ...
  
   osKernelInitialize();                 // Initialize CMSIS-RTOS
@@ -129,6 +125,12 @@ The following sections provide further details:
 /**
 \page cre_rtx_proj Create an RTX5 Project
 
+\if FuSaRTS
+FuSa RTX5 installation and project setup are explained in \ref fusa_rtx_installation.
+
+\endif
+
+\ifnot FuSaRTS
 The steps to create a microcontroller application using RTX5 are:
 - Create a new project and select a microcontroller device.
 - In the Manage Run-Time Environment window, select <b>CMSIS\::CORE</b> and <b>CMSIS\::RTOS2 (API)\::Keil RTX5</b>. You can
@@ -152,7 +154,9 @@ The steps to create a microcontroller application using RTX5 are:
 
 - \ref config_rtx5 "Configure" RTX5 to the application's needs using the \b %RTX_Config.h file.
 
-\section cre_rtx_cortexa Additional requirements for RTX on Cortex-A
+\endif
+
+\if ARMCA \section cre_rtx_cortexa Additional requirements for RTX on Cortex-A
 
 Cortex-A based microcontrollers are less unified with respect to the interrupt and timer implementations used compared to 
 M-class devices. Thus RTX requires additional components when an A-class device is used, namely
@@ -169,6 +173,8 @@ The default implementations provided along with CMSIS are
 For devices not implementing GIC, PTIM nor GTIM please refer to the according device family pack and select the
 proper implementations.
 
+\endif
+
 \section cre_UsingIRQs Using Interrupts on Cortex-M
 
 On Cortex-M processors, the RTX5 kernel uses the following interrupt exceptions.  The table below also lists the 
@@ -178,9 +184,9 @@ Handler | Priority | Interrupt/Exception
 :-------|:---------|:----------------------------
 SysTick | lowest   | Kernel system timer interrupt to generate periodic timer ticks
 PendSV  | lowest   | PendSV (request for system-level service) when calling certain RTX functions from \b Handler mode
-SCV     | lowest+1 | Supervisor Call used to enter the RTOS kernel from \b Thread mode
+SVC     | lowest+1 | Supervisor Call used to enter the RTOS kernel from \b Thread mode
 
-Other device interrupts can be used without limitation. For Arm Cortex-M3/M4/M7/M23/M33 processors, interrupts are never disabled by RTX Kernel.
+Other device interrupts can be used without limitation. For Arm Cortex-M3/M4/M7 \if ARMv8M /M23/M33/M35P \endif  processors, interrupts are never disabled by RTX Kernel.
 
 <b>Usage of interrupt priority grouping</b>
 - The interrupt priority grouping should be configured using the CMSIS-Core function NVIC_SetPriorityGrouping before calling the function 
@@ -214,8 +220,7 @@ to provide event information which helps you to understand and analyze the opera
 - Enable the related settings under \ref evtrecConfig.
 - Build the application code and download it to the debug hardware.
   
-Once the target application generates event information, it can be viewed in the µVision debugger using the \b Event
- \b Recorder.
+Once the target application generates event information, it can be viewed in the µVision debugger using the \b Event \b Recorder.
 */
 
 
@@ -234,19 +239,21 @@ also reflected in the user code template file "CMSIS-RTOS2 'main' function" supp
 Your application's \c main() should implement at least the following in the given order:
 -# Initialization and configuration of hardware including peripherals, memory, pins, clocks and the interrupt system.
 -# Update the system core clock using the respective
-   <a href=../../Core/html/group__system__init__gr.html>CMSIS-Core (Cortex-M)</a> or 
-   <a href=../../Core_A/html/group__system__init__gr.html>CMSIS-Core (Cortex-A)</a> function.
+   <a href=../../Core/html/group__system__init__gr.html>CMSIS-Core (Cortex-M)</a>  \if ARMCA or <a href=../../Core_A/html/group__system__init__gr.html>CMSIS-Core (Cortex-A)</a> \endif function.
 -# Initialize the CMSIS-RTOS kernel using \ref osKernelInitialize.
--# Optionally, create a new thread \c app_main, which is used as a main thread using \ref osThreadNew. Alternatively, threads
-   can be created in \c main() directly.
--# Start the RTOS scheduler using \ref osKernelStart which also configure system tick timer and RTOS specific interrupts.
-   This function does not return in case of successful execution. Any application code after \b osKernelStart will therefore not be executed.
+-# Optionally, create one thread (for example \c app_main), which is used as a main thread using \ref osThreadNew. This
+   thread should take care of creating and starting objects, once it is run by the scheduler. Alternatively, threads can be
+   created in \c main() directly.
+-# Start the RTOS scheduler using \ref osKernelStart which also configures the system tick timer and initializes RTOS
+   specific interrupts. This function does not return in case of successful execution. Therefore, any application code after
+   \b osKernelStart will not be executed.
 
-\note Interrupts are initialized in \ref osKernelStart. Modifying basic In case priorities and
-groupings in the NVIC are altered by the application after the above sequence it might be necessary to call
-\ref osKernelInitialize again. Incorrect ossibly catched by \ref osRtxErrorNotify or causing a hard fault.
+\note
+- Modifying priorities and groupings in the NVIC by the application after the above sequence is not recommended.
+- Before executing \ref osKernelStart, only the functions \ref osKernelGetInfo, \ref osKernelGetState, and object creation
+  functions (osXxxNew) may be called.
 
-\note The tick timer is configured during \ref osKernelStart. 
+
 \section Scheduler 
 
 RTX5 implements a low-latency preemptive scheduler. Major parts of RTX5 are executed in handler mode such as
@@ -899,7 +906,7 @@ annotations. The usage requires the source variant of RTX5; refer to \ref cre_rt
 \subsection evtrecConfigGlobIni Global Configuration
 Initialize Event Recorder during the \ref osKernelInitialize and optionally start event recording.
 
-\image html config_wizard_evtrecGlobIni.png "RTX_Config.h: Initialization and filter setup configuration"
+\image html config_wizard_evtrecGlobIni.png "RTX_Config.h: Global Configuration"
 
 <br/>
 
@@ -948,15 +955,17 @@ The generation of events must be enabled as explained under \ref evtrecConfigEvt
 
 Name              | \#define                   | Description
 ------------------|----------------------------|----------------------------------------------------------------
-Memory Management | \c OS_EVR_MEMORY_FILTER    | Filter enable for Memory Management events.
-Kernel            | \c OS_EVR_KERNEL_FILTER    | Filter enable for Kernel events.
-Thread            | \c OS_EVR_THREAD_FILTER    | Filter enable for Thread events.
-Timer             | \c OS_EVR_TIMER_FILTER     | Filter enable for Timer events.
-Event Flags       | \c OS_EVR_EVFLAGS_FILTER   | Filter enable for Event Flags events.
-Mutex             | \c OS_EVR_MUTEX_FILTER     | Filter enable for Mutex events.
-Semaphore         | \c OS_EVR_SEMAPHORE_FILTER | Filter enable for Semaphore events.
-Memory Pool       | \c OS_EVR_MEMPOOL_FILTER   | Filter enable for Memory Pool events.
-Message Queue     | \c OS_EVR_MSGQUEUE_FILTER  | Filter enable for Message Queue events.
+Memory Management | \c OS_EVR_MEMORY_LEVEL     | Recording level for Memory Management events.
+Kernel            | \c OS_EVR_KERNEL_LEVEL     | Recording level for Kernel events.
+Thread            | \c OS_EVR_THREAD_LEVEL     | Recording level for Thread events.
+Generic Wait      | \c OS_EVR_WAIT_LEVEL       | Recording level for Generic Wait events.
+Thread Flags      | \c OS_EVR_THFLAGS_LEVEL    | Recording level for Thread Flags events.
+Event Flags       | \c OS_EVR_EVFLAGS_LEVEL    | Recording level for Event Flags events.
+Timer             | \c OS_EVR_TIMER_LEVEL      | Recording level for Timer events.
+Mutex             | \c OS_EVR_MUTEX_LEVEL      | Recording level for Mutex events.
+Semaphore         | \c OS_EVR_SEMAPHORE_LEVEL  | Recording level for Semaphore events.
+Memory Pool       | \c OS_EVR_MEMPOOL_LEVEL    | Recording level for Memory Pool events.
+Message Queue     | \c OS_EVR_MSGQUEUE_LEVEL   | Recording level for Message Queue events.
  
 
 \subsection evtrecConfigEvtGen RTOS Event Generation
@@ -969,15 +978,17 @@ Enable the event generation for specific RTX component groups. This requires the
 
 Name              | \#define                 | Description
 ------------------|--------------------------|----------------------------------------------------------------
-Memory Management | \c OS_EVR_MEMORY         | Enables Memory Management events recording.
-Kernel            | \c OS_EVR_KERNEL         | Enables Kernel events recording.
-Thread            | \c OS_EVR_THREAD         | Enables Thread events recording.
-Timer             | \c OS_EVR_TIMER          | Enables Timer events recording.
-Event Flags       | \c OS_EVR_EVFLAGS        | Enables Event Flags events recording.
-Mutex             | \c OS_EVR_MUTEX          | Enables Mutex events recording.
-Semaphore         | \c OS_EVR_SEMAPHORE      | Enables Semaphore events recording.
-Memory Pool       | \c OS_EVR_MEMPOOL        | Enables Memory Pool events recording.
-Message Queue     | \c OS_EVR_MSGQUEUE       | Enables Message Queue events recording.
+Memory Management | \c OS_EVR_MEMORY         | Enables Memory Management events generation.
+Kernel            | \c OS_EVR_KERNEL         | Enables Kernel events generation.
+Thread            | \c OS_EVR_THREAD         | Enables Thread events generation.
+Generic Wait      | \c OS_EVR_WAIT           | Enables Generic Wait events generation.
+Thread Flags      | \c OS_EVR_THFLAGS        | Enables Thread Flags events generation.
+Event Flags       | \c OS_EVR_EVFLAGS        | Enables Event Flags events generation.
+Timer             | \c OS_EVR_TIMER          | Enables Timer events generation.
+Mutex             | \c OS_EVR_MUTEX          | Enables Mutex events generation.
+Semaphore         | \c OS_EVR_SEMAPHORE      | Enables Semaphore events generation.
+Memory Pool       | \c OS_EVR_MEMPOOL        | Enables Memory Pool events generation.
+Message Queue     | \c OS_EVR_MSGQUEUE       | Enables Message Queue events generation.
 
 \note
 If event generation for a component is disabled, the code that generates the related events is not included. Thus, \ref evtrecConfigGlobIni "filters" for this
@@ -1007,28 +1018,23 @@ to the <b>RTX_Config.h</b> file:
 \c EVR_RTX_THREAD_ERROR_DISABLE, \c EVR_RTX_THREAD_NEW_DISABLE, \c EVR_RTX_THREAD_CREATED_DISABLE,
 \c EVR_RTX_THREAD_GET_NAME_DISABLE, \c EVR_RTX_THREAD_GET_ID_DISABLE, \c EVR_RTX_THREAD_GET_STATE_DISABLE,
 \c EVR_RTX_THREAD_GET_STACK_SIZE_DISABLE, \c EVR_RTX_THREAD_GET_STACK_SPACE_DISABLE, \c EVR_RTX_THREAD_SET_PRIORITY_DISABLE,
-\c EVR_RTX_THREAD_GET_PRIORITY_DISABLE, \c EVR_RTX_THREAD_YIELD_DISABLE, \c EVR_RTX_THREAD_SUSPEND_DISABLE,
-\c EVR_RTX_THREAD_SUSPENDED_DISABLE, \c EVR_RTX_THREAD_RESUME_DISABLE, \c EVR_RTX_THREAD_RESUMED_DISABLE,
-\c EVR_RTX_THREAD_DETACH_DISABLE, \c EVR_RTX_THREAD_DETACHED_DISABLE, \c EVR_RTX_THREAD_JOIN_DISABLE,
-\c EVR_RTX_THREAD_JOIN_PENDING_DISABLE, \c EVR_RTX_THREAD_JOINED_DISABLE, \c EVR_RTX_THREAD_BLOCKED_DISABLE,
-\c EVR_RTX_THREAD_UNBLOCKED_DISABLE, \c EVR_RTX_THREAD_PREEMPTED_DISABLE, \c EVR_RTX_THREAD_SWITCHED_DISABLE,
-\c EVR_RTX_THREAD_EXIT_DISABLE, \c EVR_RTX_THREAD_TERMINATE_DISABLE, \c EVR_RTX_THREAD_DESTROYED_DISABLE,
-\c EVR_RTX_THREAD_GET_COUNT_DISABLE, \c EVR_RTX_THREAD_ENUMERATE_DISABLE
-
-\b Thread \b flag \b events \n
-\c EVR_RTX_THREAD_FLAGS_SET_DISABLE, \c EVR_RTX_THREAD_FLAGS_SET_DONE_DISABLE, \c EVR_RTX_THREAD_FLAGS_CLEAR_DISABLE,
-\c EVR_RTX_THREAD_FLAGS_CLEAR_DONE_DISABLE, \c EVR_RTX_THREAD_FLAGS_GET_DISABLE, \c EVR_RTX_THREAD_FLAGS_WAIT_DISABLE,
-\c EVR_RTX_THREAD_FLAGS_WAIT_PENDING_DISABLE, \c EVR_RTX_THREAD_FLAGS_WAIT_TIMEOUT_DISABLE,
-\c EVR_RTX_THREAD_FLAGS_WAIT_COMPLETED_DISABLE, \c EVR_RTX_THREAD_FLAGS_WAIT_NOT_COMPLETED_DISABLE
+\c EVR_RTX_THREAD_PRIORITY_UPDATED_DISABLE, \c EVR_RTX_THREAD_GET_PRIORITY_DISABLE, \c EVR_RTX_THREAD_YIELD_DISABLE,
+\c EVR_RTX_THREAD_SUSPEND_DISABLE, \c EVR_RTX_THREAD_SUSPENDED_DISABLE, \c EVR_RTX_THREAD_RESUME_DISABLE,
+\c EVR_RTX_THREAD_RESUMED_DISABLE, \c EVR_RTX_THREAD_DETACH_DISABLE, \c EVR_RTX_THREAD_DETACHED_DISABLE,
+\c EVR_RTX_THREAD_JOIN_DISABLE, \c EVR_RTX_THREAD_JOIN_PENDING_DISABLE, \c EVR_RTX_THREAD_JOINED_DISABLE,
+\c EVR_RTX_THREAD_BLOCKED_DISABLE, \c EVR_RTX_THREAD_UNBLOCKED_DISABLE, \c EVR_RTX_THREAD_PREEMPTED_DISABLE,
+\c EVR_RTX_THREAD_SWITCHED_DISABLE, \c EVR_RTX_THREAD_EXIT_DISABLE, \c EVR_RTX_THREAD_TERMINATE_DISABLE,
+\c EVR_RTX_THREAD_DESTROYED_DISABLE, \c EVR_RTX_THREAD_GET_COUNT_DISABLE, \c EVR_RTX_THREAD_ENUMERATE_DISABLE
 
 \b Generic \b wait \b events \n
-\c EVR_RTX_THREAD_DELAY_DISABLE, \c EVR_RTX_THREAD_DELAY_UNTIL_DISABLE, \c EVR_RTX_THREAD_DELAY_COMPLETED_DISABLE
+\c EVR_RTX_DELAY_ERROR_DISABLE, \c EVR_RTX_DELAY_DISABLE, \c EVR_RTX_DELAY_UNTIL_DISABLE,
+\c EVR_RTX_DELAY_STARTED_DISABLE, \c EVR_RTX_DELAY_UNTIL_STARTED_DISABLE, \c EVR_RTX_DELAY_COMPLETED_DISABLE 
 
-\b Timer \b events \n
-\c EVR_RTX_TIMER_ERROR_DISABLE, \c EVR_RTX_TIMER_CALLBACK_DISABLE, \c EVR_RTX_TIMER_NEW_DISABLE,
-\c EVR_RTX_TIMER_CREATED_DISABLE, \c EVR_RTX_TIMER_GET_NAME_DISABLE, \c EVR_RTX_TIMER_START_DISABLE,
-\c EVR_RTX_TIMER_STARTED_DISABLE, \c EVR_RTX_TIMER_STOP_DISABLE, \c EVR_RTX_TIMER_STOPPED_DISABLE,
-\c EVR_RTX_TIMER_IS_RUNNING_DISABLE, \c EVR_RTX_TIMER_DELETE_DISABLE, \c EVR_RTX_TIMER_DESTROYED_DISABLE
+\b Thread \b flag \b events \n
+\c EVR_RTX_THREAD_FLAGS_ERROR_DISABLE, \c EVR_RTX_THREAD_FLAGS_SET_DISABLE, \c EVR_RTX_THREAD_FLAGS_SET_DONE_DISABLE,
+\c EVR_RTX_THREAD_FLAGS_CLEAR_DISABLE, \c EVR_RTX_THREAD_FLAGS_CLEAR_DONE_DISABLE, \c EVR_RTX_THREAD_FLAGS_GET_DISABLE,
+\c EVR_RTX_THREAD_FLAGS_WAIT_DISABLE, \c EVR_RTX_THREAD_FLAGS_WAIT_PENDING_DISABLE, \c EVR_RTX_THREAD_FLAGS_WAIT_TIMEOUT_DISABLE,
+\c EVR_RTX_THREAD_FLAGS_WAIT_COMPLETED_DISABLE, \c EVR_RTX_THREAD_FLAGS_WAIT_NOT_COMPLETED_DISABLE
 
 \b Event \b flag \b events \n
 \c EVR_RTX_EVENT_FLAGS_ERROR_DISABLE, \c EVR_RTX_EVENT_FLAGS_NEW_DISABLE, \c EVR_RTX_EVENT_FLAGS_CREATED_DISABLE,
@@ -1038,6 +1044,12 @@ to the <b>RTX_Config.h</b> file:
 \c EVR_RTX_EVENT_FLAGS_WAIT_TIMEOUT_DISABLE, \c EVR_RTX_EVENT_FLAGS_WAIT_COMPLETED_DISABLE,
 \c EVR_RTX_EVENT_FLAGS_WAIT_NOT_COMPLETED_DISABLE, \c EVR_RTX_EVENT_FLAGS_DELETE_DISABLE,
 \c EVR_RTX_EVENT_FLAGS_DESTROYED_DISABLE
+
+\b Timer \b events \n
+\c EVR_RTX_TIMER_ERROR_DISABLE, \c EVR_RTX_TIMER_CALLBACK_DISABLE, \c EVR_RTX_TIMER_NEW_DISABLE,
+\c EVR_RTX_TIMER_CREATED_DISABLE, \c EVR_RTX_TIMER_GET_NAME_DISABLE, \c EVR_RTX_TIMER_START_DISABLE,
+\c EVR_RTX_TIMER_STARTED_DISABLE, \c EVR_RTX_TIMER_STOP_DISABLE, \c EVR_RTX_TIMER_STOPPED_DISABLE,
+\c EVR_RTX_TIMER_IS_RUNNING_DISABLE, \c EVR_RTX_TIMER_DELETE_DISABLE, \c EVR_RTX_TIMER_DESTROYED_DISABLE
 
 \b Mutex \b events \n
 \c EVR_RTX_MUTEX_ERROR_DISABLE, \c EVR_RTX_MUTEX_NEW_DISABLE, \c EVR_RTX_MUTEX_CREATED_DISABLE,
@@ -1106,10 +1118,12 @@ a reference for building the RTX5 libraries using a tool-chain of your choice.
 The following section contains technical information about RTX v5.
 
  - \subpage pHardwareRequirements lists the resource requirements of the RTX v5 kernel along with hardware dependencies.
+ - \subpage pStackRequirements lists the memory requirements for the main stack when running the RTX v5 kernel. 
  - \subpage pControlBlockSizes provides memory size information for \ref StaticObjectMemory "object-specific control block memory allocation".
  - \subpage pDirectory_Files is an overview of the supplied files that belong to RTX v5
+\ifnot FuSaRTS
  - \subpage pToolchains details about the compiler support which includes ArmCC (MDK, DS-5), IAR EW-ARM, and GCC.
- 
+\endif
 
 
 \page pHardwareRequirements Hardware Requirements
@@ -1118,11 +1132,14 @@ The following section lists the hardware requirements for RTX v5 on the various 
 
 \section tpProcessor Processor Requirements
 
-RTX assumes a fully function-able processor and uses the following hardware features. It does not implement any confidence test for processor validation which should be provided by an user-supplied software test library.
+RTX assumes a fully functionable processor and uses the following hardware features. It does not implement any confidence test for processor validation which should be provided by an user-supplied software test library.
 
 
-\subsection tpCortexM0_M0P_M23 Cortex-M0/M0+/M23 target processor
+\if ARMv8M \subsection tpCortexM0_M0P_M23 Cortex-M0/M0+/M23 target processor
+\endif
 
+\ifnot ARMv8M \subsection tpCortexM0_M0P_M23 Cortex-M0/M0+ target processor
+\endif
 
 Hardware Requirement       | Description
 :--------------------------|:------------------------------------------------------
@@ -1132,38 +1149,47 @@ Core Registers             | The processor status is read using the following co
 System Control Block (SBC) | To control and setup the processor exceptions including PendSV and SVC
 Interrupt Control          | The CMSIS-Core functions __disable_irq and __enable_irq to control the interrupt system via the CPSR core register.
 
-The interface files to the processor hardware are: 
+The RTX implements interfaces to the processor hardware in following files: 
  - <b>%irq_cm0.s</b> defines exception handlers for Cortex-M0/M0+
+\if ARMv8M
  - <b>%irq_armv8mbl_common.s</b> defines exception handlers for Cortex-M23
+\endif 
  - <b>%rtx_core_cm.h</b> defines processor specific helper functions and the interfaces to Core Registers and Core Peripherals.
  - <b>%os_tick.h</b> is the \ref CMSIS_RTOS_TickAPI that defines the interface functions to the SysTick timer.
 
 \note
- - The CMSIS-Core variable \c SystemCoreClock is used to configure the SysTick timer. 
+ - The CMSIS-Core variable \c SystemCoreClock is used by RTX to configure the SysTick timer. 
 
-\subsection tpCortexM3_M4_M7_M33 Cortex-M3/M4/M7/M33 target processor
+\if ARMv8M \subsection tpCortexM3_M4_M7_M33_M35P Cortex-M3/M4/M7/M33/M35P target processor
+\endif 
 
+\ifnot ARMv8M \subsection tpCortexM3_M4_M7_M33_M35P Cortex-M3/M4/M7 target processor
+\endif 
 
-Hardware Requirement       | Description
+RTX assumes a fully function-able processor and uses the following hardware features:
+
+Hardware Item       | Requirement Description
 :--------------------------|:------------------------------------------------------
-SysTick timer              | The SysTick timer generates the kernel tick interrupts and the interface is implemented in %os_systick.c using the \ref CMSIS_RTOS_TickAPI
-Exception Handler          | RTX implements exception handlers for SVC, PendSV, and SysTick interrupt
-Core Registers             | The processor status is read using the following core registers: CONTROL, IPSR, PRIMASK, BASEPRI
-System Control Block (SBC) | To control and setup the processor exceptions including PendSV and SVC
-NVIC Interface             | The CMSIS-Core function NVIC_GetPriorityGrouping to setup interrupt priorities.
-LDREX, STREX instruction   | Atomic execution avoids the requirement to disable interrupts and is implemented via exclusive access instructions.
+SysTick timer              | The \b SysTick timer shall be available in the processor. 
+System Exceptions          | The RTX requires \b SVC, \b PendSV, and \b SysTick exceptions and implements corresponding exception handlers.
+Core Registers             | The RTX uses \b CONTROL, \b IPSR , \b PRIMASK and \b BASEPRI core registers for reading processor status. 
+System Control Block (SCB) | The RTX uses \b SCB registers to control and setup the processor system exceptions including PendSV and SVC.
+NVIC Interface             | CMSIS-Core function \b NVIC_GetPriorityGrouping is used by the RTX to setup interrupt priorities.
+LDREX, STREX instructions  | Exclusive access instructions \b LDREX and \b STREX are used to implement atomic execution without disabling interrupts.
 
 The interface files to the processor hardware are: 
  - <b>%irq_cm3.s</b> defines exception handlers for Cortex-M3 and Cortex-M4/M7 without floating point unit.
  - <b>%irq_cm4f.s</b> defines exception handlers for Cortex-M4/M7 with floating point unit.
- - <b>%irq_armv8mml_common.s</b> defines exception handlers for Cortex-M33
+\if ARMv8M 
+ - <b>%irq_armv8mml_common.s</b> defines exception handlers for Cortex-M33/M35P
+\endif
  - <b>%rtx_core_cm.h</b> defines processor specific helper functions and the interfaces to Core Registers and Core Peripherals.
  - <b>%os_tick.h</b> is the \ref CMSIS_RTOS_TickAPI that defines the interface functions to the SysTick timer.
 
 \note
- - The CMSIS-Core variable \c SystemCoreClock is used to configure the SysTick timer. 
+ - The CMSIS-Core variable \c SystemCoreClock is used by RTX to configure the SysTick timer.
 
-\subsection tpCortexA5_A7_A9 Cortex-A5/A7/A9 target processor
+\if ARMCA \subsection tpCortexA5_A7_A9 Cortex-A5/A7/A9 target processor
 
 
 Hardware Requirement       | Description
@@ -1181,7 +1207,8 @@ The interface files to the processor hardware are:
  - <b>%irq_ctrl.h</b> is the <a class="el" href="../../Core_A/html/group__irq__ctrl__gr.html">IRQ Controller API</a> that defines the interface functions to the interrupt controller.
 
 \note
- - The CMSIS-Core variable \c SystemCoreClock is used to configure the timer peripheral.
+ - The CMSIS-Core variable \c SystemCoreClock is used by RTX to configure the timer peripheral.
+\endif
 
 \section rMemory Memory Requirements
 RTX requires RAM memory that is accessible with contiguous linear addressing.  When memory is split across multiple memory banks, some systems 
@@ -1189,6 +1216,35 @@ do not accept multiple load or store operations on this memory blocks.
 
 RTX does not implement any confidence test for memory validation. This should be implemented by an user-supplied software test library.
 
+
+\page pStackRequirements Stack Requirements
+
+Keil RTX v5 kernel functions are executed in handler mode (using PendSV/SysTick/SVC) and the tables below lists the maximum stack requirements for the Main Stack (MSP) that the user
+should consider. 
+
+The stack for the \ref osKernelStart function is referred as "Startup" and RTX v5 uses 32 bytes (with Arm Compiler). However the user should also consider additional stack that
+might be allocated by the 'main' function of the embedded application. The following picture shows a worst-case memory allocation of the Main Stack.
+
+\image html "KernelStackUsage.png" "Main Stack usage of RTX v5 applications"
+
+The stack requirements depend on the compiler and the optimization level.  RTX v5 supports event annotations and this configuration impacts also the stack requirement.
+
+<b>Arm Compiler ARMCC V6.10</b>: Main Stack requirements for PendSV/SysTick/SVC
+
+Optimization         | RTX Kernel  | RTX Kernel + Event Recorder
+:--------------------|:------------|:--------------------------------
+-O1 (Debug)          | 152 bytes   | 280 bytes   
+-Os (Balanced)       | 120 bytes   | 256 bytes
+-Oz (Size)           | 112 bytes   | 248 bytes
+
+<b>Arm Compiler ARMCC V5.06</b>: Main Stack requirements for PendSV/SysTick/SVC
+
+Optimization         | RTX Kernel  | RTX Kernel + Event Recorder
+:--------------------|:------------|:--------------------------------
+-O0 (Debug)          | 176 bytes   | 360 bytes   
+-O1                  | 112 bytes   | 248 bytes
+-O2                  | 112 bytes   | 256 bytes
+-O3                  | 112 bytes   | 248 bytes
 
 
 \page pControlBlockSizes Control Block Sizes
@@ -1213,7 +1269,6 @@ Category                      | Control Block Size Attribute      | Size       |
 \ref CMSIS_RTOS_SemaphoreMgmt | \ref osSemaphoreAttr_t::cb_mem    | 16 bytes   | \ref osRtxSemaphoreCbSize
 \ref CMSIS_RTOS_PoolMgmt      | \ref osMemoryPoolAttr_t::cb_mem   | 36 bytes   | \ref osRtxMemoryPoolCbSize
 \ref CMSIS_RTOS_Message       | \ref osMessageQueueAttr_t::cb_mem | 52 bytes   | \ref osRtxMessageQueueCbSize
-
 
 
 \page pDirectory_Files Directory Structure and File Overview
@@ -1280,7 +1335,7 @@ The CMSIS-RTOS RTX v5 is delivered in source code and several examples are provi
 \section libFiles RTX v5 Library Files
 
 The CMSIS-RTOS RTX Library is available pre-compiled for ARMCC and GCC compilers and supports all Cortex-M
-processor variants in every configuration, including Arm Cortex-M23 and Cortex-M33.
+processor variants in every configuration  \if ARMv8M , including Arm Cortex-M23, Cortex-M33 and Cortex-M35P\endif.
 
 <table class="cmtable" summary="CMSIS-RTOS RTX Library Files">
     <tr>
@@ -1299,6 +1354,7 @@ processor variants in every configuration, including Arm Cortex-M23 and Cortex-M
       <td>Library/ARM/RTX_CM4F.lib</td>
       <td>CMSIS-RTOS RTX Library for ARMCC Compiler, Cortex-M4 and M7 with FPU, little-endian.</td>
     </tr>
+\if ARMv8M	
     <tr>
       <td>Library/ARM/RTX_V8MB.lib</td>
       <td>CMSIS-RTOS RTX Library for ARMCC Compiler, Armv8-M Baseline.</td>
@@ -1323,6 +1379,8 @@ processor variants in every configuration, including Arm Cortex-M23 and Cortex-M
       <td>Library/ARM/RTX_V8MMN.lib</td>
       <td>CMSIS-RTOS RTX Library for ARMCC Compiler, Armv8-M Mainline, non-secure.</td>
     </tr>
+\endif	
+\ifnot FuSaRTS
     <tr>
       <td>Library/GCC/libRTX_CM0.a</td>
       <td>CMSIS-RTOS libRTX Library for GCC Compiler, Cortex-M0 and M1, little-endian.</td>
@@ -1335,6 +1393,8 @@ processor variants in every configuration, including Arm Cortex-M23 and Cortex-M
       <td>Library/GCC/libRTX_CM4F.a</td>
       <td>CMSIS-RTOS libRTX Library for GCC Compiler, Cortex-M4 and M7 with FPU, little-endian.</td>
     </tr>
+\endif	
+\if ARMv8M	
     <tr>
       <td>Library/GCC/libRTX_V8MB.a</td>
       <td>CMSIS-RTOS libRTX Library for GCC Compiler, Armv8-M Baseline.</td>
@@ -1359,10 +1419,14 @@ processor variants in every configuration, including Arm Cortex-M23 and Cortex-M
       <td>Library/GCC/libRTX_V8MMN.a</td>
       <td>CMSIS-RTOS libRTX Library for GCC Compiler, Armv8-M Mainline, non-secure.</td>
     </tr>
+\endif
 </table>
+*/
 
- 
-\page pToolchains Supported Toolchains
+
+
+/**
+\ifnot FuSaRTS \page pToolchains Supported Toolchains
 
 Keil RTX5 is developed and tested using the common toolchains and development environments.
 
@@ -1376,6 +1440,7 @@ The current release is tested with the following versions:
  <li>Arm Compiler 6.9</li>
  <li>RTOS-aware debugging with uVision 5.24</li>
 </ul>
+
 
 \section technicalData_Toolchain_IAR IAR Embedded Workbench
 
@@ -1394,7 +1459,9 @@ Active development is currently tested with:
  <li>GNU Tools for Arm Embedded 6.3.1 20170620</li>
 </ul>
 
+\endif
 */
+
 
 /* ========================================================================================================================== */
 /** 
@@ -1823,8 +1890,8 @@ The functions that call the Event Recorder are in the module \em rtx_evr.c and t
 \page functionOverview Function Overview
 
 CMSIS-RTOS2 provides multiple API interfaces:
-  - \subpage rtos_api2 is the new C function interface that supports dynamic object creation and Armv8-M (Arm Cortex-M23 and
-    Cortex-M33).
+  - \subpage rtos_api2 is the new C function interface that supports dynamic object creation \if ARMv8M and Armv8-M (Arm Cortex-M23,
+    Cortex-M33 and Cortex-M35P) \endif.
   - <a class="el" href="../../RTOS/html/functionOverview.html">CMSIS-RTOS C API v1</a> is a C function API that is backward
     compatible with CMSIS-RTOS v1.
   - \subpage rtos_apicpp is a C++ class function API (future extension).

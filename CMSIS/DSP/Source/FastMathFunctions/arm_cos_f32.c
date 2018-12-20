@@ -38,7 +38,7 @@
  * Computes the trigonometric cosine function using a combination of table lookup
  * and linear interpolation.  There are separate functions for
  * Q15, Q31, and floating-point data types.
- * The input to the floating-point version is in radians and in the range [0 2*pi) while the
+ * The input to the floating-point version is in radians while the
  * fixed-point Q15 and Q31 have a scaled input with the range
  * [0 +0.9999] mapping to [0 2*pi).  The fixed-point range is chosen so that a
  * value of 2*pi wraps around to 0.
@@ -93,8 +93,14 @@ float32_t arm_cos_f32(
   in = in - (float32_t) n;
 
   /* Calculation of index of the table */
-  findex = (float32_t) FAST_MATH_TABLE_SIZE * in;
-  index = ((uint16_t)findex) & 0x1ff;
+  findex = (float32_t)FAST_MATH_TABLE_SIZE * in;
+  index = (uint16_t)findex;
+
+  /* when "in" is exactly 1, we need to rotate the index down to 0 */
+  if (index >= FAST_MATH_TABLE_SIZE) {
+    index = 0;
+    findex -= (float32_t)FAST_MATH_TABLE_SIZE;
+  }
 
   /* fractional value calculation */
   fract = findex - (float32_t) index;

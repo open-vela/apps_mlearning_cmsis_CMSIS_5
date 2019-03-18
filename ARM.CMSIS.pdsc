@@ -8,10 +8,7 @@
   <url>http://www.keil.com/pack/</url>
 
   <releases>
-    <release version="5.5.1-dev0">
-      Active development...
-    </release>
-    <release version="5.5.0-rc1" date="2019-03-18">
+    <release version="5.5.0" date="2019-03-18">
       The following folders have been removed:
         - CMSIS/Lib/ (superseded by CMSIS/DSP/Lib/)
         - CMSIS/DSP_Lib/ (superseded by CMSIS/DSP/)

@@ -60,13 +60,13 @@
  * @param[in,out]   Im_out       pointer to output tensor
  * @param[in]       dim_im_out_x output tensor dimension x
  * @param[in]       dim_im_out_y output tensor dimension y
- * @param[in,out]   bufferA      pointer to buffer space for input 
+ * @param[in,out]   bufferA      pointer to buffer space for input
  * @param[in,out]   bufferB      pointer to buffer space for output
  * @return     The function returns either
  * <code>ARM_MATH_SIZE_MISMATCH</code> or <code>ARM_MATH_SUCCESS</code> based on the outcome of size checking.
  *
  * This function is optimized for convolution with 1x1 kernel size (i.e., dim_kernel_x=1
- * and dim_kernel_y=1). It can be used for the second half of MobileNets [1] after depthwise 
+ * and dim_kernel_y=1). It can be used for the second half of MobileNets [1] after depthwise
  * separable convolution.
  *
  * This function is the version with full list of optimization tricks, but with
@@ -95,14 +95,14 @@ arm_status arm_convolve_1x1_HWC_q7_fast_nonsquare(const q7_t * Im_in,
                                                   const uint16_t out_shift,
                                                   q7_t * Im_out,
                                                   const uint16_t dim_im_out_x,
-                                                  const uint16_t dim_im_out_y, 
-                                                  q15_t * bufferA, 
+                                                  const uint16_t dim_im_out_y,
+                                                  q15_t * bufferA,
                                                   q7_t * bufferB)
 {
-
+    (void)bufferB;
 #if defined (ARM_MATH_DSP)
     /* Run the following code for Cortex-M4 and Cortex-M7 */
-
+    (void)dim_im_in_y;
     int16_t   i_out_y, i_out_x;
     int16_t   i_ch_out;
 
@@ -157,7 +157,7 @@ arm_status arm_convolve_1x1_HWC_q7_fast_nonsquare(const q7_t * Im_in,
                 q31_t     inA1, inA2;
                 q31_t     inB1, inB2;
 
-                pA = (const q7_t *)read_and_pad_reordered((void *)pA, &inA1, &inA2);
+                pA = read_and_pad_reordered(pA, &inA1, &inA2);
 
                 inB1 = *__SIMD32(pB)++;
                 sum = __SMLAD(inA1, inB1, sum);
@@ -183,7 +183,7 @@ arm_status arm_convolve_1x1_HWC_q7_fast_nonsquare(const q7_t * Im_in,
 
 #else
     /* Run the following code as reference implementation for Cortex-M0 and Cortex-M3 */
-		
+
     int       i, j, k, l, m, n;
     int       conv_out;
     int       in_row, in_col;

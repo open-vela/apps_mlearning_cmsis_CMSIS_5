@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  
-  Copyright (c) 2013-2018 ARM Limited. All rights reserved.
+  Copyright (c) 2013-2019 ARM Limited. All rights reserved.
  
   SPDX-License-Identifier: Apache-2.0
  
@@ -17,17 +17,31 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  $Date:        14. March 2019
-  $Revision:    1.6.0
+  $Date:        21. November 2019
+  $Revision:    1.6.3
 
   $Project: Schema File for Package Description File Format Specification
 
   Package file name convention <vendor>.<name>.<version>.pack
-  SchemaVersion=1.6.0
+  SchemaVersion=1.6.3
 
+  21. November 2019: v1.6.3
+  - added attribute 'uninit' to <memory> element to replace deprecated 'init' attribute
+  - DmveEnum is changed according to specification
+
+  05. November 2019: v1.6.2
+  - added <accessportV1> and <accessportV2> to describe CoreSight access port parameters.
+  - added attribute '__apid' to <debug> and <datapatch> to reference <accessportV1> and <accessportV2> elements.
+  - added attribute 'dormant' to <debugconfig> element.
+
+  24. October 2019: 1.6.1
+  - added value to DsecureEnum: 2 = TZ-disabled.
+  - added component boolean attribute 'custom', indicating that the component requires implementation.
+  - updated DmveEnum to select between single and double precision floating point support (MVE_FP deprecated).
+  
   14. March 2019: 1.6.0
-  - added Armv8.1-M MVE processor feature attribute 'Dmve'
-  - added local and global pre-include section Pre_Include_Local_h, Pre_Include_Global_h.
+  - added Armv8.1-M MVE processor feature attribute 'Dmve'.
+  - added local and global pre-include section Pre_Include_Local_Component_h, Pre_Include_Global_h.
   - added file categories 'preIncludeLocal' and 'preIncludeGlobal' FileCategoryEnum.
   - added file attribute 'path' for file category 'header' to add support for relative include paths. 
   - added to package element the possibility to restrict the usage of the with attributes Dvendor, Dname, Dcore, and Tcompiler.
@@ -138,6 +152,7 @@
       <xs:enumeration value="Ember:98" />
       <xs:enumeration value="Energy Micro:97" />
       <xs:enumeration value="EnOcean:91" />
+      <xs:enumeration value="EtaCompute:157" />
       <xs:enumeration value="Evatronix:64" />
       <xs:enumeration value="Generic:5" />
       <xs:enumeration value="Generalplus:151" />
@@ -194,6 +209,7 @@
       <xs:enumeration value="Weltrend:148" />
       <xs:enumeration value="WIZnet:122" />
       <xs:enumeration value="Xinnova:135" />
+      <xs:enumeration value="XMC:158" />
       <xs:enumeration value="Zilog:89" />
       <!-- deprecated: do not use -->
       <xs:enumeration value="Freescale:78" />
@@ -318,6 +334,7 @@
     <xs:attribute name="default" type="DebugProtocolEnum" use="optional" default="swd" />
     <xs:attribute name="clock" type="xs:unsignedInt" use="optional" />
     <xs:attribute name="swj" type="xs:boolean" use="optional" />
+    <xs:attribute name="dormant" type="xs:boolean" use="optional" />
     <!-- Debugger System Description File -->
     <xs:attribute name="sdf" type="xs:string" use="optional" />
     <xs:anyAttribute processContents="lax" />
@@ -349,6 +366,23 @@
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
 
+  <!-- AccessPortV1Type -->
+  <xs:complexType name="AccessPortV1Type">
+    <xs:attribute name="__apid" type="xs:unsignedInt" use="required" />
+    <xs:attribute name="__dp" type="xs:unsignedInt" use="optional" />
+    <xs:attribute name="index" type="xs:unsignedInt" use="required" />
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+  
+  <!-- AccessPortV2Type -->
+  <xs:complexType name="AccessPortV2Type">
+    <xs:attribute name="__apid" type="xs:unsignedInt" use="required" />
+    <xs:attribute name="__dp" type="xs:unsignedInt" use="optional" />
+    <xs:attribute name="address" type="xs:unsignedInt" use="required" />
+    <xs:attribute name="parent" type="xs:unsignedInt" use="optional" />
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
   <!-- DataPatchAccessTypeEnum enumeration type -->
   <xs:simpleType name="DataPatchAccessTypeEnum">
     <xs:restriction base="xs:token">
@@ -372,6 +406,7 @@
     <xs:attribute name="value" type="NonNegativeInteger" use="required" />
     <xs:attribute name="mask" type="NonNegativeInteger" use="optional" />
     <xs:attribute name="info" type="xs:string" use="optional" />
+    <xs:attribute name="__apid" type="xs:unsignedInt" use="optional" />
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
 
@@ -439,6 +474,7 @@
     <xs:attribute name="Pname" type="RestrictedString" use="optional" />
     <xs:attribute name="Punit" type="xs:unsignedInt" use="optional" />
     <xs:attribute name="defaultResetSequence" type="xs:string" use="optional" />
+    <xs:attribute name="__apid" type="xs:unsignedInt" use="optional" />
     <xs:anyAttribute processContents="lax" />
   </xs:complexType>
 
@@ -487,8 +523,10 @@
     <xs:attribute name="access" type="AccessType" use="optional" default="r" />
     <!-- alias: reference to another memory by 'name' to express that the same physical memory is mapped at another address (added in 1.4.4) -->
     <xs:attribute name="alias" type="RestrictedString" use="optional" />
-    <!-- !!! deprecated, do not use / ignore !!! specifies whether the memory shall be 0 initialized -->
+    <!-- !!! deprecated, do not use / ignore !!! specifies whether the memory shall NOT be 0 initialized , use uninit instead-->
     <xs:attribute name="init" type="xs:boolean" use="optional" default="0" />
+    <!-- specifies whether the memory shall not be 0 initialized -->
+    <xs:attribute name="uninit" type="xs:boolean" use="optional" default="0" />
     <!-- specifies whether the memory is used as default by linker -->
     <xs:attribute name="default" type="xs:boolean" use="optional" default="0" />
     <!-- specifies whether the memory shall be used for the startup by linker -->
@@ -634,6 +672,8 @@
       <xs:element name="feature" type="DeviceFeatureType" />
       <xs:element name="environment" type="EnvironmentType" />
       <xs:element name="debugport" type="DebugPortType" />
+      <xs:element name="accessportV1" type="AccessPortV1Type" />
+      <xs:element name="accessportV2" type="AccessPortV2Type" />
       <xs:element name="debug" type="DebugType" />
       <xs:element name="trace" type="TraceType" />
       <xs:element name="debugvars" type="DebugVarsType" />
@@ -935,10 +975,12 @@
   <!-- Dsecure enumeration type -->
   <xs:simpleType name="DsecureEnum">
     <xs:restriction base="xs:token">
-      <xs:enumeration value="Secure" />
       <xs:enumeration value="Non-secure" />
-      <xs:enumeration value="1" />
+      <xs:enumeration value="Secure" />
+      <xs:enumeration value="TZ-disabled" />
       <xs:enumeration value="0" />
+      <xs:enumeration value="1" />
+      <xs:enumeration value="2" />
       <xs:enumeration value="*" />
     </xs:restriction>
   </xs:simpleType>
@@ -960,9 +1002,6 @@
       <xs:enumeration value="NO_MVE"/>
       <xs:enumeration value="MVE"/>
       <xs:enumeration value="FP_MVE"/>
-      <xs:enumeration value="0"/>
-      <xs:enumeration value="1"/>
-      <xs:enumeration value="2"/>
       <xs:enumeration value="*"/>
     </xs:restriction>
   </xs:simpleType>
@@ -1499,8 +1538,10 @@
     <xs:attribute name="remove" type="xs:boolean" use="optional" default="0" />
     <!-- if true, this memory is used for the startup code -->
     <xs:attribute name="startup" type="xs:boolean" use="optional" default="0" />
-    <!-- if true, this memory is initialized with 0 -->
+    <!-- !!! deprecated, do not use / ignore !!! specifies whether the memory shall NOT be 0 initialized , use uninit instead-->
     <xs:attribute name="init" type="xs:boolean" use="optional" default="0" />
+    <!-- specifies whether the memory shall not be 0 initialized -->
+    <xs:attribute name="uninit" type="xs:boolean" use="optional" default="0" />
     <!-- overrides access permisson configured by the DFP -->
     <xs:attribute name="access" type="AccessType" use="optional" />
     <!-- specifies whether the memory is used as default by linker -->
@@ -1948,6 +1989,8 @@
                         <xs:attribute name="generator" type="xs:string" use="optional" />
                         <!-- identifies this component variant to be the preferred variant [Version 1.4.0] -->
                         <xs:attribute name="isDefaultVariant" type="xs:boolean" use="optional" />
+                        <!-- identifies that this component requires custom implementation -->
+                        <xs:attribute name="custom" type="xs:boolean" use="optional" />
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
@@ -2001,6 +2044,8 @@
                   <xs:attribute name="generator" type="xs:string" use="optional" />
                   <!-- identifies this component variant to be the preferred variant [Version 1.4.0] -->
                   <xs:attribute name="isDefaultVariant" type="xs:boolean" use="optional" />
+                  <!-- identifies that this component requires custom implementation -->
+                  <xs:attribute name="custom" type="xs:boolean" use="optional" />
                 </xs:complexType>
               </xs:element>
             </xs:choice>

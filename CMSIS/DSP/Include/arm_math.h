@@ -29,27 +29,37 @@
    * ------------
    *
    * This user manual describes the CMSIS DSP software library,
-   * a suite of common signal processing functions for use on Cortex-M processor based devices.
+   * a suite of common signal processing functions for use on Cortex-M and Cortex-A processor 
+   * based devices.
    *
    * The library is divided into a number of functions each covering a specific category:
    * - Basic math functions
    * - Fast math functions
    * - Complex math functions
-   * - Filters
+   * - Filtering functions
    * - Matrix functions
    * - Transform functions
    * - Motor control functions
    * - Statistical functions
    * - Support functions
    * - Interpolation functions
+   * - Support Vector Machine functions (SVM)
+   * - Bayes classifier functions
+   * - Distance functions
    *
-   * The library has separate functions for operating on 8-bit integers, 16-bit integers,
+   * The library has generally separate functions for operating on 8-bit integers, 16-bit integers,
    * 32-bit integer and 32-bit floating-point values.
    *
    * Using the Library
    * ------------
    *
    * The library installer contains prebuilt versions of the libraries in the <code>Lib</code> folder.
+   * Pre-built libraries will not be updated to contain new functions. 
+   * So, SVM, Bayes, Distance functions and experimental functions are not included in those libraries.
+   * If you want to use those functions, you'll have to modify the projects, include the missing
+   * files and rebuild.
+   * You can also use the cmake to build the libraries and select what you want to be included.
+   * Here is the list of pre-built libraries :
    * - arm_cortexM7lfdp_math.lib (Cortex-M7, Little endian, Double Precision Floating Point Unit)
    * - arm_cortexM7bfdp_math.lib (Cortex-M7, Big endian, Double Precision Floating Point Unit)
    * - arm_cortexM7lfsp_math.lib (Cortex-M7, Little endian, Single Precision Floating Point Unit)
@@ -94,6 +104,8 @@
    *
    *
    * The libraries can be built by opening the arm_cortexM_math.uvprojx project in MDK-ARM, selecting a specific target, and defining the optional preprocessor macros detailed above.
+   *
+   * There is also a work in progress cmake build. The README file is giving more details.
    *
    * Preprocessor Macros
    * ------------
@@ -275,9 +287,48 @@
  * @defgroup groupExamples Examples
  */
 
+/**
+ * @defgroup groupSVM SVM Functions
+ * This set of functions is implementing SVM classification on 2 classes.
+ * The training must be done from scikit-learn. The parameters can be easily
+ * generated from the scikit-learn object. Some examples are given in
+ * DSP/Testing/PatternGeneration/SVM.py
+ *
+ * If more than 2 classes are needed, the functions in this folder 
+ * will have to be used, as building blocks, to do multi-class classification.
+ *
+ * No multi-class classification is provided in this SVM folder.
+ * 
+ */
+
+
+/**
+ * @defgroup groupBayes Bayesian estimators
+ *
+ * Implement the naive gaussian Bayes estimator.
+ * The training must be done from scikit-learn.
+ *
+ * The parameters can be easily
+ * generated from the scikit-learn object. Some examples are given in
+ * DSP/Testing/PatternGeneration/Bayes.py
+ */
+
+/**
+ * @defgroup groupDistance Distance functions
+ *
+ * Distance functions for use with clustering algorithms.
+ * There are distance functions for float vectors and boolean vectors.
+ *
+ */
+
 
 #ifndef _ARM_MATH_H
 #define _ARM_MATH_H
+
+#ifdef   __cplusplus
+extern "C"
+{
+#endif
 
 /* Compiler specific diagnostic adjustment */
 #if   defined ( __CC_ARM )
@@ -306,35 +357,95 @@
 
 
 /* Included for instrinsics definitions */
-#if !defined ( _MSC_VER )
-#include "cmsis_compiler.h"
-#else
+#if defined (_MSC_VER ) 
 #include <stdint.h>
 #define __STATIC_FORCEINLINE static __forceinline
+#define __STATIC_INLINE static __inline
 #define __ALIGNED(x) __declspec(align(x))
-#define LOW_OPTIMIZATION_ENTER
-#define LOW_OPTIMIZATION_EXIT
-#define IAR_ONLY_LOW_OPTIMIZATION_ENTER 
-#define IAR_ONLY_LOW_OPTIMIZATION_EXIT
+
+#elif defined (__GNUC_PYTHON__)
+#include <stdint.h>
+#define  __ALIGNED(x) __attribute__((aligned(x)))
+#define __STATIC_FORCEINLINE static __attribute__((inline))
+#define __STATIC_INLINE static __attribute__((inline))
+#pragma GCC diagnostic ignored "-Wunused-function"
+#pragma GCC diagnostic ignored "-Wattributes"
+
+#else
+#include "cmsis_compiler.h"
 #endif
 
-#include "string.h"
-#include "math.h"
-#include "float.h"
+
+
+#include <string.h>
+#include <math.h>
+#include <float.h>
+#include <limits.h>
+
+
+#define F64_MAX   ((float64_t)DBL_MAX)
+#define F32_MAX   ((float32_t)FLT_MAX)
+
+#if defined(ARM_MATH_FLOAT16)
+#define F16_MAX   ((float16_t)FLT_MAX)
+#endif
+
+#define F64_MIN   (-DBL_MAX)
+#define F32_MIN   (-FLT_MAX)
+
+#if defined(ARM_MATH_FLOAT16)
+#define F16_MIN   (-(float16_t)FLT_MAX)
+#endif
+
+#define F64_ABSMAX   ((float64_t)DBL_MAX)
+#define F32_ABSMAX   ((float32_t)FLT_MAX)
+
+#if defined(ARM_MATH_FLOAT16)
+#define F16_ABSMAX   ((float16_t)FLT_MAX)
+#endif
+
+#define F64_ABSMIN   ((float64_t)0.0)
+#define F32_ABSMIN   ((float32_t)0.0)
+
+#if defined(ARM_MATH_FLOAT16)
+#define F16_ABSMIN   ((float16_t)0.0)
+#endif
+
+#define Q31_MAX   ((q31_t)(0x7FFFFFFFL))
+#define Q15_MAX   ((q15_t)(0x7FFF))
+#define Q7_MAX    ((q7_t)(0x7F))
+#define Q31_MIN   ((q31_t)(0x80000000L))
+#define Q15_MIN   ((q15_t)(0x8000))
+#define Q7_MIN    ((q7_t)(0x80))
+
+#define Q31_ABSMAX   ((q31_t)(0x7FFFFFFFL))
+#define Q15_ABSMAX   ((q15_t)(0x7FFF))
+#define Q7_ABSMAX    ((q7_t)(0x7F))
+#define Q31_ABSMIN   ((q31_t)0)
+#define Q15_ABSMIN   ((q15_t)0)
+#define Q7_ABSMIN    ((q7_t)0)
 
 /* evaluate ARM DSP feature */
 #if (defined (__ARM_FEATURE_DSP) && (__ARM_FEATURE_DSP == 1))
   #define ARM_MATH_DSP                   1
 #endif
 
-#if defined(__ARM_NEON)
+#if defined(ARM_MATH_NEON)
 #include <arm_neon.h>
 #endif
 
+#if defined (ARM_MATH_HELIUM)
+  #define ARM_MATH_MVEF
+  #define ARM_MATH_FLOAT16
+#endif
 
-#ifdef   __cplusplus
-extern "C"
-{
+#if defined (ARM_MATH_MVEF)
+  #define ARM_MATH_MVEI
+  #define ARM_MATH_FLOAT16
+#endif
+
+#if defined (ARM_MATH_HELIUM) || defined(ARM_MATH_MVEF) || defined(ARM_MATH_MVEI)
+#include <arm_mve.h>
 #endif
 
 
@@ -342,8 +453,8 @@ extern "C"
    * @brief Macros required for reciprocal calculation in Normalized LMS
    */
 
-#define DELTA_Q31          (0x100)
-#define DELTA_Q15          0x5
+#define DELTA_Q31          ((q31_t)(0x100))
+#define DELTA_Q15          ((q15_t)0x5)
 #define INDEX_MASK         0x0000003F
 #ifndef PI
   #define PI               3.14159265358979f
@@ -367,6 +478,12 @@ extern "C"
   /* -1 to +1 is divided into 360 values so total spacing is (2/360) */
 #define INPUT_SPACING         0xB60B61
 
+  /**
+   * @brief Macros for complex numbers
+   */
+
+  /* Dimension C vector space */
+  #define CMPLX_DIM 2
 
   /**
    * @brief Error status returned by some functions in the library.
@@ -413,6 +530,320 @@ extern "C"
    */
   typedef double float64_t;
 
+  /**
+   * @brief vector types
+   */
+#if defined(ARM_MATH_NEON) || defined (ARM_MATH_MVEI)
+  /**
+   * @brief 64-bit fractional 128-bit vector data type in 1.63 format
+   */
+  typedef int64x2_t q63x2_t;
+
+  /**
+   * @brief 32-bit fractional 128-bit vector data type in 1.31 format.
+   */
+  typedef int32x4_t q31x4_t;
+
+  /**
+   * @brief 16-bit fractional 128-bit vector data type with 16-bit alignement in 1.15 format.
+   */
+  typedef __ALIGNED(2) int16x8_t q15x8_t;
+
+ /**
+   * @brief 8-bit fractional 128-bit vector data type with 8-bit alignement in 1.7 format.
+   */
+  typedef __ALIGNED(1) int8x16_t q7x16_t;
+
+    /**
+   * @brief 32-bit fractional 128-bit vector pair data type in 1.31 format.
+   */
+  typedef int32x4x2_t q31x4x2_t;
+
+  /**
+   * @brief 32-bit fractional 128-bit vector quadruplet data type in 1.31 format.
+   */
+  typedef int32x4x4_t q31x4x4_t;
+
+  /**
+   * @brief 16-bit fractional 128-bit vector pair data type in 1.15 format.
+   */
+  typedef int16x8x2_t q15x8x2_t;
+
+  /**
+   * @brief 16-bit fractional 128-bit vector quadruplet data type in 1.15 format.
+   */
+  typedef int16x8x4_t q15x8x4_t;
+
+  /**
+   * @brief 8-bit fractional 128-bit vector pair data type in 1.7 format.
+   */
+  typedef int8x16x2_t q7x16x2_t;
+
+  /**
+   * @brief 8-bit fractional 128-bit vector quadruplet data type in 1.7 format.
+   */
+   typedef int8x16x4_t q7x16x4_t;
+
+  /**
+   * @brief 32-bit fractional data type in 9.23 format.
+   */
+  typedef int32_t q23_t;
+
+  /**
+   * @brief 32-bit fractional 128-bit vector data type in 9.23 format.
+   */
+  typedef int32x4_t q23x4_t;
+
+  /**
+   * @brief 64-bit status 128-bit vector data type.
+   */
+  typedef int64x2_t status64x2_t;
+
+  /**
+   * @brief 32-bit status 128-bit vector data type.
+   */
+  typedef int32x4_t status32x4_t;
+
+  /**
+   * @brief 16-bit status 128-bit vector data type.
+   */
+  typedef int16x8_t status16x8_t;
+
+  /**
+   * @brief 8-bit status 128-bit vector data type.
+   */
+  typedef int8x16_t status8x16_t;
+
+
+#endif
+
+#if defined(ARM_MATH_NEON) || defined(ARM_MATH_MVEF) /* floating point vector*/
+  /**
+   * @brief 32-bit floating-point 128-bit vector type
+   */
+  typedef float32x4_t f32x4_t;
+
+#if defined(ARM_MATH_FLOAT16)
+  /**
+   * @brief 16-bit floating-point 128-bit vector data type
+   */
+  typedef __ALIGNED(2) float16x8_t f16x8_t;
+#endif
+
+  /**
+   * @brief 32-bit floating-point 128-bit vector pair data type
+   */
+  typedef float32x4x2_t f32x4x2_t;
+
+  /**
+   * @brief 32-bit floating-point 128-bit vector quadruplet data type
+   */
+  typedef float32x4x4_t f32x4x4_t;
+
+#if defined(ARM_MATH_FLOAT16)
+  /**
+   * @brief 16-bit floating-point 128-bit vector pair data type
+   */
+  typedef float16x8x2_t f16x8x2_t;
+
+  /**
+   * @brief 16-bit floating-point 128-bit vector quadruplet data type
+   */
+  typedef float16x8x4_t f16x8x4_t;
+#endif
+
+  /**
+   * @brief 32-bit ubiquitous 128-bit vector data type
+   */
+  typedef union _any32x4_t
+  {
+      float32x4_t     f;
+      int32x4_t       i;
+  } any32x4_t;
+
+#if defined(ARM_MATH_FLOAT16)
+  /**
+   * @brief 16-bit ubiquitous 128-bit vector data type
+   */
+  typedef union _any16x8_t
+  {
+      float16x8_t     f;
+      int16x8_t       i;
+  } any16x8_t;
+#endif
+
+#endif
+
+#if defined(ARM_MATH_NEON)
+  /**
+   * @brief 32-bit fractional 64-bit vector data type in 1.31 format.
+   */
+  typedef int32x2_t  q31x2_t;
+
+  /**
+   * @brief 16-bit fractional 64-bit vector data type in 1.15 format.
+   */
+  typedef  __ALIGNED(2) int16x4_t q15x4_t;
+
+  /**
+   * @brief 8-bit fractional 64-bit vector data type in 1.7 format.
+   */
+  typedef  __ALIGNED(1) int8x8_t q7x8_t;
+
+  /**
+   * @brief 32-bit float 64-bit vector data type.
+   */
+  typedef float32x2_t  f32x2_t;
+
+#if defined(ARM_MATH_FLOAT16)
+  /**
+   * @brief 16-bit float 64-bit vector data type.
+   */
+  typedef  __ALIGNED(2) float16x4_t f16x4_t;
+#endif 
+
+  /**
+   * @brief 32-bit floating-point 128-bit vector triplet data type
+   */
+  typedef float32x4x3_t f32x4x3_t;
+
+#if defined(ARM_MATH_FLOAT16)
+  /**
+   * @brief 16-bit floating-point 128-bit vector triplet data type
+   */
+  typedef float16x8x3_t f16x8x3_t;
+#endif
+
+  /**
+   * @brief 32-bit fractional 128-bit vector triplet data type in 1.31 format
+   */
+  typedef int32x4x3_t q31x4x3_t;
+
+  /**
+   * @brief 16-bit fractional 128-bit vector triplet data type in 1.15 format
+   */
+  typedef int16x8x3_t q15x8x3_t;
+
+  /**
+   * @brief 8-bit fractional 128-bit vector triplet data type in 1.7 format
+   */
+  typedef int8x16x3_t q7x16x3_t;
+
+  /**
+   * @brief 32-bit floating-point 64-bit vector pair data type
+   */
+  typedef float32x2x2_t f32x2x2_t;
+
+  /**
+   * @brief 32-bit floating-point 64-bit vector triplet data type
+   */
+  typedef float32x2x3_t f32x2x3_t;
+
+  /**
+   * @brief 32-bit floating-point 64-bit vector quadruplet data type
+   */
+  typedef float32x2x4_t f32x2x4_t;
+
+#if defined(ARM_MATH_FLOAT16)
+  /**
+   * @brief 16-bit floating-point 64-bit vector pair data type
+   */
+  typedef float16x4x2_t f16x4x2_t;
+
+  /**
+   * @brief 16-bit floating-point 64-bit vector triplet data type
+   */
+  typedef float16x4x3_t f16x4x3_t;
+
+  /**
+   * @brief 16-bit floating-point 64-bit vector quadruplet data type
+   */
+  typedef float16x4x4_t f16x4x4_t;
+#endif 
+
+  /**
+   * @brief 32-bit fractional 64-bit vector pair data type in 1.31 format
+   */
+  typedef int32x2x2_t q31x2x2_t;
+
+  /**
+   * @brief 32-bit fractional 64-bit vector triplet data type in 1.31 format
+   */
+  typedef int32x2x3_t q31x2x3_t;
+
+  /**
+   * @brief 32-bit fractional 64-bit vector quadruplet data type in 1.31 format
+   */
+  typedef int32x4x3_t q31x2x4_t;
+
+  /**
+   * @brief 16-bit fractional 64-bit vector pair data type in 1.15 format
+   */
+  typedef int16x4x2_t q15x4x2_t;
+
+  /**
+   * @brief 16-bit fractional 64-bit vector triplet data type in 1.15 format
+   */
+  typedef int16x4x2_t q15x4x3_t;
+
+  /**
+   * @brief 16-bit fractional 64-bit vector quadruplet data type in 1.15 format
+   */
+  typedef int16x4x3_t q15x4x4_t;
+
+  /**
+   * @brief 8-bit fractional 64-bit vector pair data type in 1.7 format
+   */
+  typedef int8x8x2_t q7x8x2_t;
+
+  /**
+   * @brief 8-bit fractional 64-bit vector triplet data type in 1.7 format
+   */
+  typedef int8x8x3_t q7x8x3_t;
+
+  /**
+   * @brief 8-bit fractional 64-bit vector quadruplet data type in 1.7 format
+   */
+  typedef int8x8x4_t q7x8x4_t;
+
+  /**
+   * @brief 32-bit ubiquitous 64-bit vector data type
+   */
+  typedef union _any32x2_t
+  {
+      float32x2_t     f;
+      int32x2_t       i;
+  } any32x2_t;
+
+#if defined(ARM_MATH_FLOAT16)
+  /**
+   * @brief 16-bit ubiquitous 64-bit vector data type
+   */
+  typedef union _any16x4_t
+  {
+      float16x4_t     f;
+      int16x4_t       i;
+  } any16x4_t;
+#endif 
+
+  /**
+   * @brief 32-bit status 64-bit vector data type.
+   */
+  typedef int32x4_t status32x2_t;
+
+  /**
+   * @brief 16-bit status 64-bit vector data type.
+   */
+  typedef int16x8_t status16x4_t;
+
+  /**
+   * @brief 8-bit status 64-bit vector data type.
+   */
+  typedef int8x16_t status8x8_t;
+
+#endif
+
+
 
 /**
   @brief definition to read/write two 16 bit values.
@@ -442,6 +873,9 @@ extern "C"
 #define __SIMD32_CONST(addr)  ( (__SIMD32_TYPE * )   (addr))
 #define _SIMD32_OFFSET(addr)  (*(__SIMD32_TYPE * )   (addr))
 #define __SIMD64(addr)        (*(      int64_t **) & (addr))
+
+#define STEP(x) (x) <= 0 ? 0 : 1
+#define SQ(x) ((x) * (x))
 
 /* SIMD replacement */
 
@@ -586,7 +1020,7 @@ MSVC is not going to be used to cross-compile to ARM. So, having a MSVC
 compiler file in Core or Core_A would not make sense.
 
 */
-#if defined ( _MSC_VER )
+#if defined ( _MSC_VER ) || defined(__GNUC_PYTHON__)
     __STATIC_FORCEINLINE uint8_t __CLZ(uint32_t data)
     {
       if (data == 0U) { return 32U; }
@@ -816,45 +1250,110 @@ compiler file in Core or Core_A would not make sense.
     return (signBits + 1);
   }
 
-#if defined(ARM_MATH_NEON)
-
-static inline float32x4_t __arm_vec_sqrt_f32_neon(float32x4_t  x)
+/**
+ * @brief Integer exponentiation
+ * @param[in]    x           value
+ * @param[in]    nb          integer exponent >= 1
+ * @return x^nb
+ *
+ */
+__STATIC_INLINE float32_t arm_exponent_f32(float32_t x, int32_t nb)
 {
-    float32x4_t x1 = vmaxq_f32(x, vdupq_n_f32(FLT_MIN));
-    float32x4_t e = vrsqrteq_f32(x1);
-    e = vmulq_f32(vrsqrtsq_f32(vmulq_f32(x1, e), e), e);
-    e = vmulq_f32(vrsqrtsq_f32(vmulq_f32(x1, e), e), e);
-    return vmulq_f32(x, e);
+    float32_t r = x;
+    nb --;
+    while(nb > 0)
+    {
+        r = r * x;
+        nb--;
+    }
+    return(r);
 }
 
-static inline int16x8_t __arm_vec_sqrt_q15_neon(int16x8_t vec)
+/**
+ * @brief  64-bit to 32-bit unsigned normalization
+ * @param[in]  in           is input unsigned long long value
+ * @param[out] normalized   is the 32-bit normalized value
+ * @param[out] norm         is norm scale
+ */
+__STATIC_INLINE  void arm_norm_64_to_32u(uint64_t in, int32_t * normalized, int32_t *norm)
 {
-    float32x4_t tempF;
-    int32x4_t tempHI,tempLO;
+    int32_t     n1;
+    int32_t     hi = (int32_t) (in >> 32);
+    int32_t     lo = (int32_t) ((in << 32) >> 32);
 
-    tempLO = vmovl_s16(vget_low_s16(vec));
-    tempF = vcvtq_n_f32_s32(tempLO,15);
-    tempF = __arm_vec_sqrt_f32_neon(tempF);
-    tempLO = vcvtq_n_s32_f32(tempF,15);
-
-    tempHI = vmovl_s16(vget_high_s16(vec));
-    tempF = vcvtq_n_f32_s32(tempHI,15);
-    tempF = __arm_vec_sqrt_f32_neon(tempF);
-    tempHI = vcvtq_n_s32_f32(tempF,15);
-
-    return(vcombine_s16(vqmovn_s32(tempLO),vqmovn_s32(tempHI)));
+    n1 = __CLZ(hi) - 32;
+    if (!n1)
+    {
+        /*
+         * input fits in 32-bit
+         */
+        n1 = __CLZ(lo);
+        if (!n1)
+        {
+            /*
+             * MSB set, need to scale down by 1
+             */
+            *norm = -1;
+            *normalized = (((uint32_t) lo) >> 1);
+        } else
+        {
+            if (n1 == 32)
+            {
+                /*
+                 * input is zero
+                 */
+                *norm = 0;
+                *normalized = 0;
+            } else
+            {
+                /*
+                 * 32-bit normalization
+                 */
+                *norm = n1 - 1;
+                *normalized = lo << *norm;
+            }
+        }
+    } else
+    {
+        /*
+         * input fits in 64-bit
+         */
+        n1 = 1 - n1;
+        *norm = -n1;
+        /*
+         * 64 bit normalization
+         */
+        *normalized = (((uint32_t) lo) >> n1) | (hi << (32 - n1));
+    }
 }
 
-static inline int32x4_t __arm_vec_sqrt_q31_neon(int32x4_t vec)
+__STATIC_INLINE q31_t arm_div_q63_to_q31(q63_t num, q31_t den)
 {
-  float32x4_t temp;
+    q31_t   result;
+    uint64_t   absNum;
+    int32_t   normalized;
+    int32_t   norm;
 
-  temp = vcvtq_n_f32_s32(vec,31);
-  temp = __arm_vec_sqrt_f32_neon(temp);
-  return(vcvtq_n_s32_f32(temp,31));
+    /*
+     * if sum fits in 32bits
+     * avoid costly 64-bit division
+     */
+    absNum = num > 0 ? num : -num;
+    arm_norm_64_to_32u(absNum, &normalized, &norm);
+    if (norm > 0)
+        /*
+         * 32-bit division
+         */
+        result = (q31_t) num / den;
+    else
+        /*
+         * 64-bit division
+         */
+        result = (q31_t) (num / den);
+
+    return result;
 }
 
-#endif
 
 /*
  * @brief C custom defined intrinsic functions
@@ -1404,6 +1903,16 @@ static inline int32x4_t __arm_vec_sqrt_q31_neon(int32x4_t vec)
     const float32_t *pCoeffs;      /**< Points to the array of coefficients.  The array is of length 5*numStages. */
   } arm_biquad_casd_df1_inst_f32;
 
+#if defined(ARM_MATH_MVEF) && !defined(ARM_MATH_AUTOVECTORIZE)
+  /**
+   * @brief Instance structure for the modified Biquad coefs required by vectorized code.
+   */
+  typedef struct
+  {
+      float32_t coeffs[8][4]; /**< Points to the array of modified coefficients.  The array is of length 32. There is one per stage */
+  } arm_biquad_mod_coef_f32;
+#endif 
+
   /**
    * @brief Processing function for the Q15 Biquad cascade filter.
    * @param[in]  S          points to an instance of the Q15 Biquad cascade structure.
@@ -1504,13 +2013,295 @@ static inline int32x4_t __arm_vec_sqrt_q31_neon(int32x4_t vec)
    * @param[in,out] S          points to an instance of the floating-point Biquad cascade structure.
    * @param[in]     numStages  number of 2nd order stages in the filter.
    * @param[in]     pCoeffs    points to the filter coefficients.
+   * @param[in]     pCoeffsMod points to the modified filter coefficients (only MVE version).
    * @param[in]     pState     points to the state buffer.
    */
+#if defined(ARM_MATH_MVEF) && !defined(ARM_MATH_AUTOVECTORIZE)
+  void arm_biquad_cascade_df1_mve_init_f32(
+      arm_biquad_casd_df1_inst_f32 * S,
+      uint8_t numStages,
+      const float32_t * pCoeffs, 
+      arm_biquad_mod_coef_f32 * pCoeffsMod, 
+      float32_t * pState);
+#endif
+  
   void arm_biquad_cascade_df1_init_f32(
         arm_biquad_casd_df1_inst_f32 * S,
         uint8_t numStages,
   const float32_t * pCoeffs,
         float32_t * pState);
+
+
+  /**
+   * @brief         Compute the logical bitwise AND of two fixed-point vectors.
+   * @param[in]     pSrcA      points to input vector A
+   * @param[in]     pSrcB      points to input vector B
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_and_q15(
+    const q15_t * pSrcA,
+    const q15_t * pSrcB,
+    q15_t * pDst,
+    uint32_t blockSize);
+
+  /**
+   * @brief         Compute the logical bitwise AND of two fixed-point vectors.
+   * @param[in]     pSrcA      points to input vector A
+   * @param[in]     pSrcB      points to input vector B
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_and_q31(
+    const q31_t * pSrcA,
+    const q31_t * pSrcB,
+    q31_t * pDst,
+    uint32_t blockSize);
+
+  /**
+   * @brief         Compute the logical bitwise AND of two fixed-point vectors.
+   * @param[in]     pSrcA      points to input vector A
+   * @param[in]     pSrcB      points to input vector B
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_and_q7(
+    const q7_t * pSrcA,
+    const q7_t * pSrcB,
+    q7_t * pDst,
+    uint32_t blockSize);
+
+  /**
+   * @brief         Compute the logical bitwise OR of two fixed-point vectors.
+   * @param[in]     pSrcA      points to input vector A
+   * @param[in]     pSrcB      points to input vector B
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_or_q15(
+    const q15_t * pSrcA,
+    const q15_t * pSrcB,
+    q15_t * pDst,
+    uint32_t blockSize);
+
+  /**
+   * @brief         Compute the logical bitwise OR of two fixed-point vectors.
+   * @param[in]     pSrcA      points to input vector A
+   * @param[in]     pSrcB      points to input vector B
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_or_q31(
+    const q31_t * pSrcA,
+    const q31_t * pSrcB,
+    q31_t * pDst,
+    uint32_t blockSize);
+
+  /**
+   * @brief         Compute the logical bitwise OR of two fixed-point vectors.
+   * @param[in]     pSrcA      points to input vector A
+   * @param[in]     pSrcB      points to input vector B
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_or_q7(
+    const q7_t * pSrcA,
+    const q7_t * pSrcB,
+    q7_t * pDst,
+    uint32_t blockSize);
+
+  /**
+   * @brief         Compute the logical bitwise NOT of a fixed-point vector.
+   * @param[in]     pSrc       points to input vector 
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_not_q15(
+    const q15_t * pSrc,
+          q15_t * pDst,
+    uint32_t blockSize);
+
+  /**
+   * @brief         Compute the logical bitwise NOT of a fixed-point vector.
+   * @param[in]     pSrc       points to input vector 
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_not_q31(
+    const q31_t * pSrc,
+          q31_t * pDst,
+    uint32_t blockSize);
+
+  /**
+   * @brief         Compute the logical bitwise NOT of a fixed-point vector.
+   * @param[in]     pSrc       points to input vector 
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_not_q7(
+    const q7_t * pSrc,
+          q7_t * pDst,
+    uint32_t blockSize);
+
+/**
+   * @brief         Compute the logical bitwise XOR of two fixed-point vectors.
+   * @param[in]     pSrcA      points to input vector A
+   * @param[in]     pSrcB      points to input vector B
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_xor_q15(
+    const q15_t * pSrcA,
+    const q15_t * pSrcB,
+    q15_t * pDst,
+    uint32_t blockSize);
+
+  /**
+   * @brief         Compute the logical bitwise XOR of two fixed-point vectors.
+   * @param[in]     pSrcA      points to input vector A
+   * @param[in]     pSrcB      points to input vector B
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_xor_q31(
+    const q31_t * pSrcA,
+    const q31_t * pSrcB,
+    q31_t * pDst,
+    uint32_t blockSize);
+
+  /**
+   * @brief         Compute the logical bitwise XOR of two fixed-point vectors.
+   * @param[in]     pSrcA      points to input vector A
+   * @param[in]     pSrcB      points to input vector B
+   * @param[out]    pDst       points to output vector
+   * @param[in]     blockSize  number of samples in each vector
+   * @return        none
+   */
+  void arm_xor_q7(
+    const q7_t * pSrcA,
+    const q7_t * pSrcB,
+    q7_t * pDst,
+    uint32_t blockSize);
+
+  /**
+   * @brief Struct for specifying sorting algorithm
+   */
+  typedef enum
+  {
+    ARM_SORT_BITONIC   = 0,
+             /**< Bitonic sort   */
+    ARM_SORT_BUBBLE    = 1,
+             /**< Bubble sort    */
+    ARM_SORT_HEAP      = 2,
+             /**< Heap sort      */
+    ARM_SORT_INSERTION = 3,
+             /**< Insertion sort */
+    ARM_SORT_MERGE     = 4,
+             /**< Merge sort     */
+    ARM_SORT_QUICK     = 5,
+             /**< Quick sort     */
+    ARM_SORT_SELECTION = 6
+             /**< Selection sort */
+  } arm_sort_alg;
+
+  /**
+   * @brief Struct for specifying sorting algorithm
+   */
+  typedef enum
+  {
+    ARM_SORT_DESCENDING = 0,
+             /**< Descending order (9 to 0) */
+    ARM_SORT_ASCENDING = 1
+             /**< Ascending order (0 to 9) */
+  } arm_sort_dir;
+
+  /**
+   * @brief Instance structure for the sorting algorithms.
+   */
+  typedef struct            
+  {
+    arm_sort_alg alg;        /**< Sorting algorithm selected */
+    arm_sort_dir dir;        /**< Sorting order (direction)  */
+  } arm_sort_instance_f32;  
+
+  /**
+   * @param[in]  S          points to an instance of the sorting structure.
+   * @param[in]  pSrc       points to the block of input data.
+   * @param[out] pDst       points to the block of output data.
+   * @param[in]  blockSize  number of samples to process.
+   */
+  void arm_sort_f32(
+    const arm_sort_instance_f32 * S, 
+          float32_t * pSrc, 
+          float32_t * pDst, 
+          uint32_t blockSize);
+
+  /**
+   * @param[in,out]  S            points to an instance of the sorting structure.
+   * @param[in]      alg          Selected algorithm.
+   * @param[in]      dir          Sorting order.
+   */
+  void arm_sort_init_f32(
+    arm_sort_instance_f32 * S, 
+    arm_sort_alg alg, 
+    arm_sort_dir dir); 
+
+  /**
+   * @brief Struct for specifying cubic spline type
+   */
+  typedef enum
+  {
+    ARM_SPLINE_NATURAL = 0,           /**< Natural spline */
+    ARM_SPLINE_PARABOLIC_RUNOUT = 1   /**< Parabolic runout spline */
+  } arm_spline_type;
+
+  /**
+   * @brief Instance structure for the floating-point cubic spline interpolation.
+   */
+  typedef struct
+  {
+    uint32_t n_x;              /**< Number of known data points */
+    arm_spline_type type;      /**< Type (boundary conditions) */
+  } arm_spline_instance_f32;
+
+  /**
+   * @brief Processing function for the floating-point cubic spline interpolation.
+   * @param[in]  S          points to an instance of the floating-point spline structure.
+   * @param[in]  x          points to the x values of the known data points.
+   * @param[in]  y          points to the y values of the known data points.
+   * @param[in]  xq         points to the x values ot the interpolated data points.
+   * @param[out] pDst       points to the block of output data.
+   * @param[in]  blockSize  number of samples of output data.
+   */
+  void arm_spline_f32(
+          arm_spline_instance_f32 * S,
+    const float32_t * x,
+    const float32_t * y,
+    const float32_t * xq,
+          float32_t * pDst,
+	  uint32_t blockSize);
+
+  /**
+   * @brief Initialization function for the floating-point cubic spline interpolation.
+   * @param[in,out] S        points to an instance of the floating-point spline structure.
+   * @param[in]     n        number of known data points.
+   * @param[in]     type     type of cubic spline interpolation (boundary conditions)
+   */
+  void arm_spline_init_f32(
+    arm_spline_instance_f32 * S,
+    uint32_t n,
+    arm_spline_type type);
 
   /**
    * @brief Instance structure for the floating-point matrix structure.
@@ -1521,9 +2312,8 @@ static inline int32x4_t __arm_vec_sqrt_q31_neon(int32x4_t vec)
     uint16_t numCols;     /**< number of columns of the matrix.  */
     float32_t *pData;     /**< points to the data of the matrix. */
   } arm_matrix_instance_f32;
-
-
-  /**
+ 
+ /**
    * @brief Instance structure for the floating-point matrix structure.
    */
   typedef struct
@@ -2277,6 +3067,24 @@ void arm_cfft_q31(
         uint8_t ifftFlag,
         uint8_t bitReverseFlag);
 
+
+  /**
+   * @brief Instance structure for the Double Precision Floating-point CFFT/CIFFT function.
+   */
+  typedef struct
+  {
+          uint16_t fftLen;                   /**< length of the FFT. */
+    const float64_t *pTwiddle;         /**< points to the Twiddle factor table. */
+    const uint16_t *pBitRevTable;      /**< points to the bit reversal table. */
+          uint16_t bitRevLength;             /**< bit reversal table length. */
+  } arm_cfft_instance_f64;
+
+  void arm_cfft_f64(
+  const arm_cfft_instance_f64 * S,
+        float64_t * p1,
+        uint8_t ifftFlag,
+        uint8_t bitReverseFlag);
+
   /**
    * @brief Instance structure for the Q15 RFFT/RIFFT function.
    */
@@ -2353,6 +3161,42 @@ void arm_cfft_q31(
   const arm_rfft_instance_f32 * S,
         float32_t * pSrc,
         float32_t * pDst);
+
+  /**
+   * @brief Instance structure for the Double Precision Floating-point RFFT/RIFFT function.
+   */
+typedef struct
+  {
+          arm_cfft_instance_f64 Sint;      /**< Internal CFFT structure. */
+          uint16_t fftLenRFFT;             /**< length of the real sequence */
+    const float64_t * pTwiddleRFFT;        /**< Twiddle factors real stage  */
+  } arm_rfft_fast_instance_f64 ;
+
+arm_status arm_rfft_fast_init_f64 (
+         arm_rfft_fast_instance_f64 * S,
+         uint16_t fftLen);
+
+arm_status arm_rfft_32_fast_init_f64 ( arm_rfft_fast_instance_f64 * S );
+
+arm_status arm_rfft_64_fast_init_f64 ( arm_rfft_fast_instance_f64 * S );
+
+arm_status arm_rfft_128_fast_init_f64 ( arm_rfft_fast_instance_f64 * S );
+
+arm_status arm_rfft_256_fast_init_f64 ( arm_rfft_fast_instance_f64 * S );
+
+arm_status arm_rfft_512_fast_init_f64 ( arm_rfft_fast_instance_f64 * S );
+
+arm_status arm_rfft_1024_fast_init_f64 ( arm_rfft_fast_instance_f64 * S );
+
+arm_status arm_rfft_2048_fast_init_f64 ( arm_rfft_fast_instance_f64 * S );
+
+arm_status arm_rfft_4096_fast_init_f64 ( arm_rfft_fast_instance_f64 * S );
+
+void arm_rfft_fast_f64(
+    arm_rfft_fast_instance_f64 * S,
+    float64_t * p, float64_t * pOut,
+    uint8_t ifftFlag);
+
 
   /**
    * @brief Instance structure for the floating-point RFFT/RIFFT function.
@@ -5048,7 +5892,7 @@ __STATIC_FORCEINLINE q15_t arm_pid_q15(
     acc += (q31_t) S->state[2] << 15;
 
     /* saturate the output */
-    out = (q15_t) (__SSAT((acc >> 15), 16));
+    out = (q15_t) (__SSAT((q31_t)(acc >> 15), 16));
 
     /* Update state */
     S->state[1] = S->state[0];
@@ -5552,7 +6396,7 @@ __STATIC_FORCEINLINE void arm_inv_park_q31(
       /* Iniatilize output for below specified range as least output value of table */
       y = pYData[0];
     }
-    else if ((uint32_t)i >= S->nValues)
+    else if ((uint32_t)i >= (S->nValues - 1))
     {
       /* Iniatilize output for above specified range as last output value of table */
       y = pYData[S->nValues - 1];
@@ -5806,6 +6650,30 @@ __STATIC_FORCEINLINE void arm_inv_park_q31(
   q15_t arm_cos_q15(
   q15_t x);
 
+
+/**
+  @brief         Floating-point vector of log values.
+  @param[in]     pSrc       points to the input vector
+  @param[out]    pDst       points to the output vector
+  @param[in]     blockSize  number of samples in each vector
+  @return        none
+ */
+  void arm_vlog_f32(
+  const float32_t * pSrc,
+        float32_t * pDst,
+        uint32_t blockSize);
+
+/**
+  @brief         Floating-point vector of exp values.
+  @param[in]     pSrc       points to the input vector
+  @param[out]    pDst       points to the output vector
+  @param[in]     blockSize  number of samples in each vector
+  @return        none
+ */
+  void arm_vexp_f32(
+  const float32_t * pSrc,
+        float32_t * pDst,
+        uint32_t blockSize);
 
   /**
    * @ingroup groupFastMath
@@ -6677,6 +7545,17 @@ arm_status arm_sqrt_q15(
         float32_t * pResult,
         uint32_t * pIndex);
 
+  /**
+    @brief         Maximum value of a floating-point vector.
+    @param[in]     pSrc       points to the input vector
+    @param[in]     blockSize  number of samples in input vector
+    @param[out]    pResult    maximum value returned here
+    @return        none
+   */
+  void arm_max_no_idx_f32(
+      const float32_t *pSrc,
+      uint32_t   blockSize,
+      float32_t *pResult);
 
   /**
    * @brief  Q15 complex-by-complex multiplication
@@ -6862,6 +7741,599 @@ arm_status arm_sqrt_q15(
   const q7_t * pSrc,
         q15_t * pDst,
         uint32_t blockSize);
+
+/**
+ * @brief Struct for specifying SVM Kernel
+ */
+typedef enum
+{
+    ARM_ML_KERNEL_LINEAR = 0,
+             /**< Linear kernel */
+    ARM_ML_KERNEL_POLYNOMIAL = 1,
+             /**< Polynomial kernel */
+    ARM_ML_KERNEL_RBF = 2,
+             /**< Radial Basis Function kernel */
+    ARM_ML_KERNEL_SIGMOID = 3
+             /**< Sigmoid kernel */
+} arm_ml_kernel_type;
+
+
+/**
+ * @brief Instance structure for linear SVM prediction function.
+ */
+typedef struct
+{
+  uint32_t        nbOfSupportVectors;     /**< Number of support vectors */
+  uint32_t        vectorDimension;        /**< Dimension of vector space */
+  float32_t       intercept;              /**< Intercept */
+  const float32_t *dualCoefficients;      /**< Dual coefficients */
+  const float32_t *supportVectors;        /**< Support vectors */
+  const int32_t   *classes;               /**< The two SVM classes */
+} arm_svm_linear_instance_f32;
+
+
+/**
+ * @brief Instance structure for polynomial SVM prediction function.
+ */
+typedef struct
+{
+  uint32_t        nbOfSupportVectors;     /**< Number of support vectors */
+  uint32_t        vectorDimension;        /**< Dimension of vector space */
+  float32_t       intercept;              /**< Intercept */
+  const float32_t *dualCoefficients;      /**< Dual coefficients */
+  const float32_t *supportVectors;        /**< Support vectors */
+  const int32_t   *classes;               /**< The two SVM classes */
+  int32_t         degree;                 /**< Polynomial degree */
+  float32_t       coef0;                  /**< Polynomial constant */
+  float32_t       gamma;                  /**< Gamma factor */
+} arm_svm_polynomial_instance_f32;
+
+/**
+ * @brief Instance structure for rbf SVM prediction function.
+ */
+typedef struct
+{
+  uint32_t        nbOfSupportVectors;     /**< Number of support vectors */
+  uint32_t        vectorDimension;        /**< Dimension of vector space */
+  float32_t       intercept;              /**< Intercept */
+  const float32_t *dualCoefficients;      /**< Dual coefficients */
+  const float32_t *supportVectors;        /**< Support vectors */
+  const int32_t   *classes;               /**< The two SVM classes */
+  float32_t       gamma;                  /**< Gamma factor */
+} arm_svm_rbf_instance_f32;
+
+/**
+ * @brief Instance structure for sigmoid SVM prediction function.
+ */
+typedef struct
+{
+  uint32_t        nbOfSupportVectors;     /**< Number of support vectors */
+  uint32_t        vectorDimension;        /**< Dimension of vector space */
+  float32_t       intercept;              /**< Intercept */
+  const float32_t *dualCoefficients;      /**< Dual coefficients */
+  const float32_t *supportVectors;        /**< Support vectors */
+  const int32_t   *classes;               /**< The two SVM classes */
+  float32_t       coef0;                  /**< Independant constant */
+  float32_t       gamma;                  /**< Gamma factor */
+} arm_svm_sigmoid_instance_f32;
+
+/**
+ * @brief        SVM linear instance init function
+ * @param[in]    S                      Parameters for SVM functions
+ * @param[in]    nbOfSupportVectors     Number of support vectors
+ * @param[in]    vectorDimension        Dimension of vector space
+ * @param[in]    intercept              Intercept
+ * @param[in]    dualCoefficients       Array of dual coefficients
+ * @param[in]    supportVectors         Array of support vectors
+ * @param[in]    classes                Array of 2 classes ID
+ * @return none.
+ *
+ */
+
+
+void arm_svm_linear_init_f32(arm_svm_linear_instance_f32 *S, 
+  uint32_t nbOfSupportVectors,
+  uint32_t vectorDimension,
+  float32_t intercept,
+  const float32_t *dualCoefficients,
+  const float32_t *supportVectors,
+  const int32_t  *classes);
+
+/**
+ * @brief SVM linear prediction
+ * @param[in]    S          Pointer to an instance of the linear SVM structure.
+ * @param[in]    in         Pointer to input vector
+ * @param[out]   pResult    Decision value
+ * @return none.
+ *
+ */
+  
+void arm_svm_linear_predict_f32(const arm_svm_linear_instance_f32 *S, 
+   const float32_t * in, 
+   int32_t * pResult);
+
+
+/**
+ * @brief        SVM polynomial instance init function
+ * @param[in]    S                      points to an instance of the polynomial SVM structure.
+ * @param[in]    nbOfSupportVectors     Number of support vectors
+ * @param[in]    vectorDimension        Dimension of vector space
+ * @param[in]    intercept              Intercept
+ * @param[in]    dualCoefficients       Array of dual coefficients
+ * @param[in]    supportVectors         Array of support vectors
+ * @param[in]    classes                Array of 2 classes ID
+ * @param[in]    degree                 Polynomial degree
+ * @param[in]    coef0                  coeff0 (scikit-learn terminology)
+ * @param[in]    gamma                  gamma (scikit-learn terminology)
+ * @return none.
+ *
+ */
+
+
+void arm_svm_polynomial_init_f32(arm_svm_polynomial_instance_f32 *S, 
+  uint32_t nbOfSupportVectors,
+  uint32_t vectorDimension,
+  float32_t intercept,
+  const float32_t *dualCoefficients,
+  const float32_t *supportVectors,
+  const int32_t   *classes,
+  int32_t      degree,
+  float32_t coef0,
+  float32_t gamma
+  );
+
+/**
+ * @brief SVM polynomial prediction
+ * @param[in]    S          Pointer to an instance of the polynomial SVM structure.
+ * @param[in]    in         Pointer to input vector
+ * @param[out]   pResult    Decision value
+ * @return none.
+ *
+ */
+void arm_svm_polynomial_predict_f32(const arm_svm_polynomial_instance_f32 *S, 
+   const float32_t * in, 
+   int32_t * pResult);
+
+
+/**
+ * @brief        SVM radial basis function instance init function
+ * @param[in]    S                      points to an instance of the polynomial SVM structure.
+ * @param[in]    nbOfSupportVectors     Number of support vectors
+ * @param[in]    vectorDimension        Dimension of vector space
+ * @param[in]    intercept              Intercept
+ * @param[in]    dualCoefficients       Array of dual coefficients
+ * @param[in]    supportVectors         Array of support vectors
+ * @param[in]    classes                Array of 2 classes ID
+ * @param[in]    gamma                  gamma (scikit-learn terminology)
+ * @return none.
+ *
+ */
+
+void arm_svm_rbf_init_f32(arm_svm_rbf_instance_f32 *S, 
+  uint32_t nbOfSupportVectors,
+  uint32_t vectorDimension,
+  float32_t intercept,
+  const float32_t *dualCoefficients,
+  const float32_t *supportVectors,
+  const int32_t   *classes,
+  float32_t gamma
+  );
+
+/**
+ * @brief SVM rbf prediction
+ * @param[in]    S         Pointer to an instance of the rbf SVM structure.
+ * @param[in]    in        Pointer to input vector
+ * @param[out]   pResult   decision value
+ * @return none.
+ *
+ */
+void arm_svm_rbf_predict_f32(const arm_svm_rbf_instance_f32 *S, 
+   const float32_t * in, 
+   int32_t * pResult);
+
+/**
+ * @brief        SVM sigmoid instance init function
+ * @param[in]    S                      points to an instance of the rbf SVM structure.
+ * @param[in]    nbOfSupportVectors     Number of support vectors
+ * @param[in]    vectorDimension        Dimension of vector space
+ * @param[in]    intercept              Intercept
+ * @param[in]    dualCoefficients       Array of dual coefficients
+ * @param[in]    supportVectors         Array of support vectors
+ * @param[in]    classes                Array of 2 classes ID
+ * @param[in]    coef0                  coeff0 (scikit-learn terminology)
+ * @param[in]    gamma                  gamma (scikit-learn terminology)
+ * @return none.
+ *
+ */
+
+void arm_svm_sigmoid_init_f32(arm_svm_sigmoid_instance_f32 *S, 
+  uint32_t nbOfSupportVectors,
+  uint32_t vectorDimension,
+  float32_t intercept,
+  const float32_t *dualCoefficients,
+  const float32_t *supportVectors,
+  const int32_t   *classes,
+  float32_t coef0,
+  float32_t gamma
+  );
+
+/**
+ * @brief SVM sigmoid prediction
+ * @param[in]    S        Pointer to an instance of the rbf SVM structure.
+ * @param[in]    in       Pointer to input vector
+ * @param[out]   pResult  Decision value
+ * @return none.
+ *
+ */
+void arm_svm_sigmoid_predict_f32(const arm_svm_sigmoid_instance_f32 *S, 
+   const float32_t * in, 
+   int32_t * pResult);
+
+
+
+/**
+ * @brief Instance structure for Naive Gaussian Bayesian estimator.
+ */
+typedef struct
+{
+  uint32_t vectorDimension;  /**< Dimension of vector space */
+  uint32_t numberOfClasses;  /**< Number of different classes  */
+  const float32_t *theta;          /**< Mean values for the Gaussians */
+  const float32_t *sigma;          /**< Variances for the Gaussians */
+  const float32_t *classPriors;    /**< Class prior probabilities */
+  float32_t epsilon;         /**< Additive value to variances */
+} arm_gaussian_naive_bayes_instance_f32;
+
+/**
+ * @brief Naive Gaussian Bayesian Estimator
+ *
+ * @param[in]  S         points to a naive bayes instance structure
+ * @param[in]  in        points to the elements of the input vector.
+ * @param[in]  pBuffer   points to a buffer of length numberOfClasses
+ * @return The predicted class
+ *
+ */
+
+
+uint32_t arm_gaussian_naive_bayes_predict_f32(const arm_gaussian_naive_bayes_instance_f32 *S, 
+   const float32_t * in, 
+   float32_t *pBuffer);
+
+/**
+ * @brief Computation of the LogSumExp
+ *
+ * In probabilistic computations, the dynamic of the probability values can be very
+ * wide because they come from gaussian functions.
+ * To avoid underflow and overflow issues, the values are represented by their log.
+ * In this representation, multiplying the original exp values is easy : their logs are added.
+ * But adding the original exp values is requiring some special handling and it is the
+ * goal of the LogSumExp function.
+ *
+ * If the values are x1...xn, the function is computing:
+ *
+ * ln(exp(x1) + ... + exp(xn)) and the computation is done in such a way that
+ * rounding issues are minimised.
+ *
+ * The max xm of the values is extracted and the function is computing:
+ * xm + ln(exp(x1 - xm) + ... + exp(xn - xm))
+ *
+ * @param[in]  *in         Pointer to an array of input values.
+ * @param[in]  blockSize   Number of samples in the input array.
+ * @return LogSumExp
+ *
+ */
+
+
+float32_t arm_logsumexp_f32(const float32_t *in, uint32_t blockSize);
+
+/**
+ * @brief Dot product with log arithmetic
+ *
+ * Vectors are containing the log of the samples
+ *
+ * @param[in]       pSrcA points to the first input vector
+ * @param[in]       pSrcB points to the second input vector
+ * @param[in]       blockSize number of samples in each vector
+ * @param[in]       pTmpBuffer temporary buffer of length blockSize
+ * @return The log of the dot product .
+ *
+ */
+
+
+float32_t arm_logsumexp_dot_prod_f32(const float32_t * pSrcA,
+  const float32_t * pSrcB,
+  uint32_t blockSize,
+  float32_t *pTmpBuffer);
+
+/**
+ * @brief Entropy
+ *
+ * @param[in]  pSrcA        Array of input values.
+ * @param[in]  blockSize    Number of samples in the input array.
+ * @return     Entropy      -Sum(p ln p)
+ *
+ */
+
+
+float32_t arm_entropy_f32(const float32_t * pSrcA,uint32_t blockSize);
+
+
+/**
+ * @brief Kullback-Leibler
+ *
+ * @param[in]  pSrcA         Pointer to an array of input values for probability distribution A.
+ * @param[in]  pSrcB         Pointer to an array of input values for probability distribution B.
+ * @param[in]  blockSize     Number of samples in the input array.
+ * @return Kullback-Leibler  Divergence D(A || B)
+ *
+ */
+float32_t arm_kullback_leibler_f32(const float32_t * pSrcA
+  ,const float32_t * pSrcB
+  ,uint32_t blockSize);
+
+
+/**
+ * @brief Weighted sum
+ *
+ *
+ * @param[in]    *in           Array of input values.
+ * @param[in]    *weigths      Weights
+ * @param[in]    blockSize     Number of samples in the input array.
+ * @return Weighted sum
+ *
+ */
+float32_t arm_weighted_sum_f32(const float32_t *in
+  , const float32_t *weigths
+  , uint32_t blockSize);
+
+
+/**
+ * @brief Barycenter
+ *
+ *
+ * @param[in]    in         List of vectors
+ * @param[in]    weights    Weights of the vectors
+ * @param[out]   out        Barycenter
+ * @param[in]    nbVectors  Number of vectors
+ * @param[in]    vecDim     Dimension of space (vector dimension)
+ * @return       None
+ *
+ */
+void arm_barycenter_f32(const float32_t *in
+  , const float32_t *weights
+  , float32_t *out
+  , uint32_t nbVectors
+  , uint32_t vecDim);
+
+/**
+ * @brief        Euclidean distance between two vectors
+ * @param[in]    pA         First vector
+ * @param[in]    pB         Second vector
+ * @param[in]    blockSize  vector length
+ * @return distance
+ *
+ */
+
+float32_t arm_euclidean_distance_f32(const float32_t *pA,const float32_t *pB, uint32_t blockSize);
+
+/**
+ * @brief        Bray-Curtis distance between two vectors
+ * @param[in]    pA         First vector
+ * @param[in]    pB         Second vector
+ * @param[in]    blockSize  vector length
+ * @return distance
+ *
+ */
+float32_t arm_braycurtis_distance_f32(const float32_t *pA,const float32_t *pB, uint32_t blockSize);
+
+/**
+ * @brief        Canberra distance between two vectors
+ *
+ * This function may divide by zero when samples pA[i] and pB[i] are both zero.
+ * The result of the computation will be correct. So the division per zero may be
+ * ignored.
+ *
+ * @param[in]    pA         First vector
+ * @param[in]    pB         Second vector
+ * @param[in]    blockSize  vector length
+ * @return distance
+ *
+ */
+float32_t arm_canberra_distance_f32(const float32_t *pA,const float32_t *pB, uint32_t blockSize);
+
+
+/**
+ * @brief        Chebyshev distance between two vectors
+ * @param[in]    pA         First vector
+ * @param[in]    pB         Second vector
+ * @param[in]    blockSize  vector length
+ * @return distance
+ *
+ */
+float32_t arm_chebyshev_distance_f32(const float32_t *pA,const float32_t *pB, uint32_t blockSize);
+
+
+/**
+ * @brief        Cityblock (Manhattan) distance between two vectors
+ * @param[in]    pA         First vector
+ * @param[in]    pB         Second vector
+ * @param[in]    blockSize  vector length
+ * @return distance
+ *
+ */
+float32_t arm_cityblock_distance_f32(const float32_t *pA,const float32_t *pB, uint32_t blockSize);
+
+/**
+ * @brief        Correlation distance between two vectors
+ *
+ * The input vectors are modified in place !
+ *
+ * @param[in]    pA         First vector
+ * @param[in]    pB         Second vector
+ * @param[in]    blockSize  vector length
+ * @return distance
+ *
+ */
+float32_t arm_correlation_distance_f32(float32_t *pA,float32_t *pB, uint32_t blockSize);
+
+/**
+ * @brief        Cosine distance between two vectors
+ *
+ * @param[in]    pA         First vector
+ * @param[in]    pB         Second vector
+ * @param[in]    blockSize  vector length
+ * @return distance
+ *
+ */
+
+float32_t arm_cosine_distance_f32(const float32_t *pA,const float32_t *pB, uint32_t blockSize);
+
+/**
+ * @brief        Jensen-Shannon distance between two vectors
+ *
+ * This function is assuming that elements of second vector are > 0
+ * and 0 only when the corresponding element of first vector is 0.
+ * Otherwise the result of the computation does not make sense
+ * and for speed reasons, the cases returning NaN or Infinity are not
+ * managed.
+ *
+ * When the function is computing x log (x / y) with x 0 and y 0,
+ * it will compute the right value (0) but a division per zero will occur
+ * and shoudl be ignored in client code.
+ *
+ * @param[in]    pA         First vector
+ * @param[in]    pB         Second vector
+ * @param[in]    blockSize  vector length
+ * @return distance
+ *
+ */
+
+float32_t arm_jensenshannon_distance_f32(const float32_t *pA,const float32_t *pB,uint32_t blockSize);
+
+/**
+ * @brief        Minkowski distance between two vectors
+ *
+ * @param[in]    pA         First vector
+ * @param[in]    pB         Second vector
+ * @param[in]    n          Norm order (>= 2)
+ * @param[in]    blockSize  vector length
+ * @return distance
+ *
+ */
+
+
+
+float32_t arm_minkowski_distance_f32(const float32_t *pA,const float32_t *pB, int32_t order, uint32_t blockSize);
+
+/**
+ * @brief        Dice distance between two vectors
+ *
+ * @param[in]    pA              First vector of packed booleans
+ * @param[in]    pB              Second vector of packed booleans
+ * @param[in]    order           Distance order
+ * @param[in]    blockSize       Number of samples
+ * @return distance
+ *
+ */
+
+
+float32_t arm_dice_distance(const uint32_t *pA, const uint32_t *pB, uint32_t numberOfBools);
+
+/**
+ * @brief        Hamming distance between two vectors
+ *
+ * @param[in]    pA              First vector of packed booleans
+ * @param[in]    pB              Second vector of packed booleans
+ * @param[in]    numberOfBools   Number of booleans
+ * @return distance
+ *
+ */
+
+float32_t arm_hamming_distance(const uint32_t *pA, const uint32_t *pB, uint32_t numberOfBools);
+
+/**
+ * @brief        Jaccard distance between two vectors
+ *
+ * @param[in]    pA              First vector of packed booleans
+ * @param[in]    pB              Second vector of packed booleans
+ * @param[in]    numberOfBools   Number of booleans
+ * @return distance
+ *
+ */
+
+float32_t arm_jaccard_distance(const uint32_t *pA, const uint32_t *pB, uint32_t numberOfBools);
+
+/**
+ * @brief        Kulsinski distance between two vectors
+ *
+ * @param[in]    pA              First vector of packed booleans
+ * @param[in]    pB              Second vector of packed booleans
+ * @param[in]    numberOfBools   Number of booleans
+ * @return distance
+ *
+ */
+
+float32_t arm_kulsinski_distance(const uint32_t *pA, const uint32_t *pB, uint32_t numberOfBools);
+
+/**
+ * @brief        Roger Stanimoto distance between two vectors
+ *
+ * @param[in]    pA              First vector of packed booleans
+ * @param[in]    pB              Second vector of packed booleans
+ * @param[in]    numberOfBools   Number of booleans
+ * @return distance
+ *
+ */
+
+float32_t arm_rogerstanimoto_distance(const uint32_t *pA, const uint32_t *pB, uint32_t numberOfBools);
+
+/**
+ * @brief        Russell-Rao distance between two vectors
+ *
+ * @param[in]    pA              First vector of packed booleans
+ * @param[in]    pB              Second vector of packed booleans
+ * @param[in]    numberOfBools   Number of booleans
+ * @return distance
+ *
+ */
+
+float32_t arm_russellrao_distance(const uint32_t *pA, const uint32_t *pB, uint32_t numberOfBools);
+
+/**
+ * @brief        Sokal-Michener distance between two vectors
+ *
+ * @param[in]    pA              First vector of packed booleans
+ * @param[in]    pB              Second vector of packed booleans
+ * @param[in]    numberOfBools   Number of booleans
+ * @return distance
+ *
+ */
+
+float32_t arm_sokalmichener_distance(const uint32_t *pA, const uint32_t *pB, uint32_t numberOfBools);
+
+/**
+ * @brief        Sokal-Sneath distance between two vectors
+ *
+ * @param[in]    pA              First vector of packed booleans
+ * @param[in]    pB              Second vector of packed booleans
+ * @param[in]    numberOfBools   Number of booleans
+ * @return distance
+ *
+ */
+
+float32_t arm_sokalsneath_distance(const uint32_t *pA, const uint32_t *pB, uint32_t numberOfBools);
+
+/**
+ * @brief        Yule distance between two vectors
+ *
+ * @param[in]    pA              First vector of packed booleans
+ * @param[in]    pB              Second vector of packed booleans
+ * @param[in]    numberOfBools   Number of booleans
+ * @return distance
+ *
+ */
+
+float32_t arm_yule_distance(const uint32_t *pA, const uint32_t *pB, uint32_t numberOfBools);
 
 
   /**
@@ -7323,13 +8795,15 @@ arm_status arm_sqrt_q15(
   #define LOW_OPTIMIZATION_EXIT
   #define IAR_ONLY_LOW_OPTIMIZATION_ENTER
   #define IAR_ONLY_LOW_OPTIMIZATION_EXIT
-
+       
+#elif defined ( _MSC_VER ) || defined(__GNUC_PYTHON__)
+      #define LOW_OPTIMIZATION_ENTER
+      #define LOW_OPTIMIZATION_EXIT
+      #define IAR_ONLY_LOW_OPTIMIZATION_ENTER 
+      #define IAR_ONLY_LOW_OPTIMIZATION_EXIT
 #endif
 
 
-#ifdef   __cplusplus
-}
-#endif
 
 /* Compiler specific diagnostic adjustment */
 #if   defined ( __CC_ARM )
@@ -7352,6 +8826,11 @@ arm_status arm_sqrt_q15(
 #else
   #error Unknown compiler
 #endif
+
+#ifdef   __cplusplus
+}
+#endif
+
 
 #endif /* _ARM_MATH_H */
 

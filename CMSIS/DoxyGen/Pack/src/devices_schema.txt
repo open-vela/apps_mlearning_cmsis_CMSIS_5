@@ -1909,11 +1909,6 @@ Contact cmsis@arm.com to ask for an extension. These values can be used in the e
     <td>http://www.elmos.com</td>
   </tr>
   <tr>
-    <td class="XML-Token">EtaCompute:157</td>
-	<td>Eta Compute Inc.</td>
-	<td>https://www.etacompute.com</td>
-  </tr>
-  <tr>
     <td class="XML-Token">Generic:5</td>
     <td>Generic: Not a vendor specific device</td>
     <td></td>
@@ -2132,11 +2127,6 @@ Contact cmsis@arm.com to ask for an extension. These values can be used in the e
     <td class="XML-Token">Xinnova:135</td>
     <td>Xinnova Technology</td>
     <td>(n/a)</td>
-  </tr>
-  <tr>
-    <td class="XML-Token">XMC:158</td>
-    <td>Wuhan Xinxin Semiconductor Manufacturing Co., Ltd.</td>
-    <td>http://www.xmcwh.com/</td>
   </tr>
   <tr>
     <td class="XML-Token">Zilog:89</td>
@@ -2403,13 +2393,14 @@ The values can be used in the elements:
 
 <p>&nbsp;</p>		
 
-\anchor DsecureEnum <b>Table: Software Model Selection </b>
+\anchor DsecureEnum <b>Table: Software Model Secure </b>
 
 The table shows predefined values that identify whether an application will run in secure mode.
 The values can be used in the elements:
 - \ref element_accept  
 - \ref element_require 
 - \ref element_deny  
+- \ref element_processor
 
 <table class="cmtable" summary="Enumeration: DsecureEnum">
   <tr>
@@ -2418,15 +2409,11 @@ The values can be used in the elements:
   </tr>
   <tr>
     <td class="XML-Token">Secure</td>
-    <td>Application is built to run in secure mode.</td>
+    <td>Application is built to run in secure mode</td>
   </tr>
   <tr>
     <td class="XML-Token">Non-secure</td>
-    <td>Application is built to run in non-secure mode.</td>
-  </tr>
-  <tr>
-    <td class="XML-Token">TrustZone-disabled</td>
-    <td>Application is built with TrustZone security disabled.</td>
+    <td>Application is built to run in non-secure mode</td>
   </tr>
 </table>
 
@@ -2586,18 +2573,9 @@ Default debugger configuration for a target connection.
     <td>optional</td>
   </tr>
   <tr>
-    <td>dormant</td>
-    <td>
-      The device is accessed via a CoreSight DP that requires the dormant state to switch debug protocols.
-      Default value is \token{false}.
-    </td>
-    <td>xs:bool</td>
-    <td>optional</td>
-  </tr>
-  <tr>
     <td>sdf</td>
     <td>
-      This attribute specifies the filename and path of the system description file (SDF).
+      This attribute specifies the filename and path of the system description file (SFD).
       The system description file contains information about CoreSight components, there versions and how they
       are interconnected and hooked to debug and access ports. If not specified an autodetection needs to
       be initiated by the debugger at connection time.
@@ -2716,7 +2694,6 @@ __var uservar = value;  // Comment: Define "uservar" and initialize to "value"
   </tr>
   <tr>
     <td>configfile</td>
-    \anchor debugvars_configfile
     <td>
       Configuration file with path relative to the package base folder (extension *.DBGCONF). This file contains 
       assignments of a default value to global debug access variables. This file gets copied to the project folder
@@ -3249,7 +3226,7 @@ Refer to \ref usage_of_sequences for details.<br>
   </tr>
   <tr>
     <td>disable</td>
-    <td>Disables execution of the \ref default_sequences "Predefined Debug Access Sequence".</td>
+    <td>Disables execution of the \ref default_sequences "Default Debug Access Sequence".</td>
     <td>xs:boolean</td>
     <td>optional</td>
   </tr>
@@ -3703,9 +3680,10 @@ to all connections.
     <td>optional</td>
   </tr>
   <tr>
-    <td>\anchor defaultResetSequence defaultResetSequence</td>
+    <td>defaultResetSequence</td>
     <td>
-      Specifies the debug sequence that shall be used by default for the reset operation. It can be set to one of the predefined reset sequences such as \ref resetSystem, \ref resetHardware and \ref resetProcessor or also to any user-defined debug sequence. If not specified then \ref resetSystem sequence will be set as default.
+      Specifies the debug sequence that is to be used for the device. Refer to \ref writing_sequences for more
+      information.
     </td>
     <td>xs:string</td>
     <td>optional</td>

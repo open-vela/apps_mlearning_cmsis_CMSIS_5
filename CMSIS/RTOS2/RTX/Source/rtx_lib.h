@@ -196,7 +196,6 @@ extern void osRtxTimerThread (void *argument);
 
 // Mutex Library functions
 extern void osRtxMutexOwnerRelease (os_mutex_t *mutex_list);
-extern void osRtxMutexOwnerRestore (const os_mutex_t *mutex, const os_thread_t *thread_wakeup);
 
 // Memory Heap Library functions
 extern uint32_t osRtxMemoryInit (void *mem, uint32_t size);

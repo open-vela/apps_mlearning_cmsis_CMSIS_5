@@ -6,7 +6,7 @@
  * $Date:        18. March 2019
  * $Revision:    V1.6.0
  *
- * Target Processor: Cortex-M and Cortex-A cores
+ * Target Processor: Cortex-M cores
  * -------------------------------------------------------------------- */
 /*
  * Copyright (C) 2010-2019 ARM Limited or its affiliates. All rights reserved.
@@ -27,7 +27,7 @@
  */
 
 #include "arm_math.h"
-#if (defined(ARM_MATH_NEON) || defined(ARM_MATH_MVEF)) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_NEON)
 #include <limits.h>
 #endif
 
@@ -56,100 +56,14 @@
   @param[out]    pIndex     index of maximum value returned here
   @return        none
  */
-
-#if defined(ARM_MATH_MVEF) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_NEON)
 void arm_max_f32(
   const float32_t * pSrc,
   uint32_t blockSize,
   float32_t * pResult,
   uint32_t * pIndex)
 {
-    uint32_t blkCnt; 
-    f32x4_t vecSrc;
-    f32x4_t curExtremValVec = vdupq_n_f32(F32_MIN);
-    float32_t maxValue = F32_MIN;
-    uint32_t idx = blockSize;
-    uint32x4_t indexVec;
-    uint32x4_t curExtremIdxVec;
-    uint32_t curIdx = 0;
-    mve_pred16_t p0;
-    float32_t tmp;
-
-
-    indexVec = vidupq_wb_u32(&curIdx, 1);
-    curExtremIdxVec = vdupq_n_u32(0);
-
-    /* Compute 4 outputs at a time */
-    blkCnt = blockSize >> 2U;
-    while (blkCnt > 0U)
-    {
-        vecSrc = vldrwq_f32(pSrc);
-        /*
-         * Get current max per lane and current index per lane
-         * when a max is selected
-         */
-        p0 = vcmpgeq(vecSrc, curExtremValVec);
-        curExtremValVec = vpselq(vecSrc, curExtremValVec, p0);
-        curExtremIdxVec = vpselq(indexVec, curExtremIdxVec, p0);
-
-        indexVec = vidupq_wb_u32(&curIdx, 1);
-
-        pSrc += 4;
-        /* Decrement the loop counter */
-        blkCnt--;
-    }
-
-
-    /*
-     * Get max value across the vector
-     */
-    maxValue = vmaxnmvq(maxValue, curExtremValVec);
-    /*
-     * set index for lower values to max possible index
-     */
-    p0 = vcmpgeq(curExtremValVec, maxValue);
-    indexVec = vpselq(curExtremIdxVec, vdupq_n_u32(blockSize), p0);
-    /*
-     * Get min index which is thus for a max value
-     */
-    idx = vminvq(idx, indexVec);
-
-    /* Tail */
-    blkCnt = blockSize & 0x3;
-
-    while (blkCnt > 0U)
-    {
-      /* Initialize tmp to the next consecutive values one by one */
-      tmp = *pSrc++;
-
-      /* compare for the maximum value */
-      if (maxValue < tmp)
-      {
-        /* Update the maximum value and it's index */
-        maxValue = tmp;
-        idx = blockSize - blkCnt;
-      }
-
-      /* Decrement loop counter */
-      blkCnt--;
-    }
-
-    /*
-     * Save result
-     */
-    *pIndex = idx;
-    *pResult = maxValue;
-}
-
-#else
-#if defined(ARM_MATH_NEON) && !defined(ARM_MATH_AUTOVECTORIZE)
-void arm_max_f32(
-  const float32_t * pSrc,
-  uint32_t blockSize,
-  float32_t * pResult,
-  uint32_t * pIndex)
-{
-  float32_t maxVal1, out;               /* Temporary variables to store the output value. */
+  float32_t maxVal1, maxVal2, out;               /* Temporary variables to store the output value. */
   uint32_t blkCnt, outIndex, count;              /* loop counter */
 
   float32x4_t outV, srcV;
@@ -263,7 +177,7 @@ void arm_max_f32(
         float32_t maxVal, out;                         /* Temporary variables to store the output value. */
         uint32_t blkCnt, outIndex;                     /* Loop counter */
 
-#if defined (ARM_MATH_LOOPUNROLL) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined (ARM_MATH_LOOPUNROLL)
         uint32_t index;                                /* index of maximum value */
 #endif
 
@@ -273,7 +187,7 @@ void arm_max_f32(
   /* Load first input value that act as reference value for comparision */
   out = *pSrc++;
 
-#if defined (ARM_MATH_LOOPUNROLL) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined (ARM_MATH_LOOPUNROLL)
   /* Initialise index of maximum value. */
   index = 0U;
 
@@ -352,8 +266,6 @@ void arm_max_f32(
   *pIndex = outIndex;
 }
 #endif /* #if defined(ARM_MATH_NEON) */
-#endif /* defined(ARM_MATH_MVEF) && !defined(ARM_MATH_AUTOVECTORIZE) */
-
 /**
   @} end of Max group
  */

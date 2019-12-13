@@ -6,14 +6,10 @@ CMSIS-Pack offers two ways to simplify the debug setup:
 - A \subpage debug_description declares a set of standardized debug and trace methods are automatically executed by the
   debugger. Implementation-specific steps can be described using an XML syntax. This concept is easy to implement for basic
   chip configurations that mostly rely on a standard implementation of the CoreSight architecture. Most single-core devices
-  should be able to be specified completely with debug descriptions.
-  
+  should be able to be specified completely with debug descriptions.  
 - For more complex topologies and multi-core devices, a \ref sdf_pg "System Description File" helps debuggers to connect to
   the target and access all available cores via trace. An SDF file is more complex (although also specified in XML), but is
   also more flexible with regards to the underlying debug architecture.
-  
-- \subpage dbg_setup_tutorial provides a guide on how to implement the debug descriptions for a microcontroller device. It explains the options for configuring debug connection. Gives examples on implementing debug access sequences in specific scenarios such as trace support, bootloader handling, multi-core systems and others. And finally shows how debug descriptions can be used in various IDE debuggers.<br>
-
 */
 
 
@@ -61,12 +57,14 @@ Debug access sequences define the activities of development tools to connect to 
 debugging, tracing, or flash programming. Several debug access sequences are predefined and executed in specific context. 
 Refer to \refelem{sequences} for details.
 
-Software development tools should implement \ref default_sequences. These predefined sequences can be overwritten by device
+Software development tools should implement \ref default_sequences. These default sequences can be overwritten by device
 specific sequences using the \refelem{sequence} element in the \refelem{sequences} section of the PDSC file. Additionally,
 a PDSC file can contain user-defined sequences, for example to reuse access sequence fragments:
  - \ref usage_of_sequences explains how the sequences are used from a development tool point of view.
- - \ref default_sequences lists all debug access sequences that are predefined by the CMSIS-Pack standard and shows the details of the predefined debug access sequences.
- - \ref writing_sequences explains how to write custom debug access sequences. These can be used to either override predefined sequences or to define device specific sequences.
+ - \ref default_sequences lists all debug access sequences that are predefined by the CMSIS-Pack standard and shows the
+   details of the default debug access sequences.
+ - \ref writing_sequences explains how to write custom debug access sequences. These can be used to either override default
+   sequences or to define device specific sequences.
 
 
 \section usage_of_sequences Usage of debug access sequences
@@ -96,15 +94,18 @@ The following diagrams show how the Debug Access Sequences are executed by a dev
 \image html DebugDisconnect.png 
 
 
-\section default_sequences Predefined debug access sequences
+\section default_sequences Default debug access sequences
 
-Debug access sequences are defined using the \ref element_sequence "sequence" element. 
+Debug access sequences get defined in the \ref element_sequence "sequence" element. The following table lists the available
+predefined debug access sequences. \ref default_sequences are executed if they are not overwritten using a
+\refelem{sequence} element. Refer to \ref usage_of_sequences for more information about the execution of these sequences.
 
-The table below lists the available predefined debug access sequences. Their default implementation is done in a development tool and gets executed by default. If PDSC file contains a user implementation of a predefined debug sequence (using \refelem{sequence} element) then it will override the default implementation and will be executed instead. Refer to \ref usage_of_sequences for more information about the execution of these sequences.
+For debug access sequences marked in \token{ItalicRed}, no default sequence exists. The usage in a debug description requires
+a related \refelem{sequence} element to be present. The other sequences should be implemented in a development tool. They are
+executed when no sequence definition exists in the PDSC file.
 
-For debug access sequences marked in \token{ItalicRed}, no default implementation  exists. When using them in debug descriptions corresponding user implementation shall be done as well. 
-
-\note Predefined debug access sequences read the System Control Space (SCS) of the processor and assume that the SCS offset is implemented as defined in the Armv6-M/Armv7-M/Armv8-M architecture reference manual.
+\note Default debug access sequences read the System Control Space (SCS) of the processor and assume that the SCS offset is
+implemented as defined in the Armv6-M/Armv7-M/Armv8-M architecture reference manual.
 
 <table class="cmtable" summary="Enumeration: SequenceNameEnum">
   <tr>
@@ -135,11 +136,9 @@ For debug access sequences marked in \token{ItalicRed}, no default implementatio
   </tr>
   <tr>
     <td class="XML-Token">DebugDeviceUnlock</td>
-    \anchor DebugDeviceUnlock
-	<td>Check if the device is in a locked state and unlock it. Use <b>query</b> command elements
+    <td>Check if the device is in a locked state and unlock it. Use <b>query</b> command elements
     for user confirmation.<br>
-    Executed after having powered up the debug port.<br>
-	See example at \ref userDebugDeviceUnlock.</td>
+    Executed after having powered up the debug port.</td>
   </tr>
   <tr>
     <td class="XML-Token">\ref debugCoreStart</td>
@@ -160,23 +159,17 @@ For debug access sequences marked in \token{ItalicRed}, no default implementatio
   </tr>
   <tr>
     <td class="XML-Token">\ref resetSystem</td>
-    <td>\anchor resetSystem_Descr
-	Executes a system-wide reset without debug domain (or warm-reset that preserves debug connection) via software mechanisms, for example AIRCR.SYSRESETREQ.
+    <td>Execute a system-wide reset via software mechanisms.
     </td>
   </tr>
   <tr>
     <td class="XML-Token">\ref resetProcessor</td>
-    <td>\anchor resetProcessor_Descr
-	Executes a local processor reset without peripherals and debug domains.<br>
-	Uses a software mechanism (for example AIRCR.VECTRESET).
+    <td>Execute a processor reset via software mechanisms.
     </td>
   </tr>
   <tr>
     <td class="XML-Token">\ref resetHardware</td>
-    <td>\anchor resetHardware_Descr
-	Executes a system-wide reset without debug domain via the dedicated debugger reset line, e.g. nRST.<br>
-	Debug confinguration and connection are typically preserved. But in some devices this is implemented as a power-on reset.<br>
-	Specially useful in cases when device is locked and \ref resetSystem_Descr "ResetSystem" cannot be performed (for example debug pins are locked by the application).
+    <td>Execute a system-wide reset via the dedicated debugger reset line, e.g. nRST.
   </tr>
   <tr>
     <td class="XML-Token">\ref resetHardwareAssert</td>
@@ -244,16 +237,13 @@ For debug access sequences marked in \token{ItalicRed}, no default implementatio
   </tr>
   <tr>
     <td class="XML-Token">TraceStart</td>
-	\anchor TraceStart
     <td>Enable target trace capture.<br>
     Executed before the debugger powers up and configures standard CoreSight trace components, e.g. after the initial target connection
-    as well as after a system-wide reset.<br>
-	See example at \ref userTraceStart.
+    as well as after a system-wide reset.
     </td>
   </tr>
   <tr>
     <td class="XML-Token">TraceStop</td>
-	\anchor TraceStop
     <td>Disable target trace capture.<br>
     Executed after the debugger disabled and powered down standard CoreSight trace components.
     </td>
@@ -289,7 +279,6 @@ Prepare the target debug port for connection.
   <sequence name="DebugPortSetup">
     <block>
       __var isSWJ    = ((__protocol &amp; 0x00010000) != 0);
-      __var hasDormant = __protocol &amp; 0x00020000;
       __var protType = __protocol &amp; 0x0000FFFF;
     </block>
   
@@ -298,50 +287,20 @@ Prepare the target debug port for connection.
     
       <control if="isSWJ">
       
-        <control if="hasDormant">
-    
-          <block atomic="1">
-            // Ensure current debug interface is in reset state
-            DAP_SWJ_Sequence(51, 0x0007FFFFFFFFFFFF);
-            
-            // Select Dormant State (from SWD)
-            DAP_SWJ_Sequence(16, 0xE3BC);
-            
-            // At least 8 cycles SWDIO/TMS HIGH
-            DAP_SWJ_Sequence(8, 0xFF);
-            
-            // Alert Sequence Bits  0.. 63
-            DAP_SWJ_Sequence(64, 0x86852D956209F392);
+        <block atomic="1">
+          // Ensure current debug interface is in reset state
+          DAP_SWJ_Sequence(51, 0x0007FFFFFFFFFFFF);
           
-            // Alert Sequence Bits 64..127
-            DAP_SWJ_Sequence(64, 0x19BC0EA2E3DDAFE9);
-    
-            // 4 cycles SWDIO/TMS LOW + 8-Bit JTAG Activation Code (0x0A)            
-            DAP_SWJ_Sequence(12, 0x0A0);
-           
-            // Ensure JTAG interface is reset
-            DAP_SWJ_Sequence(6, 0x3F);
-          </block>
-    
-        </control>
-    
-        <control if="!hasDormant">
-    
-          <block atomic="1">
-            // Ensure current debug interface is in reset state
-            DAP_SWJ_Sequence(51, 0x0007FFFFFFFFFFFF);
-            
-            // Execute SWJ-DP Switch Sequence SWD to JTAG (0xE73C)
-            // Change if SWJ-DP uses deprecated switch code (0xAEAE)
-            DAP_SWJ_Sequence(16, 0xE73C);
-            
-            // Ensure JTAG interface is reset
-            DAP_SWJ_Sequence(6, 0x3F);
-          </block>
-    
-        </control>
-    
+          // Execute SWJ-DP Switch Sequence SWD to JTAG (0xE73C)
+          // Change if SWJ-DP uses deprecated switch code (0xAEAE)
+          DAP_SWJ_Sequence(16, 0xE73C);
+          
+          // Ensure JTAG interface is reset
+          DAP_SWJ_Sequence(6, 0x3F);
+        </block>
+        
       </control>
+    
       <block atomic="1">
         // JTAG "Soft" Reset
         DAP_JTAG_Sequence(6, 1, 0x3F);
@@ -355,35 +314,6 @@ Prepare the target debug port for connection.
     
       <control if="isSWJ">
         
-      <control if="hasDormant">
-    
-          <block atomic="1">
-            // Ensure current debug interface is in reset state
-            DAP_SWJ_Sequence(51, 0x0007FFFFFFFFFFFF);
-            
-            // Select Dormant State (from JTAG)
-            DAP_SWJ_Sequence(31, 0x33BBBBBA);
-            
-            // At least 8 cycles SWDIO/TMS HIGH
-            DAP_SWJ_Sequence(8, 0xFF);
-            
-            // Alert Sequence Bits  0.. 63
-            DAP_SWJ_Sequence(64, 0x86852D956209F392);
-          
-            // Alert Sequence Bits 64..127
-            DAP_SWJ_Sequence(64, 0x19BC0EA2E3DDAFE9);
-    
-            // 4 cycles SWDIO/TMS LOW + 8-Bit SWD Activation Code (0x1A)            
-            DAP_SWJ_Sequence(12, 0x1A0);
-           
-            // Enter SWD Line Reset State
-            DAP_SWJ_Sequence(51, 0x0007FFFFFFFFFFFF);  // &gt; 50 cycles SWDIO/TMS High
-            DAP_SWJ_Sequence(3,  0x00);                // At least 2 idle cycles (SWDIO/TMS Low)
-          </block>
-    
-        </control>
-    
-        <control if="!hasDormant">
         <block atomic="1">
           // Ensure current debug interface is in reset state
           DAP_SWJ_Sequence(51, 0x0007FFFFFFFFFFFF);
@@ -399,43 +329,13 @@ Prepare the target debug port for connection.
       
       </control>
     
-      </control>
       <control if="!isSWJ">
       
-     <control if="hasDormant">
-    
-          <block atomic="1">
-            // Ensure current debug interface is in reset state
-            DAP_SWJ_Sequence(51, 0x0007FFFFFFFFFFFF);
-            
-            // At least 8 cycles SWDIO/TMS HIGH
-            DAP_SWJ_Sequence(8, 0xFF);
-            
-            // Alert Sequence Bits  0.. 63
-            DAP_SWJ_Sequence(64, 0x86852D956209F392);
-          
-            // Alert Sequence Bits 64..127
-            DAP_SWJ_Sequence(64, 0x19BC0EA2E3DDAFE9);
-    
-            // 4 cycles SWDIO/TMS LOW + 8-Bit SWD Activation Code (0x1A)            
-            DAP_SWJ_Sequence(12, 0x1A0);
-           
-            // Enter SWD Line Reset State
-            DAP_SWJ_Sequence(51, 0x0007FFFFFFFFFFFF);  // &gt; 50 cycles SWDIO/TMS High
-            DAP_SWJ_Sequence(3,  0x00);                // At least 2 idle cycles (SWDIO/TMS Low)
-          </block>
-    
-        </control>
-    
-        <control if="!hasDormant">
-    
-          <block atomic="1">
-            // Enter SWD Line Reset State
-            DAP_SWJ_Sequence(51, 0x0007FFFFFFFFFFFF);  // &gt; 50 cycles SWDIO/TMS High
-            DAP_SWJ_Sequence(3,  0x00);                // At least 2 idle cycles (SWDIO/TMS Low)
-          </block>
-    
-        </control>
+        <block atomic="1">
+          // Enter SWD Line Reset State
+          DAP_SWJ_Sequence(51, 0x0007FFFFFFFFFFFF);  // &gt; 50 cycles SWDIO/TMS High
+          DAP_SWJ_Sequence(3,  0x00);                // At least 2 idle cycles (SWDIO/TMS Low)
+        </block>
         
       </control>
       
@@ -580,7 +480,7 @@ Un-initialize core debug system.
 
 \subsection resetSystem ResetSystem
 
-Default implementation for \b ResetSystem debug access sequence that executes a system-wide  reset via software mechanisms. Detailed description is provided \ref resetSystem_Descr "in the table above".
+Execute a system-wide reset via software mechanisms.
 
 \code
   <sequence name="ResetSystem">
@@ -605,9 +505,9 @@ Default implementation for \b ResetSystem debug access sequence that executes a 
 
 \subsection resetProcessor ResetProcessor
 
-Default implementation for \b ResetProcessor debug access sequence that executes a local processor reset via software mechanisms. Detailed description is provided \ref resetProcessor_Descr "in the table above".
+Execute a processor reset via software mechanisms.
 
-\note This predefined debug access sequence is empty for Armv6-M and Armv8-M based processors.
+\note This Default Debug Access Sequence is empty for Armv6-M and Armv8-M based processors.
 
 \code
   <sequence name="ResetProcessor">
@@ -633,7 +533,7 @@ Default implementation for \b ResetProcessor debug access sequence that executes
 
 \subsection resetHardware ResetHardware
 
-Default implementation for \b ResetHardware debug access sequence that executes a system-wide  reset via dedicated debugger reset line. Detailed description is provided  \ref resetHardware_Descr "in the table above".
+Execute a system-wide reset via the dedicated debugger reset line nRST.
 
 \code
   <sequence name="ResetHardware">
@@ -772,9 +672,8 @@ Free hardware resources allocated by ResetCatchSet.
 
 \section nonstdExamples Examples of non-standard debug access sequences
 
-This section provides examples of user-implemented predefined debug access sequences.
 
-\subsection userTraceStart User implementation of TraceStart sequence
+\subsection traceStart TraceStart
 
 \code
 <sequence name="TraceStart">
@@ -791,7 +690,7 @@ This section provides examples of user-implemented predefined debug access seque
 \endcode
 
 
-\subsection userDebugDeviceUnlock User implementation of DebugDeviceUnlock sequence
+\subsection debugDeviceUnlock DebugDeviceUnlock
 
 \code
 <sequence name="DebugDeviceUnlock">
@@ -858,7 +757,7 @@ This section provides examples of user-implemented predefined debug access seque
 \endcode
 
 
-\subsection hwReset User implementation of hardware reset sequence
+\subsection hwReset User-defined hardware reset sequence
 
 \code
 <sequence name="HWReset">
@@ -926,8 +825,8 @@ This section provides examples of user-implemented predefined debug access seque
 
 \section writing_sequences Writing debug access sequences
 
-To override a predefined sequence or to create a custom (user-defined) sequence, you need to write \refelem{sequence} elements. The
- following sections show how to use the built-in debug access syntax, expressions, and debug access functions to create
+To override a default sequence or to create a custom (default) sequence, you need to write \refelem{sequence} elements. The
+following sections show how to use the built-in debug access syntax, expressions, and debug access functions to create
 custom sequences.
 
 
@@ -1028,7 +927,8 @@ An expression may consist of the following:
 Debug access functions can be called in expressions in order to interact with the target device
 and the user. Parameters to functions can again be expressions.<br>
 By default, a debugger must abort the execution of a debug access sequence if a function call fails.
-However, this behavior can be controlled from a sequence by the \ref __errorcontrol debug access variable.<br>
+However, this behavior can be controlled from a sequence by the <b>__errorcontrol</b> 
+\ref DebugVars "debug access variable".<br>
 <br>
 The following table describes the existing debug access functions, their parameters and the
 debug access variables which are evaluated for the function call.
@@ -1073,7 +973,7 @@ debug access variables which are evaluated for the function call.
       The 8-bit value as read from target memory.
 
       <b>Code Example:</b><br>
-	  Refer to \ref userTraceStart
+	  Refer to \ref traceStart
     </td>
   </tr>
   <tr>
@@ -1147,7 +1047,7 @@ debug access variables which are evaluated for the function call.
       The 32-bit value as read from the AP register.
 
       <b>Code Example:</b><br>
-      Refer to \ref userDebugDeviceUnlock
+      Refer to \ref debugDeviceUnlock
     </td>
   </tr>
   <tr>
@@ -1186,7 +1086,7 @@ debug access variables which are evaluated for the function call.
       Always returns \token{0}.
 
       <b>Code Example:</b><br>
-	  Refer to \ref userTraceStart
+	  Refer to \ref traceStart
     </td>
   </tr>
   <tr>
@@ -1328,7 +1228,7 @@ debug access variables which are evaluated for the function call.
       Always returns \token{0}.
 
       <b>Code Example:</b><br>
-      Refer to \ref userDebugDeviceUnlock
+      Refer to \ref debugDeviceUnlock
     </td>
   </tr>
   <tr>
@@ -1756,8 +1656,6 @@ debug access variables which are evaluated for the function call.
 - Some target access functions determine the used debug and access port by the current values of the <b>__dp</b> and
   <b>__ap</b> debug access variables. If a target access requires a different debug or access port than the default ones, it
   must change these values. This change is held until finishing the sequence the change has occurred in.
-- A call to WriteDP() to change the DP SELECT register does not implicitly change the value of the debug access variable
-  <b>__ap</b>. It needs to be explicitly updated to select a different AP for subsequent AP register and memory accesses.
   
 \subsection DebugVars Debug access variables
 
@@ -1791,8 +1689,7 @@ A debugger needs to support a set of pre-defined debug access variables. These a
         - \token{2}: Serial Wire Debug (SWD)<br>
         - \token{3}: CJTAG<br>
       - Bit 16: SWJ-DP
-      - Bit 17: Switch through dormant state
-      - Bit 18..63: Reserved
+      - Bit 17..63: Reserved
     </td>
   </tr>
   <tr>
@@ -1845,9 +1742,7 @@ A debugger needs to support a set of pre-defined debug access variables. These a
     </td>
   </tr>
   <tr>
-    <td style="white-space: nowrap">
-	\anchor __traceout
-	<pre>__traceout</pre></td>
+    <td style="white-space: nowrap"><pre>__traceout</pre></td>
     <td>Read-Only</td>
     <td>
       Activated trace outputs (sinks). Additionally holds information on the selected port width if
@@ -1864,10 +1759,7 @@ A debugger needs to support a set of pre-defined debug access variables. These a
     </td>
   </tr>
   <tr>
-    <td style="white-space: nowrap">
-	\anchor __errorcontrol
-	<pre>__errorcontrol</pre>
-	</td>
+    <td style="white-space: nowrap"><pre>__errorcontrol</pre></td>
     <td>Read/Write</td>
     <td>
       Control variable for debug access error handling. All of its bit

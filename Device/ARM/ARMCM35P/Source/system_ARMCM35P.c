@@ -2,8 +2,8 @@
  * @file     system_ARMCM35P.c
  * @brief    CMSIS Device System Source File for
  *           ARMCM35P Device
- * @version  V1.0.1
- * @date     15. November 2019
+ * @version  V1.0.0
+ * @date     03. September 2018
  ******************************************************************************/
 /*
  * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
@@ -50,11 +50,13 @@
 
 #define  SYSTEM_CLOCK    (XTAL / 2U)
 
-/*----------------------------------------------------------------------------
-  Exception / Interrupt Vector table
- *----------------------------------------------------------------------------*/
-extern const VECTOR_TABLE_Type __VECTOR_TABLE[496];
 
+/*----------------------------------------------------------------------------
+  Externals
+ *----------------------------------------------------------------------------*/
+#if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
+  extern uint32_t __VECTOR_TABLE;
+#endif
 
 /*----------------------------------------------------------------------------
   System Core Clock Variable
@@ -77,7 +79,7 @@ void SystemInit (void)
 {
 
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
-  SCB->VTOR = (uint32_t) &(__VECTOR_TABLE[0]);
+  SCB->VTOR = (uint32_t) &__VECTOR_TABLE;
 #endif
 
 #if defined (__FPU_USED) && (__FPU_USED == 1U)

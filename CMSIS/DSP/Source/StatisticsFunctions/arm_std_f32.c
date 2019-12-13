@@ -60,7 +60,7 @@
   @param[out]    pResult    standard deviation value returned here
   @return        none
  */
-#if (defined(ARM_MATH_NEON_EXPERIMENTAL) || defined(ARM_MATH_MVEF)) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_NEON_EXPERIMENTAL)
 void arm_std_f32(
   const float32_t * pSrc,
         uint32_t blockSize,
@@ -94,7 +94,7 @@ void arm_std_f32(
     return;
   }
 
-#if defined (ARM_MATH_LOOPUNROLL) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined (ARM_MATH_LOOPUNROLL)
 
   /* Loop unrolling: Compute 4 outputs at a time */
   blkCnt = blockSize >> 2U;
@@ -181,7 +181,7 @@ void arm_std_f32(
 #endif /* #ifndef ARM_MATH_CM0_FAMILY */
 
 }
-#endif /* #if defined(ARM_MATH_NEON) || defined(ARM_MATH_MVEF)*/
+#endif /* #if defined(ARM_MATH_NEON) */
 
 /**
   @} end of STD group

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2019 ARM Limited. All rights reserved.
+ * Copyright (c) 2013-2017 ARM Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -17,7 +17,7 @@
  *
  * ----------------------------------------------------------------------
  *
- * $Date:        26. November 2019
+ * $Date:        1. December 2017
  * $Revision:    V2.0.0
  *
  * Project:      CMSIS-DAP Include
@@ -233,11 +233,6 @@ extern          DAP_Data_t DAP_Data;            // DAP Data
 extern volatile uint8_t    DAP_TransferAbort;   // Transfer Abort Flag
 
 
-#ifdef  __cplusplus
-extern "C"
-{
-#endif
-
 // Functions
 extern void     SWJ_Sequence    (uint32_t count, const uint8_t *data);
 extern void     SWD_Sequence    (uint32_t info,  const uint8_t *swdo, uint8_t *swdi);
@@ -284,22 +279,12 @@ extern void     DAP_Setup (void);
 #ifndef DELAY_SLOW_CYCLES
 #define DELAY_SLOW_CYCLES       3U      // Number of cycles for one iteration
 #endif
-#if defined(__CC_ARM)
 __STATIC_FORCEINLINE void PIN_DELAY_SLOW (uint32_t delay) {
-  uint32_t count = delay;
+  uint32_t count;
+
+  count = delay;
   while (--count);
 }
-#else
-__STATIC_FORCEINLINE void PIN_DELAY_SLOW (uint32_t delay) {
-  __ASM volatile (
-  ".syntax unified\n"
-  "0:\n\t"
-    "subs %0,%0,#1\n\t"
-    "bne  0b\n"
-  : "+l" (delay) : : "cc"
-  );
-}
-#endif
 
 // Fixed delay for fast clock generation
 #ifndef DELAY_FAST_CYCLES
@@ -307,19 +292,15 @@ __STATIC_FORCEINLINE void PIN_DELAY_SLOW (uint32_t delay) {
 #endif
 __STATIC_FORCEINLINE void PIN_DELAY_FAST (void) {
 #if (DELAY_FAST_CYCLES >= 1U)
-  __NOP();
+  __nop();
 #endif
 #if (DELAY_FAST_CYCLES >= 2U)
-  __NOP();
+  __nop();
 #endif
 #if (DELAY_FAST_CYCLES >= 3U)
-  __NOP();
+  __nop();
 #endif
 }
-
-#ifdef  __cplusplus
-}
-#endif
 
 
 #endif  /* __DAP_H__ */

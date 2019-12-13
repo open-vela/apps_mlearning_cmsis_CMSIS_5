@@ -31,10 +31,20 @@
 #include "arm_math.h"
 
   /**
-   * @brief Matrix-multiplication function for convolution with re-ordered input.
+   * @brief Matrix-multiplication function for convolution with reordered columns
+   * @param[in]       pA          pointer to operand A
+   * @param[in]       pInBuffer   pointer to operand B, always conssists of 2 vectors
+   * @param[in]       ch_im_out   numRow of A
+   * @param[in]       numCol_A    numCol of A
+   * @param[in]       bias_shift  amount of left-shift for bias
+   * @param[in]       out_shift   amount of right-shift for output
+   * @param[in]       bias        the bias
+   * @param[in,out]   pOut        pointer to output
+   * @return     The function returns the incremented output pointer
    *
-   * @details Refer to header file for details.
+   * @details
    *
+   * This function assumes that data in pInBuffer are reordered
    */
 
 q7_t     *arm_nn_mat_mult_kernel_q7_q15_reordered(const q7_t * pA,
@@ -42,8 +52,8 @@ q7_t     *arm_nn_mat_mult_kernel_q7_q15_reordered(const q7_t * pA,
                                                   const uint16_t ch_im_out,
                                                   const uint16_t numCol_A,
                                                   const uint16_t bias_shift,
-                                                  const uint16_t out_shift,
-                                                  const q7_t * bias,
+                                                  const uint16_t out_shift, 
+                                                  const q7_t * bias, 
                                                   q7_t * pOut)
 {
 
@@ -76,8 +86,8 @@ q7_t     *arm_nn_mat_mult_kernel_q7_q15_reordered(const q7_t * pA,
             q31_t     inB1 = *__SIMD32(pB)++;
             q31_t     inB2 = *__SIMD32(pB2)++;
 
-            pA = read_and_pad_reordered(pA, &inA11, &inA12);
-            pA2 = read_and_pad_reordered(pA2, &inA21, &inA22);
+            pA = (q7_t *) read_and_pad_reordered((void *)pA, &inA11, &inA12);
+            pA2 = (q7_t *) read_and_pad_reordered((void *)pA2, &inA21, &inA22);
 
             sum = __SMLAD(inA11, inB1, sum);
             sum2 = __SMLAD(inA11, inB2, sum2);

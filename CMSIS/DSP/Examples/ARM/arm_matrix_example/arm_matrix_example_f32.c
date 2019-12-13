@@ -66,6 +66,7 @@
  *
  * \par Block Diagram:
  * \par
+ * \image html matrixExample.gif
  *
  * \par Variables Description:
  * \par

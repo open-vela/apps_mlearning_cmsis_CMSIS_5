@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 Arm Limited. All rights reserved.
+ * Copyright (c) 2019 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -15,15 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Date:        24. January 2020
- * $Revision:    V1.1
+ * $Date:        31. May 2019
+ * $Revision:    V1.0
  *
  * Project:      WiFi (Wireless Fidelity Interface) Driver definitions
  */
 
 /* History:
- *  Version 1.1
- *    Extended Socket Receive/Send (support for polling)
  *  Version 1.0
  *    Initial release
  */
@@ -38,7 +36,7 @@ extern "C"
 
 #include "Driver_Common.h"
 
-#define ARM_WIFI_API_VERSION ARM_DRIVER_VERSION_MAJOR_MINOR(1,1)  /* API version */
+#define ARM_WIFI_API_VERSION ARM_DRIVER_VERSION_MAJOR_MINOR(1,0)  /* API version */
 
 #define _ARM_Driver_WiFi_(n)      Driver_WiFi##n
 #define  ARM_Driver_WiFi_(n) _ARM_Driver_WiFi_(n)
@@ -94,7 +92,7 @@ extern "C"
 /**
 \brief WiFi Configuration
 */
-typedef struct ARM_WIFI_CONFIG_s {
+typedef struct {
   const char   *ssid;                                   ///< Pointer to Service Set Identifier (SSID) null-terminated string
   const char   *pass;                                   ///< Pointer to Password null-terminated string
         uint8_t security;                               ///< Security type (ARM_WIFI_SECURITY_xxx)
@@ -107,7 +105,7 @@ typedef struct ARM_WIFI_CONFIG_s {
 /**
 \brief WiFi Scan Information
 */
-typedef struct ARM_WIFI_SCAN_INFO_s {
+typedef struct {
   char    ssid[32+1];                                   ///< Service Set Identifier (SSID) null-terminated string
   uint8_t bssid[6];                                     ///< Basic Service Set Identifier (BSSID)
   uint8_t security;                                     ///< Security type (ARM_WIFI_SECURITY_xxx)
@@ -118,7 +116,7 @@ typedef struct ARM_WIFI_SCAN_INFO_s {
 /**
 \brief WiFi Network Information
 */
-typedef struct ARM_WIFI_NET_INFO_s {
+typedef struct {
   char    ssid[32+1];                                   ///< Service Set Identifier (SSID) null-terminated string
   char    pass[64+1];                                   ///< Password null-terminated string
   uint8_t security;                                     ///< Security type (ARM_WIFI_SECURITY_xxx)
@@ -420,7 +418,7 @@ typedef struct ARM_WIFI_NET_INFO_s {
   \param[out]    buf      Pointer to buffer where data should be stored
   \param[in]     len      Length of buffer (in bytes)
   \return        status information
-                   - number of bytes received (>=0)
+                   - number of bytes received (>0)
                    - \ref ARM_SOCKET_ESOCK             : Invalid socket
                    - \ref ARM_SOCKET_EINVAL            : Invalid argument (pointer to buffer or length)
                    - \ref ARM_SOCKET_ENOTCONN          : Socket is not connected
@@ -441,7 +439,7 @@ typedef struct ARM_WIFI_NET_INFO_s {
                    - length of stored 'ip' on output
   \param[out]    port     Pointer to buffer where remote source port shall be returned (NULL for none)
   \return        status information
-                   - number of bytes received (>=0)
+                   - number of bytes received (>0)
                    - \ref ARM_SOCKET_ESOCK             : Invalid socket
                    - \ref ARM_SOCKET_EINVAL            : Invalid argument (pointer to buffer or length)
                    - \ref ARM_SOCKET_ENOTCONN          : Socket is not connected
@@ -457,7 +455,7 @@ typedef struct ARM_WIFI_NET_INFO_s {
   \param[in]     buf      Pointer to buffer containing data to send
   \param[in]     len      Length of data (in bytes)
   \return        status information
-                   - number of bytes sent (>=0)
+                   - number of bytes sent (>0)
                    - \ref ARM_SOCKET_ESOCK             : Invalid socket
                    - \ref ARM_SOCKET_EINVAL            : Invalid argument (pointer to buffer or length)
                    - \ref ARM_SOCKET_ENOTCONN          : Socket is not connected
@@ -476,7 +474,7 @@ typedef struct ARM_WIFI_NET_INFO_s {
   \param[in]     ip_len   Length of 'ip' address in bytes
   \param[in]     port     Remote destination port number
   \return        status information
-                   - number of bytes sent (>=0)
+                   - number of bytes sent (>0)
                    - \ref ARM_SOCKET_ESOCK             : Invalid socket
                    - \ref ARM_SOCKET_EINVAL            : Invalid argument (pointer to buffer or length)
                    - \ref ARM_SOCKET_ENOTCONN          : Socket is not connected
@@ -599,7 +597,7 @@ typedef void (*ARM_WIFI_SignalEvent_t) (uint32_t event, void *arg); ///< Pointer
 /**
 \brief WiFi Driver Capabilities.
 */
-typedef struct _ARM_WIFI_CAPABILITIES {
+typedef struct {
   uint32_t station               : 1;   ///< Station
   uint32_t ap                    : 1;   ///< Access Point
   uint32_t station_ap            : 1;   ///< Concurrent Station and Access Point
@@ -618,7 +616,7 @@ typedef struct _ARM_WIFI_CAPABILITIES {
 /**
 \brief Access structure of the WiFi Driver.
 */
-typedef struct _ARM_DRIVER_WIFI {
+typedef struct {
   ARM_DRIVER_VERSION    (*GetVersion)                  (void);
   ARM_WIFI_CAPABILITIES (*GetCapabilities)             (void);
   int32_t               (*Initialize)                  (ARM_WIFI_SignalEvent_t cb_event);

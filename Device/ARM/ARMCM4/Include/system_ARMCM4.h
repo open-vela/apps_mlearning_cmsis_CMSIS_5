@@ -2,11 +2,11 @@
  * @file     system_ARMCM4.h
  * @brief    CMSIS Device System Header File for
  *           ARMCM4 Device
- * @version  V5.3.2
- * @date     15. November 2019
+ * @version  V5.3.1
+ * @date     09. July 2018
  ******************************************************************************/
 /*
- * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
+ * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -30,15 +30,8 @@
 extern "C" {
 #endif
 
-/**
-  \brief Exception / Interrupt Handler Function Prototype
-*/
-typedef void(*VECTOR_TABLE_Type)(void);
+extern uint32_t SystemCoreClock;     /*!< System Clock Frequency (Core Clock) */
 
-/**
-  \brief System Clock Frequency (Core Clock)
-*/
-extern uint32_t SystemCoreClock;
 
 /**
   \brief Setup the microcontroller system.

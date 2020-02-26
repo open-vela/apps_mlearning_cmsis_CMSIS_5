@@ -1,5 +1,5 @@
 ;/*
-; * Copyright (c) 2016-2020 Arm Limited. All rights reserved.
+; * Copyright (c) 2016-2018 Arm Limited. All rights reserved.
 ; *
 ; * SPDX-License-Identifier: Apache-2.0
 ; *
@@ -215,15 +215,13 @@ Sys_ContextSave
                 PUSH     {R1,R2,R3,LR}          ; Save registers and EXC_RETURN
                 BL       TZ_StoreContext_S      ; Store secure context
                 POP      {R1,R2,R3,LR}          ; Restore registers and EXC_RETURN
-
-Sys_ContextSave1
                 TST      LR,#0x40               ; Check domain of interrupted thread
                 IT       NE
                 MRSNE    R0,PSP                 ; Get PSP
-                BNE      Sys_ContextSave3       ; Branch if secure
+                BNE      Sys_ContextSave2       ; Branch if secure
                 #endif
 
-Sys_ContextSave2
+Sys_ContextSave1
                 MRS      R0,PSP                 ; Get PSP
                 STMDB    R0!,{R4-R11}           ; Save R4..R11
                 #if     (__FPU_USED == 1)
@@ -232,7 +230,7 @@ Sys_ContextSave2
                 VSTMDBEQ R0!,{S16-S31}          ;  Save VFP S16.S31
                 #endif
 
-Sys_ContextSave3
+Sys_ContextSave2
                 STR      R0,[R1,#TCB_SP_OFS]    ; Store SP
                 STRB     LR,[R1,#TCB_SF_OFS]    ; Store stack frame information
 

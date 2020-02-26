@@ -1,8 +1,8 @@
 /**************************************************************************//**
  * @file     cmsis_gcc.h
  * @brief    CMSIS compiler specific macros, functions, instructions
- * @version  V1.2.1
- * @date     30. July 2019
+ * @version  V1.2.0
+ * @date     17. May 2019
  ******************************************************************************/
 /*
  * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
@@ -119,15 +119,6 @@ __STATIC_FORCEINLINE uint32_t __QSUB16(uint32_t op1, uint32_t op2)
 }
 
 
-__STATIC_FORCEINLINE uint32_t __QSUB8(uint32_t op1, uint32_t op2)
-{
-  uint32_t result;
-
-  __ASM volatile ("qsub8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
-  return(result);
-}
-
-
 __STATIC_FORCEINLINE uint32_t __QADD16(uint32_t op1, uint32_t op2)
 {
   uint32_t result;
@@ -136,35 +127,11 @@ __STATIC_FORCEINLINE uint32_t __QADD16(uint32_t op1, uint32_t op2)
   return(result);
 }
 
-__STATIC_FORCEINLINE uint32_t __QADD8(uint32_t op1, uint32_t op2)
-{
-  uint32_t result;
-
-  __ASM volatile ("qadd8 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
-  return(result);
-}
-
 __STATIC_FORCEINLINE  int32_t __QADD( int32_t op1,  int32_t op2)
 {
   int32_t result;
 
   __ASM volatile ("qadd %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
-  return(result);
-}
-
-__STATIC_FORCEINLINE uint32_t __QSAX(uint32_t op1, uint32_t op2)
-{
-  uint32_t result;
-
-  __ASM ("qsax %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
-  return(result);
-}
-
-__STATIC_FORCEINLINE uint32_t __SHSAX(uint32_t op1, uint32_t op2)
-{
-  uint32_t result;
-
-  __ASM ("shsax %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
   return(result);
 }
 
@@ -193,15 +160,6 @@ __STATIC_FORCEINLINE  int32_t __QSUB( int32_t op1,  int32_t op2)
   return(result);
 }
 
-__STATIC_FORCEINLINE uint32_t __SXTB16(uint32_t op1)
-{
-  uint32_t result;
-
-  __ASM ("sxtb16 %0, %1" : "=r" (result) : "r" (op1));
-  return(result);
-}
-
-
 __STATIC_FORCEINLINE uint32_t __SMUAD  (uint32_t op1, uint32_t op2)
 {
   uint32_t result;
@@ -210,13 +168,8 @@ __STATIC_FORCEINLINE uint32_t __SMUAD  (uint32_t op1, uint32_t op2)
   return(result);
 }
 
-
-
 #define __PKHBT(ARG1,ARG2,ARG3)          ( ((((uint32_t)(ARG1))          ) & 0x0000FFFFUL) |  \
                                            ((((uint32_t)(ARG2)) << (ARG3)) & 0xFFFF0000UL)  )
-
-#define __PKHTB(ARG1,ARG2,ARG3)          ( ((((uint32_t)(ARG1))          ) & 0xFFFF0000UL) |  \
-                                           ((((uint32_t)(ARG2)) >> (ARG3)) & 0x0000FFFFUL)  )
 
 __STATIC_FORCEINLINE uint32_t __SMLAD (uint32_t op1, uint32_t op2, uint32_t op3)
 {
@@ -267,61 +220,7 @@ __STATIC_FORCEINLINE int32_t __SMMLA (int32_t op1, int32_t op2, int32_t op3)
  return(result);
 }
 
-__STATIC_FORCEINLINE uint32_t __SMUSD  (uint32_t op1, uint32_t op2)
-{
-  uint32_t result;
 
-  __ASM volatile ("smusd %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
-  return(result);
-}
-
-__STATIC_FORCEINLINE uint32_t __SMUSDX (uint32_t op1, uint32_t op2)
-{
-  uint32_t result;
-
-  __ASM volatile ("smusdx %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
-  return(result);
-}
-
-__STATIC_FORCEINLINE uint32_t __QASX(uint32_t op1, uint32_t op2)
-{
-  uint32_t result;
-
-  __ASM ("qasx %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
-  return(result);
-}
-
-__STATIC_FORCEINLINE uint32_t __SHADD16(uint32_t op1, uint32_t op2)
-{
-  uint32_t result;
-
-  __ASM ("shadd16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
-  return(result);
-}
-
-__STATIC_FORCEINLINE uint32_t __SHSUB16(uint32_t op1, uint32_t op2)
-{
-  uint32_t result;
-
-  __ASM ("shsub16 %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
-  return(result);
-}
-
-__STATIC_FORCEINLINE uint32_t __SHASX(uint32_t op1, uint32_t op2)
-{
-  uint32_t result;
-
-  __ASM ("shasx %0, %1, %2" : "=r" (result) : "r" (op1), "r" (op2) );
-  return(result);
-}
-
-__STATIC_FORCEINLINE uint32_t __SMLSDX (uint32_t op1, uint32_t op2, uint32_t op3)
-{
-  uint32_t result;
-
-  __ASM volatile ("smlsdx %0, %1, %2, %3" : "=r" (result) : "r" (op1), "r" (op2), "r" (op3) );
-  return(result);
-}
 
 
 /* ##########################  Core Instruction Access  ######################### */
@@ -333,12 +232,12 @@ __STATIC_FORCEINLINE uint32_t __SMLSDX (uint32_t op1, uint32_t op2, uint32_t op3
 /**
   \brief   Wait For Interrupt
  */
-#define __WFI()                             __ASM volatile ("wfi":::"memory")
+#define __WFI()                             __ASM volatile ("wfi")
 
 /**
   \brief   Wait For Event
  */
-#define __WFE()                             __ASM volatile ("wfe":::"memory")
+#define __WFE()                             __ASM volatile ("wfe")
 
 /**
   \brief   Send Event
@@ -390,7 +289,7 @@ __STATIC_FORCEINLINE  uint32_t __REV(uint32_t value)
 #else
   uint32_t result;
 
-  __ASM ("rev %0, %1" : "=r" (result) : "r" (value) );
+  __ASM volatile ("rev %0, %1" : "=r" (result) : "r" (value) );
   return result;
 #endif
 }
@@ -401,12 +300,14 @@ __STATIC_FORCEINLINE  uint32_t __REV(uint32_t value)
   \param [in]    value  Value to reverse
   \return               Reversed value
  */
-__STATIC_FORCEINLINE uint32_t __REV16(uint32_t value)
+#ifndef __NO_EMBEDDED_ASM
+__attribute__((section(".rev16_text"))) __STATIC_INLINE uint32_t __REV16(uint32_t value)
 {
   uint32_t result;
-  __ASM ("rev16 %0, %1" : "=r" (result) : "r" (value));
+  __ASM volatile("rev16 %0, %1" : "=r" (result) : "r" (value));
   return result;
 }
+#endif
 
 /**
   \brief   Reverse byte order (16 bit)
@@ -421,7 +322,7 @@ __STATIC_FORCEINLINE  int16_t __REVSH(int16_t value)
 #else
   int16_t result;
 
-  __ASM ("revsh %0, %1" : "=r" (result) : "r" (value) );
+  __ASM volatile ("revsh %0, %1" : "=r" (result) : "r" (value) );
   return result;
 #endif
 }
@@ -463,7 +364,7 @@ __STATIC_FORCEINLINE  uint32_t __RBIT(uint32_t value)
 #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
      (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    )
-   __ASM ("rbit %0, %1" : "=r" (result) : "r" (value) );
+   __ASM volatile ("rbit %0, %1" : "=r" (result) : "r" (value) );
 #else
   int32_t s = (4U /*sizeof(v)*/ * 8U) - 1U; /* extra shift needed at end */
 
@@ -628,11 +529,11 @@ __STATIC_FORCEINLINE  void __CLREX(void)
   \param [in]    sat  Bit position to saturate to (1..32)
   \return             Saturated value
  */
-#define __SSAT(ARG1, ARG2) \
+#define __SSAT(ARG1,ARG2) \
 __extension__ \
 ({                          \
   int32_t __RES, __ARG1 = (ARG1); \
-  __ASM volatile ("ssat %0, %1, %2" : "=r" (__RES) :  "I" (ARG2), "r" (__ARG1) : "cc" ); \
+  __ASM ("ssat %0, %1, %2" : "=r" (__RES) :  "I" (ARG2), "r" (__ARG1) ); \
   __RES; \
  })
 
@@ -644,11 +545,11 @@ __extension__ \
   \param [in]    sat  Bit position to saturate to (0..31)
   \return             Saturated value
  */
-#define __USAT(ARG1, ARG2) \
+#define __USAT(ARG1,ARG2) \
 __extension__ \
 ({                          \
   uint32_t __RES, __ARG1 = (ARG1); \
-  __ASM volatile ("usat %0, %1, %2" : "=r" (__RES) :  "I" (ARG2), "r" (__ARG1) : "cc" ); \
+  __ASM ("usat %0, %1, %2" : "=r" (__RES) :  "I" (ARG2), "r" (__ARG1) ); \
   __RES; \
  })
 
@@ -736,7 +637,7 @@ __STATIC_FORCEINLINE uint32_t __get_CPSR(void)
  */
 __STATIC_FORCEINLINE void __set_CPSR(uint32_t cpsr)
 {
-__ASM volatile ("MSR cpsr, %0" : : "r" (cpsr) : "cc", "memory");
+__ASM volatile ("MSR cpsr, %0" : : "r" (cpsr) : "memory");
 }
 
 /** \brief  Get Mode

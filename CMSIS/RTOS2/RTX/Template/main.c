@@ -9,8 +9,8 @@
 /*----------------------------------------------------------------------------
  * Application main thread
  *---------------------------------------------------------------------------*/
-__NO_RETURN static void app_main (void *argument) {
-  (void)argument;
+void app_main (void *argument) {
+ 
   // ...
   for (;;) {}
 }

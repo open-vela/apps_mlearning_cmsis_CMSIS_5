@@ -145,7 +145,7 @@ int32_t main(void)
 
   status = ARM_MATH_SUCCESS;
 
-#if defined(SEMIHOSTING)
+#if defined(FILEIO)
   printf("START\n");
 #endif
 
@@ -201,7 +201,7 @@ int32_t main(void)
   }
 
 
-#if !defined(SEMIHOSTING)
+#if !defined(FILEIO)
   if ( status != ARM_MATH_SUCCESS)
   {
     while (1);

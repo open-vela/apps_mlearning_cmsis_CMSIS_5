@@ -23,6 +23,7 @@
  * limitations under the License.
  *---------------------------------------------------------------------------*/
 
+        .file   "HAL_CM4.S"
         .syntax unified
 
         .equ    TCB_STACKF, 37

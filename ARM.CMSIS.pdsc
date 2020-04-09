@@ -8,6 +8,15 @@
   <url>http://www.keil.com/pack/</url>
 
   <releases>
+    <release version="5.7.1-dev0">
+      Active development ...
+      CMSIS-DSP:
+       - Purged pre-built libs from Git
+      CMSIS-RTOS:
+       - RTX4: Purged pre-built libs from Git
+      CMSIS-RTOS2:
+       - RTX5: Purged pre-built libs from Git
+    </release>
     <release version="5.7.0" date="2020-04-09">
       CMSIS-Build: 0.9.0 (beta)
         - Draft for CMSIS Project description (CPRJ)

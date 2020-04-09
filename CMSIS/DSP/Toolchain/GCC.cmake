@@ -9,15 +9,8 @@ function(compilerVersion)
   #MESSAGE( STATUS "CMD_OUTPUT:" ${CVERSION})
 endfunction()
 
-function(compilerSpecificCompileOptions PROJECTNAME ROOT)
+function(compilerSpecificCompileOptions PROJECTNAME)
   get_target_property(DISABLEOPTIM ${PROJECTNAME} DISABLEOPTIMIZATION)
-
-  # Add support for the type __fp16 even if there is no HW
-  # support for it.
-  if (FLOAT16)
-  target_compile_options(${PROJECTNAME} PUBLIC "-mfp16-format=alternative")
-  endif()
-
   if ((OPTIMIZED) AND (NOT DISABLEOPTIM))
     target_compile_options(${PROJECTNAME} PUBLIC "-O2")
   endif()

@@ -98,6 +98,5 @@ void SystemInit (void)
 
   // enable DL branch cache
   CCR |= CCR_DL;
-  __ISB();
 
 }

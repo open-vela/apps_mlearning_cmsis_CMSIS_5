@@ -30,6 +30,8 @@
 
 #include "Test.h"
 #include "Pattern.h"
+#include "arm_math.h"
+#include "arm_math_f16.h"
 
 namespace Client {
 
@@ -44,6 +46,11 @@ float64_t *loadPattern(Testing::PatternID_t id, PatternMgr *mgr,Testing::nbSampl
 
 template <>
 float32_t *loadPattern(Testing::PatternID_t id, PatternMgr *mgr,Testing::nbSamples_t &nb, Testing::nbSamples_t maxSamples);
+
+#if !defined( __CC_ARM ) && defined(ARM_FLOAT16_SUPPORTED)
+template <>
+float16_t *loadPattern(Testing::PatternID_t id, PatternMgr *mgr,Testing::nbSamples_t &nb, Testing::nbSamples_t maxSamples);
+#endif
 
 template <>
 q63_t *loadPattern(Testing::PatternID_t id, PatternMgr *mgr,Testing::nbSamples_t &nb, Testing::nbSamples_t maxSamples);
@@ -78,6 +85,11 @@ float64_t *localPattern(Testing::nbSamples_t nb, PatternMgr *mgr);
 template <>
 float32_t *localPattern(Testing::nbSamples_t nb, PatternMgr *mgr);
 
+#if !defined( __CC_ARM ) && defined(ARM_FLOAT16_SUPPORTED)
+template <>
+float16_t *localPattern(Testing::nbSamples_t nb, PatternMgr *mgr);
+#endif
+
 template <>
 q63_t *localPattern(Testing::nbSamples_t nb, PatternMgr *mgr);
 
@@ -101,6 +113,9 @@ uint8_t *localPattern(Testing::nbSamples_t nb, PatternMgr *mgr);
 
 extern void dumpPattern(Testing::outputID_t id,Testing::nbSamples_t nb,float64_t* data,PatternMgr *mgr);
 extern void dumpPattern(Testing::outputID_t id,Testing::nbSamples_t,float32_t*,PatternMgr *);
+#if !defined( __CC_ARM ) && defined(ARM_FLOAT16_SUPPORTED)
+extern void dumpPattern(Testing::outputID_t id,Testing::nbSamples_t,float16_t*,PatternMgr *);
+#endif
 extern void dumpPattern(Testing::outputID_t id,Testing::nbSamples_t,q63_t*,PatternMgr *);
 extern void dumpPattern(Testing::outputID_t id,Testing::nbSamples_t,q31_t*,PatternMgr *);
 extern void dumpPattern(Testing::outputID_t id,Testing::nbSamples_t,q15_t*,PatternMgr *);

@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include "Error.h"
 #include "arm_math.h"
-#include "arm_const_structs.h"
 #include "Test.h"
 
 #define SNR_THRESHOLD 250
@@ -16,7 +15,7 @@
         memcpy(outfftp,inp,sizeof(float64_t)*input.nbSamples());
    
         arm_cfft_f64(
-             this->instCfftF64,
+             &(this->varInstCfftF64),
              outfftp,
              this->ifft,
              1);
@@ -41,7 +40,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_NOISY_16_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_NOISY_16_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len16;
+            status=arm_cfft_init_f64(&varInstCfftF64,16);
 
             this->ifft=0;
 
@@ -52,7 +51,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_NOISY_16_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_NOISY_16_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len16;
+            status=arm_cfft_init_f64(&varInstCfftF64,16);
 
             this->ifft=1;
 
@@ -63,7 +62,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_NOISY_32_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_NOISY_32_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len32;
+            status=arm_cfft_init_f64(&varInstCfftF64,32);
 
             this->ifft=0;
 
@@ -74,7 +73,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_NOISY_32_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_NOISY_32_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len32;
+            status=arm_cfft_init_f64(&varInstCfftF64,32);
 
             this->ifft=1;
 
@@ -85,7 +84,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_NOISY_64_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_NOISY_64_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len64;
+            status=arm_cfft_init_f64(&varInstCfftF64,64);
 
             this->ifft=0;
 
@@ -96,7 +95,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_NOISY_64_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_NOISY_64_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len64;
+            status=arm_cfft_init_f64(&varInstCfftF64,64);
 
             this->ifft=1;
 
@@ -107,7 +106,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_NOISY_128_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_NOISY_128_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len128;
+            status=arm_cfft_init_f64(&varInstCfftF64,128);
 
             this->ifft=0;
 
@@ -118,7 +117,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_NOISY_128_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_NOISY_128_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len128;
+            status=arm_cfft_init_f64(&varInstCfftF64,128);
 
             this->ifft=1;
 
@@ -129,7 +128,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_NOISY_256_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_NOISY_256_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len256;
+            status=arm_cfft_init_f64(&varInstCfftF64,256);
 
             this->ifft=0;
 
@@ -140,7 +139,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_NOISY_256_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_NOISY_256_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len256;
+            status=arm_cfft_init_f64(&varInstCfftF64,256);
 
             this->ifft=1;
 
@@ -151,7 +150,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_NOISY_512_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_NOISY_512_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len512;
+            status=arm_cfft_init_f64(&varInstCfftF64,512);
 
             this->ifft=0;
 
@@ -162,7 +161,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_NOISY_512_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_NOISY_512_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len512;
+            status=arm_cfft_init_f64(&varInstCfftF64,512);
 
             this->ifft=1;
 
@@ -173,7 +172,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_NOISY_1024_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_NOISY_1024_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len1024;
+            status=arm_cfft_init_f64(&varInstCfftF64,1024);
 
             this->ifft=0;
 
@@ -184,7 +183,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_NOISY_1024_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_NOISY_1024_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len1024;
+            status=arm_cfft_init_f64(&varInstCfftF64,1024);
 
             this->ifft=1;
 
@@ -195,7 +194,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_NOISY_2048_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_NOISY_2048_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len2048;
+            status=arm_cfft_init_f64(&varInstCfftF64,2048);
 
             this->ifft=0;
 
@@ -206,7 +205,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_NOISY_2048_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_NOISY_2048_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len2048;
+            status=arm_cfft_init_f64(&varInstCfftF64,2048);
 
             this->ifft=1;
 
@@ -217,7 +216,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_NOISY_4096_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_NOISY_4096_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len4096;
+            status=arm_cfft_init_f64(&varInstCfftF64,4096);
 
             this->ifft=0;
 
@@ -228,7 +227,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_NOISY_4096_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_NOISY_4096_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len4096;
+            status=arm_cfft_init_f64(&varInstCfftF64,4096);
 
             this->ifft=1;
 
@@ -241,7 +240,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_STEP_16_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_STEP_16_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len16;
+            status=arm_cfft_init_f64(&varInstCfftF64,16);
 
             this->ifft=0;
 
@@ -252,7 +251,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_STEP_16_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_STEP_16_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len16;
+            status=arm_cfft_init_f64(&varInstCfftF64,16);
 
             this->ifft=1;
 
@@ -263,7 +262,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_STEP_32_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_STEP_32_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len32;
+            status=arm_cfft_init_f64(&varInstCfftF64,32);
 
             this->ifft=0;
 
@@ -274,7 +273,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_STEP_32_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_STEP_32_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len32;
+            status=arm_cfft_init_f64(&varInstCfftF64,32);
 
             this->ifft=1;
 
@@ -285,7 +284,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_STEP_64_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_STEP_64_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len64;
+            status=arm_cfft_init_f64(&varInstCfftF64,64);
 
             this->ifft=0;
 
@@ -296,7 +295,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_STEP_64_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_STEP_64_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len64;
+            status=arm_cfft_init_f64(&varInstCfftF64,64);
 
             this->ifft=1;
 
@@ -307,7 +306,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_STEP_128_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_STEP_128_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len128;
+            status=arm_cfft_init_f64(&varInstCfftF64,128);
 
             this->ifft=0;
 
@@ -318,7 +317,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_STEP_128_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_STEP_128_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len128;
+            status=arm_cfft_init_f64(&varInstCfftF64,128);
 
             this->ifft=1;
 
@@ -329,7 +328,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_STEP_256_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_STEP_256_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len256;
+            status=arm_cfft_init_f64(&varInstCfftF64,256);
 
             this->ifft=0;
 
@@ -340,7 +339,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_STEP_256_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_STEP_256_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len256;
+            status=arm_cfft_init_f64(&varInstCfftF64,256);
 
             this->ifft=1;
 
@@ -351,7 +350,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_STEP_512_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_STEP_512_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len512;
+            status=arm_cfft_init_f64(&varInstCfftF64,512);
 
             this->ifft=0;
 
@@ -362,7 +361,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_STEP_512_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_STEP_512_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len512;
+            status=arm_cfft_init_f64(&varInstCfftF64,512);
 
             this->ifft=1;
 
@@ -373,7 +372,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_STEP_1024_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_STEP_1024_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len1024;
+            status=arm_cfft_init_f64(&varInstCfftF64,1024);
 
             this->ifft=0;
 
@@ -384,7 +383,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_STEP_1024_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_STEP_1024_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len1024;
+            status=arm_cfft_init_f64(&varInstCfftF64,1024);
 
             this->ifft=1;
 
@@ -395,7 +394,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_STEP_2048_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_STEP_2048_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len2048;
+            status=arm_cfft_init_f64(&varInstCfftF64,2048);
 
             this->ifft=0;
 
@@ -406,7 +405,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_STEP_2048_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_STEP_2048_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len2048;
+            status=arm_cfft_init_f64(&varInstCfftF64,2048);
 
             this->ifft=1;
 
@@ -417,7 +416,7 @@
             input.reload(TransformCF64::INPUTS_CFFT_STEP_4096_F64_ID,mgr);
             ref.reload(  TransformCF64::REF_CFFT_STEP_4096_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len4096;
+            status=arm_cfft_init_f64(&varInstCfftF64,4096);
 
             this->ifft=0;
 
@@ -428,7 +427,7 @@
             input.reload(TransformCF64::INPUTS_CIFFT_STEP_4096_F64_ID,mgr);
             ref.reload(  TransformCF64::INPUTS_CFFT_STEP_4096_F64_ID,mgr);
 
-            instCfftF64 = &arm_cfft_sR_f64_len4096;
+            status=arm_cfft_init_f64(&varInstCfftF64,4096);
 
             this->ifft=1;
 

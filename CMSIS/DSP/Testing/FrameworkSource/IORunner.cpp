@@ -32,23 +32,19 @@
 
 #include <string>
 #include <cstddef>
-#include <cstdlib>
-#include <cstdio>
+#include <stdlib.h>
+#include <stdio.h>
 #include "IORunner.h"
 #include "Error.h"
 #include "Timing.h"
 #include "arm_math.h"
 #include "Calibrate.h"
 
-#define CALIBNB 20
-
 namespace Client
 {
   
       IORunner::IORunner(IO *io,PatternMgr *mgr,  Testing::RunningMode runningMode):m_io(io), m_mgr(mgr)
       {
-        Testing::cycles_t current;
-
         this->m_runningMode = runningMode;
         // Set running mode on PatternMgr.
         if (runningMode == Testing::kDumpOnly)
@@ -74,8 +70,8 @@ a C++ function pointer from the cycle measurements.
         Calibrate c((Testing::testID_t)0);
         Client::Suite *s=(Client::Suite *)&c;
         Client::test t = (Client::test)&Calibrate::empty;
-        calibration = 0;
-        
+
+        cycleMeasurementStart();
 /* 
 
 EXTBENCH is set when benchmarking is done through external traces
@@ -103,26 +99,20 @@ Indeed, in that case the calibration value can only be measured by parsing the t
 Otherwise, the calibration is measured below.
 
 */
-        for(int i=0;i < CALIBNB;i++)
+        for(int i=0;i < 20;i++)
         {
-          cycleMeasurementStart();
           if (!m_mgr->HasMemError())
           {
              (s->*t)();
           }
-          #ifndef EXTBENCH
-             current = getCycles();
-          #endif
-          calibration += current;
-          cycleMeasurementStop();
         }
 #ifdef EXTBENCH
         stopSection();
 #endif
-
 #ifndef EXTBENCH
-        calibration=calibration / CALIBNB;
+        calibration=getCycles() / 20;
 #endif
+        cycleMeasurementStop();
 
       }
 
@@ -216,17 +206,7 @@ Otherwise, the calibration is measured below.
                 // and do specific initialization for the tests
                 s->setUp(m_io->CurrentTestID(),params,m_mgr);
                 
-                // Run the test once to force the code to be in cache.
-                // By default it is disabled in the suite.
-                if (s->isForcedInCache())
-                {
-                   if (!m_mgr->HasMemError())
-                   {
-                      (s->*t)();
-                   }
-                }
-
-                // Run the test
+                   // Run the test
                 cycleMeasurementStart();
 #ifdef EXTBENCH
                 startSection();
@@ -239,8 +219,7 @@ Otherwise, the calibration is measured below.
                 stopSection();
 #endif
 #ifndef EXTBENCH
-                cycles=getCycles();
-                cycles=cycles-calibration;
+                cycles=getCycles()-calibration;
 #endif
                 cycleMeasurementStop();
               } 

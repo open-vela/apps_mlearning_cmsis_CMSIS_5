@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "Error.h"
 #include "arm_math.h"
+#include "arm_const_structs.h"
 #include "Test.h"
 
 #define SNR_THRESHOLD 90

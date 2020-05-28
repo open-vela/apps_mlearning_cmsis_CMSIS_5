@@ -43,10 +43,6 @@
   </pre>
 
   There are separate functions for floating point, Q31, Q15, and Q7 data types.
-
-  Since the result is not divided by the length, those functions are in fact computing
-  something which is more an energy than a power.
-
  */
 
 /**

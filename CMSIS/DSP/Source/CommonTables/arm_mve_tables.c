@@ -4,7 +4,8 @@
  * Description:  common tables like fft twiddle factors, Bitreverse, reciprocal etc
  *               used for MVE implementation only
  *
- * $Date:        14. April 2020
+ * $Date:        08. January 2020
+ * $Revision:    V1.7.0
  *
  * Target Processor: Cortex-M cores
  * -------------------------------------------------------------------- */
@@ -6522,6 +6523,17 @@ q15_t rearranged_twiddle_stride3_4096_q15[2728]={
 0x6A6E,0xDAD8,0x7A7D,0x7FFF,0x0000,0x30FC,0x89BE,0xA57E,0xA57E,0x89BE,0x30FC,};
 
 #endif
+
+
+
+#endif /* !defined(ARM_DSP_CONFIG_TABLES) || defined(ARM_FFT_ALLOW_TABLES) */
+#endif /* defined(ARM_MATH_MVEI)  */
+
+#include "arm_math.h"
+
+#if defined(ARM_MATH_MVEI) 
+
+#if !defined(ARM_DSP_CONFIG_TABLES) || defined(ARM_FFT_ALLOW_TABLES)
 
 
 

@@ -9,17 +9,10 @@ function(compilerVersion)
   #MESSAGE( STATUS "CMD_OUTPUT:" ${CVERSION})
 endfunction()
 
-function(compilerSpecificCompileOptions PROJECTNAME ROOT)
+function(compilerSpecificCompileOptions PROJECTNAME)
   get_target_property(DISABLEOPTIM ${PROJECTNAME} DISABLEOPTIMIZATION)
-
-  # Add support for the type __fp16 even if there is no HW
-  # support for it.
-  if (FLOAT16)
-  target_compile_options(${PROJECTNAME} PUBLIC "-mfp16-format=alternative")
-  endif()
-
   if ((OPTIMIZED) AND (NOT DISABLEOPTIM))
-    target_compile_options(${PROJECTNAME} PUBLIC "-Ofast")
+    target_compile_options(${PROJECTNAME} PUBLIC "-O2")
   endif()
   
   if (FASTMATHCOMPUTATIONS)
@@ -40,26 +33,15 @@ function(compilerSpecificCompileOptions PROJECTNAME ROOT)
   endif()
 
   # Need to add other gcc config for other cortex-m cores
-  
-  if (ARM_CPU STREQUAL "cortex-m33" )
-     target_compile_options(${PROJECTNAME} PUBLIC "-mfpu=fpv5-sp-d16")
-     target_link_options(${PROJECTNAME} PUBLIC "-mfpu=fpv5-sp-d16")
-  endif()
-
   if (ARM_CPU STREQUAL "cortex-m7" )
-     target_compile_options(${PROJECTNAME} PUBLIC "-mfpu=fpv5-d16")
-     target_link_options(${PROJECTNAME} PUBLIC "-mfpu=fpv5-d16")
+     target_compile_options(${PROJECTNAME} PUBLIC "-march=armv7e-m;-mfpu=fpv5-d16")
+     target_link_options(${PROJECTNAME} PUBLIC "-march=armv7e-m;-mfpu=fpv5-d16")
   endif()
 
-  if (ARM_CPU STREQUAL "cortex-m4" )
-     target_compile_options(${PROJECTNAME} PUBLIC "-mfpu=fpv4-sp-d16")
-     target_link_options(${PROJECTNAME} PUBLIC "-mfpu=fpv4-sp-d16")
+  if (ARM_CPU STREQUAL "cortex-m0" )
+     target_compile_options(${PROJECTNAME} PUBLIC "-march=armv6-m")
+     target_link_options(${PROJECTNAME} PUBLIC "-march=armv6-m")
   endif()
-
-  #if (ARM_CPU STREQUAL "cortex-m0" )
-  #   target_compile_options(${PROJECTNAME} PUBLIC "")
-  #   target_link_options(${PROJECTNAME} PUBLIC "")
-  #endif()
   
   
   if (ARM_CPU STREQUAL "cortex-a9" )
@@ -116,11 +98,7 @@ function(preprocessScatter CORE PLATFORMFOLDER SCATTERFILE)
 endfunction()
 
 function(toolchainSpecificLinkForCortexM  PROJECTNAME ROOT CORE PLATFORMFOLDER HASCSTARTUP)
-    if (HASCSTARTUP)
-      target_sources(${PROJECTNAME} PRIVATE ${PLATFORMFOLDER}/${CORE}/Startup/GCC/startup_${CORE}.c)
-    else()
-      target_sources(${PROJECTNAME} PRIVATE ${PLATFORMFOLDER}/${CORE}/Startup/GCC/startup_${CORE}.S)
-    endif() 
+    target_sources(${PROJECTNAME} PRIVATE  ${PLATFORMFOLDER}/${CORE}/Startup/GCC/startup_${CORE}.S)
     target_sources(${PROJECTNAME} PRIVATE  ${PLATFORMFOLDER}/${CORE}/Startup/GCC/support.c)
 
     target_include_directories(${PROJECTNAME} PRIVATE ${PLATFORMFOLDER}/${CORE}/LinkScripts/GCC)
@@ -180,9 +158,6 @@ function(compilerSpecificPlatformConfigAppForM PROJECTNAME ROOT)
     target_link_options(${PROJECTNAME} PRIVATE "--specs=nosys.specs")
     target_compile_options(${PROJECTNAME} PRIVATE "--specs=nosys.specs")
   endif()
-
-  target_link_options(${PROJECTNAME} PUBLIC "-Wl,--gc-sections")
-
 endfunction()
 
 function(compilerSpecificPlatformConfigAppForA PROJECTNAME ROOT)
@@ -193,6 +168,4 @@ function(compilerSpecificPlatformConfigAppForA PROJECTNAME ROOT)
     target_link_options(${PROJECTNAME} PRIVATE "--specs=nosys.specs")
     target_compile_options(${PROJECTNAME} PRIVATE "--specs=nosys.specs")
   endif()
-
-  
 endfunction()

@@ -1,7 +1,5 @@
 cmake_minimum_required (VERSION 3.6)
 cmake_policy(SET CMP0077 NEW)
-include(CMakePrintHelpers)
-
 # The tests are assuming that MATRIX_CHECK is enabled when building
 # CMSIS-DSP.
 
@@ -54,13 +52,7 @@ function(writeConfig path)
   endif()
 
   list(APPEND output ",${PLATFORMID}")
-  if (CONFIGID)
-     # Specific config ID (like M55 with autovectorizer)
-     list(APPEND output ",${CONFIGID},")
-  else()
-     # Core ID is used as config ID when not specified
-     list(APPEND output ",${COREID},")
-  endif()
+  list(APPEND output ",${COREID},")
   if (ARMAC6)
     list(APPEND output "AC6")
   elseif(GCC)
@@ -77,11 +69,6 @@ endfunction()
 option(BENCHMARK "Benchmarking compiled" OFF)
 option(EXTBENCH "Benchmarking with external traces" OFF)
 option(NN "NN Tests included" OFF)
-option(REFLIB "Use already built reference lib" OFF)
-option(EMBEDDED "Embedded Mode" ON)
-
-option(FLOAT16TESTS "Float16 tests" OFF)
-option(MICROBENCH "Micro benchmarks" OFF)
 
 project(Testing)
 
@@ -97,10 +84,7 @@ set(ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 set(TESTFRAMEWORK ON)
 include(config)
 
-if (NOT REFLIB)
 add_subdirectory(../Source bin_dsp)
-endif()
-
 if (NN)
 add_subdirectory(${ROOT}/CMSIS/NN/Source bin_nn)
 endif()
@@ -109,16 +93,6 @@ add_library(TestingLib STATIC)
 add_library(FrameworkLib STATIC)
 
 if (BENCHMARK)
-
-if (MICROBENCH)
-  set (MICROSRC
-  Source/Benchmarks/MicroBenchmarksF32.cpp
-  Source/Benchmarks/MicroBenchmarksQ31.cpp
-  Source/Benchmarks/MicroBenchmarksQ15.cpp
-  Source/Benchmarks/MicroBenchmarksQ7.cpp
-  )
-endif()
-
 set (NNSRC
   Source/Benchmarks/FullyConnectedBench.cpp
   Source/Benchmarks/PoolingBench.cpp
@@ -240,35 +214,23 @@ set(TESTSRC
   Source/Tests/ExampleCategoryQ15.cpp
   Source/Tests/ExampleCategoryQ7.cpp
   )
-
-if ((NOT ARMAC5) AND (FLOAT16TESTS) AND ((FLOAT16) OR (MVEF) OR (HELIUM) OR (NEON) OR (NEONEXPERIMENTAL)))
-set(TESTSRC16 
-  Source/Tests/BasicTestsF16.cpp
-  Source/Tests/TransformCF16.cpp
-  )
-endif()
-
 target_include_directories(TestingLib PRIVATE Include/Tests)
 
 endif()
 
 set(FRAMEWORKSRC
   FrameworkSource/Test.cpp
+  FrameworkSource/Semihosting.cpp
   FrameworkSource/IORunner.cpp
   FrameworkSource/ArrayMemory.cpp
   FrameworkSource/Pattern.cpp
   FrameworkSource/PatternMgr.cpp
   FrameworkSource/Error.cpp
+  FrameworkSource/FPGA.cpp
   FrameworkSource/Timing.cpp
   FrameworkSource/Generators.cpp
   FrameworkSource/Calibrate.cpp
   )
-
-if (EMBEDDED)
-  set(FRAMEWORKMODESRC FrameworkSource/FPGA.cpp)
-else()
-  set(FRAMEWORKMODESRC FrameworkSource/Semihosting.cpp)
-endif()
 
 
 # With -O2, generated code is crashing on some cycle accurate models.
@@ -279,50 +241,26 @@ disableOptimization(FrameworkLib)
 
 target_sources(TestingLib PRIVATE ${TESTSRC})
 
-
 if(NN)
   target_sources(TestingLib PRIVATE ${NNSRC})
 endif()
 
-target_sources(TestingLib PRIVATE ${TESTSRC16})
-
 target_sources(TestingLib PRIVATE testmain.cpp)
 target_sources(TestingLib PRIVATE GeneratedSource/TestDesc.cpp)
 
-if (EMBEDDED)
-    target_compile_definitions(TestingLib PUBLIC EMBEDDED)
-endif()
-
 if (BENCHMARK)
   target_compile_definitions(TestingLib PUBLIC BENCHMARK)
-  if (MICROBENCH)
-    target_sources(TestingLib PRIVATE ${MICROSRC})
-  endif()
 endif()
   
 
 target_sources(FrameworkLib PRIVATE ${FRAMEWORKSRC})
-target_sources(FrameworkLib PRIVATE ${FRAMEWORKMODESRC})
-
-if (BENCHMARK)
-    target_compile_definitions(FrameworkLib PUBLIC BENCHMARK)
-endif()
 
 if (EXTBENCH)
   target_compile_definitions(FrameworkLib PUBLIC EXTBENCH)
 endif()
 
 ### Includes
-if (REFLIB)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../Source)
-include(configDsp)
-SET(DSP ${ROOT}/CMSIS/DSP)
-target_include_directories(TestingLib PUBLIC "${DSP}/Include")
-target_link_libraries(TestingLib PRIVATE "${REFLIBNAME}")
-else()
 target_link_libraries(TestingLib PRIVATE CMSISDSP)
-endif()
-
 if(NN)
 target_link_libraries(TestingLib PRIVATE CMSISNN)
 endif()
@@ -347,10 +285,6 @@ set_platform_core()
 core_includes(FrameworkLib)
 
 add_executable(Testing main.cpp)
-# To see the file in the scatter load, it must not because
-# linked in a .a archive
-target_include_directories(Testing PRIVATE GeneratedInclude)
-target_sources(Testing PRIVATE patterndata.c)
 
 # With -O2, generated code is crashing on some cycle accurate models.
 # (cpp part)

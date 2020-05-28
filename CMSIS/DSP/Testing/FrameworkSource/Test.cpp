@@ -27,6 +27,10 @@
  */
 #include "Test.h"
 #include <cstdio>
+#include <iostream>
+#include <queue>
+
+
 
 int testIndex(Testing::testIndex_t i)
 {
@@ -66,15 +70,6 @@ namespace Client
     return(m_tests.size());
   }
 
-  bool Suite::isForcedInCache()
-  {
-      return(m_forcedInCache);
-  }
-      
-  void Suite::setForceInCache(bool status)
-  {
-      m_forcedInCache = status;
-  }
  
 
 

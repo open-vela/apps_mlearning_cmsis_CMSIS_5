@@ -1,14 +1,12 @@
 #include <cstdlib>
 #include <cstdio>
-
+#include <iostream>
 #include "TestDesc.h"
-#if defined(EMBEDDED)
-#include "FPGA.h"
-#else
 #include "Semihosting.h"
-#endif
+#include "FPGA.h"
 #include "IORunner.h"
 #include "ArrayMemory.h"
+#include <stdlib.h>
 using namespace std;
 
 #ifdef BENCHMARK
@@ -21,13 +19,17 @@ using namespace std;
 // char* array describing the tests and the input patterns.
 // Reference patterns are ignored in this case.
 #include "TestDrive.h"
+#include "Patterns.h"
 
 
 
-int testmain(const char *patterns)
+int testmain()
 {
     char *memoryBuf=NULL;
 
+
+
+  
     memoryBuf = (char*)malloc(MEMSIZE);
     if (memoryBuf !=NULL)
     {
@@ -38,11 +40,8 @@ int testmain(const char *patterns)
            Client::ArrayMemory memory(memoryBuf,MEMSIZE);
 
            // There is also possibility of using "FPGA" io
-           #if defined(EMBEDDED)
-              Client::FPGA io(testDesc,patterns);
-           #else
-              Client::Semihosting io("../TestDesc.txt","../Patterns","../Output","../Parameters");
-           #endif
+           //Client::Semihosting io("../TestDesc.txt","../Patterns","../Output","../Parameters");
+           Client::FPGA io(testDesc,patterns);
 
     
            // Pattern Manager making the link between IO and Memory
@@ -53,12 +52,8 @@ int testmain(const char *patterns)
            // An IO runner is driven by some IO
            // In future one may have a client/server runner driven
            // by a server running on a host.
-           #if defined(EMBEDDED)
+           //Client::IORunner runner(&io,&mgr,Testing::kTestAndDump);
            Client::IORunner runner(&io,&mgr,Testing::kTestOnly);
-           #else
-           // Works also in embedded but slower since data is dumped
-           Client::IORunner runner(&io,&mgr,Testing::kTestAndDump);
-           #endif
 
     
            // Root object containing all the tests

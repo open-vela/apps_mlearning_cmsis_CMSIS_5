@@ -17,30 +17,26 @@ import sqlite3
 import datetime, time
 import re 
 
-# For sql table creation
-MKSTRFIELD=['Regression']
+# For table creation
+MKSTRFIELD=['NAME','Regression']
 MKBOOLFIELD=['HARDFP', 'FASTMATH', 'NEON', 'HELIUM','UNROLL', 'ROUNDING','OPTIMIZED']
 MKINTFIELD=['ID','MAX']
 MKREALFIELD=['MAXREGCOEF']
-MKDATEFIELD=[]
-MKKEYFIELD=['DATE','NAME','CATEGORY', 'PLATFORM', 'CORE', 'COMPILER','TYPE','RUN']
+MKDATEFIELD=['DATE']
+MKKEYFIELD=['CATEGORY', 'PLATFORM', 'CORE', 'COMPILER','TYPE']
 MKKEYFIELDID={'CATEGORY':'categoryid', 
-   'NAME':'testnameid',
-   'DATE':'testdateid',
    'PLATFORM':'platformid', 
    'CORE':'coreid', 
    'COMPILER':'compilerid',
-   'TYPE':'typeid',
-   'RUN':'runid'}
+   'TYPE':'typeid'}
 
-# For csv table value extraction
-VALSTRFIELD=['TESTNAME','VERSION','Regression']
+# For table value extraction
+VALSTRFIELD=['NAME','VERSION','Regression']
 VALBOOLFIELD=['HARDFP', 'FASTMATH', 'NEON', 'HELIUM','UNROLL', 'ROUNDING','OPTIMIZED']
 VALINTFIELD=['ID', 'MAX']
 VALREALFIELD=['MAXREGCOEF']
-VALDATEFIELD=[]
-# Some of those fields may be created by the parsing of other fields
-VALKEYFIELD=['DATE','NAME','CATEGORY', 'PLATFORM', 'CORE', 'COMPILER','TYPE']
+VALDATEFIELD=['DATE']
+VALKEYFIELD=['CATEGORY', 'PLATFORM', 'CORE', 'COMPILER','TYPE']
 
 def joinit(iterable, delimiter):
     it = iter(iterable)
@@ -62,7 +58,7 @@ def getColumns(elem,full):
   colsToKeep=[]
   cols = list(full.columns)
   params=diff(elem.params.full , elem.params.summary)
-  common = diff(cols + ["TYPE","RUN"] , ['OLDID'] + params)  
+  common = diff(cols + ["TYPE"] , ['OLDID'] + params)  
  
   for field in common:
        if field in MKSTRFIELD:
@@ -84,7 +80,7 @@ def createTableIfMissing(conn,elem,tableName,full):
      sql = "CREATE TABLE %s (" % tableName
      cols = list(full.columns)
      params=diff(elem.params.full , elem.params.summary)
-     common = diff(cols + ["TYPE","RUN"] , ['OLDID'] + params)
+     common = diff(cols + ["TYPE"] , ['OLDID'] + params)
 
      sql += "%sid INTEGER PRIMARY KEY"  % (tableName)
      start = ","   
@@ -110,12 +106,9 @@ def createTableIfMissing(conn,elem,tableName,full):
      # Create foreign keys
      sql += "%sFOREIGN KEY(typeid) REFERENCES TYPE(typeid)," % start
      sql += "FOREIGN KEY(categoryid) REFERENCES CATEGORY(categoryid),"
-     sql += "FOREIGN KEY(testnameid) REFERENCES TESTNAME(testnameid),"
-     sql += "FOREIGN KEY(testdateid) REFERENCES TESTDATE(testdateid),"
      sql += "FOREIGN KEY(platformid) REFERENCES PLATFORM(platformid),"
      sql += "FOREIGN KEY(coreid) REFERENCES CORE(coreid),"
      sql += "FOREIGN KEY(compilerid) REFERENCES COMPILER(compilerid)"
-     sql += "FOREIGN KEY(runid) REFERENCES RUN(runid)"
      sql += "  )"
      conn.execute(sql)
 
@@ -145,10 +138,9 @@ def findInCompilerTable(conn,kind,version):
       return(result[0])
     else:
       fullDate = datetime.datetime.now()
-      dateid = findInTable(conn,"TESTDATE","date",str(fullDate),"testdateid")
-      conn.execute("INSERT INTO COMPILER(compilerkindid,version,testdateid) VALUES(?,?,?)" ,(kind,version,dateid))
+      conn.execute("INSERT INTO COMPILER(compilerkindid,version,date) VALUES(?,?,?)" ,(kind,version,fullDate))
       conn.commit()
-      r = conn.execute("select compilerid from COMPILER where compilerkindid=? AND version=? AND testdateid=?"  , (kind,version,dateid))
+      r = conn.execute("select compilerid from COMPILER where compilerkindid=? AND version=? AND date=?"  , (kind,version,fullDate))
       result=r.fetchone()
       if result != None:
          #print(result)
@@ -157,7 +149,7 @@ def findInCompilerTable(conn,kind,version):
          return(None)
 
 
-def addRows(conn,elem,tableName,full,runid=0):
+def addRows(conn,elem,tableName,full):
    # List of columns we have in DB which is
    # different from the columns in the table
    compilerid = 0
@@ -187,36 +179,34 @@ def addRows(conn,elem,tableName,full,runid=0):
             keys[field]=row[field]
             if field == "NAME":
                 name = row[field]
-            if field == "TESTNAME":
-                testname = row[field]
-                if re.match(r'^.*_f64',testname):
+                if re.match(r'^.*_f64',name):
                   keys["TYPE"] = "f64"
-                if re.match(r'^.*_f32',testname):
+                if re.match(r'^.*_f32',name):
                   keys["TYPE"] = "f32"
-                if re.match(r'^.*_f16',testname):
+                if re.match(r'^.*_f16',name):
                   keys["TYPE"] = "f16"
-                if re.match(r'^.*_q31',testname):
+                if re.match(r'^.*_q31',name):
                   keys["TYPE"] = "q31"
-                if re.match(r'^.*_q15',testname):
+                if re.match(r'^.*_q15',name):
                   keys["TYPE"] = "q15"
-                if re.match(r'^.*_q7',testname):
+                if re.match(r'^.*_q7',name):
                   keys["TYPE"] = "q7"
 
-                if re.match(r'^.*_s8',testname):
+                if re.match(r'^.*_s8',name):
                   keys["TYPE"] = "s8"
-                if re.match(r'^.*_u8',testname):
+                if re.match(r'^.*_u8',name):
                   keys["TYPE"] = "u8"
-                if re.match(r'^.*_s16',testname):
+                if re.match(r'^.*_s16',name):
                   keys["TYPE"] = "s16"
-                if re.match(r'^.*_u16',testname):
+                if re.match(r'^.*_u16',name):
                   keys["TYPE"] = "u16"
-                if re.match(r'^.*_s32',testname):
+                if re.match(r'^.*_s32',name):
                   keys["TYPE"] = "s32"
-                if re.match(r'^.*_u32',testname):
+                if re.match(r'^.*_u32',name):
                   keys["TYPE"] = "u32"
-                if re.match(r'^.*_s64',testname):
+                if re.match(r'^.*_s64',name):
                   keys["TYPE"] = "s64"
-                if re.match(r'^.*_u64',testname):
+                if re.match(r'^.*_u64',name):
                   keys["TYPE"] = "u64"
             
         if field in VALINTFIELD:
@@ -228,22 +218,12 @@ def addRows(conn,elem,tableName,full,runid=0):
         if field in VALBOOLFIELD:
             keys[field]=row[field]
         
-       keys['RUN']=runid
+         
        # Get foreign keys and create missing data
        for field in common:
         if field in VALKEYFIELD:
             if field == "CATEGORY":
-              # Remove type extension to get category name so that
-              # all types are maped to same category which will
-              # help for post processing.
-              testField=re.sub(r'^(.*)[:]([^:]+)(F16|F32|F64|Q31|Q15|Q7)$',r'\1',row[field])
-              val = findInTable(conn,"CATEGORY","category",testField,"categoryid")
-              keys[field]=val
-            if field == "NAME":
-              val = findInTable(conn,"TESTNAME","name",row[field],"testnameid")
-              keys[field]=val
-            if field == "DATE":
-              val = findInTable(conn,"TESTDATE","date",str(row[field]),"testdateid")
+              val = findInTable(conn,"CATEGORY","category",row[field],"categoryid")
               keys[field]=val
             if field == "CORE":
               val = findInTable(conn,"CORE","coredef",row[field],"coreid")
@@ -285,50 +265,45 @@ def addRows(conn,elem,tableName,full,runid=0):
    return({'compilerid':compilerid,'platformid':platformid,'coreid':coreid})
 
 def addConfig(conn,config,fullDate):
-  dateid = findInTable(conn,"TESTDATE","date",str(fullDate),"testdateid")
-  conn.execute("INSERT INTO CONFIG(compilerid,platformid,coreid,testdateid) VALUES(?,?,?,?)" ,(config['compilerid'],config['platformid'],config['coreid'],dateid))
+  conn.execute("INSERT INTO CONFIG(compilerid,platformid,coreid,date) VALUES(?,?,?,?)" ,(config['compilerid'],config['platformid'],config['coreid'],fullDate))
   conn.commit()
 
-def getGroup(a):
-    return(re.sub(r'^(.+)(F64|F32|F16|Q31|Q15|Q7|U32|U16|U8|S32|S16|S8)$',r'\1',a))
-
-def addOneBenchmark(elem,fullPath,db,group,runid):
+def addOneBenchmark(elem,fullPath,db,group):
    if os.path.isfile(fullPath):
       full=pd.read_csv(fullPath,dtype={'OLDID': str} ,keep_default_na = False)
       fullDate = datetime.datetime.now()
       full['DATE'] = fullDate
       if group:
-         tableName = getGroup(group)
+         tableName = group
       else:
-         tableName = getGroup(elem.data["class"])
+         tableName = elem.data["class"]
       conn = sqlite3.connect(db)
       createTableIfMissing(conn,elem,tableName,full)
-      config = addRows(conn,elem,tableName,full,runid)
+      config = addRows(conn,elem,tableName,full)
       addConfig(conn,config,fullDate)
       conn.close()
 
 
-def addToDB(benchmark,dbpath,elem,group,runid):
+def addToDB(benchmark,dbpath,elem,group):
   if not elem.data["deprecated"]:
      if elem.params:
          benchPath = os.path.join(benchmark,elem.fullPath(),"regression.csv")
          print("Processing %s" % benchPath)
-         addOneBenchmark(elem,benchPath,dbpath,group,runid)
+         addOneBenchmark(elem,benchPath,dbpath,group)
          
      for c in elem.children:
-       addToDB(benchmark,dbpath,c,group,runid)
+       addToDB(benchmark,dbpath,c,group)
 
 
 
 parser = argparse.ArgumentParser(description='Generate summary benchmarks')
 
-parser.add_argument('-f', nargs='?',type = str, default="Output.pickle", help="Pickle path")
+parser.add_argument('-f', nargs='?',type = str, default="Output.pickle", help="File path")
 parser.add_argument('-b', nargs='?',type = str, default="FullBenchmark", help="Full Benchmark dir path")
 #parser.add_argument('-e', action='store_true', help="Embedded test")
 parser.add_argument('-o', nargs='?',type = str, default="reg.db", help="Regression benchmark database")
-parser.add_argument('-r', nargs='?',type = int, default=0, help="Run ID")
 
-parser.add_argument('others', nargs=argparse.REMAINDER, help="Suite class")
+parser.add_argument('others', nargs=argparse.REMAINDER)
 
 args = parser.parse_args()
 
@@ -342,7 +317,7 @@ if args.f is not None:
       group=args.others[0] 
     else:
       group=None
-    addToDB(args.b,args.o,root,group,args.r)
+    addToDB(args.b,args.o,root,group)
     
 else:
     parser.print_help()

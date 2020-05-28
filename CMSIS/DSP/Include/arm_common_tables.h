@@ -31,11 +31,6 @@
 
 #include "arm_math.h"
 
-#ifdef   __cplusplus
-extern "C"
-{
-#endif
-
 #if !defined(ARM_DSP_CONFIG_TABLES) || defined(ARM_FFT_ALLOW_TABLES)
   /* Double Precision Float CFFT twiddles */
   #if !defined(ARM_DSP_CONFIG_TABLES) || defined(ARM_ALL_FFT_TABLES) || defined(ARM_TABLE_BITREV_1024)
@@ -114,8 +109,6 @@ extern "C"
     extern const float32_t twiddleCoef_4096[8192];
     #define twiddleCoef twiddleCoef_4096
   #endif /* !defined(ARM_DSP_CONFIG_TABLES) || defined(ARM_ALL_FFT_TABLES) */
-
-  /* Q31 */
 
   #if !defined(ARM_DSP_CONFIG_TABLES) || defined(ARM_ALL_FFT_TABLES) || defined(ARM_TABLE_TWIDDLECOEF_Q31_16)
     extern const q31_t twiddleCoef_16_q31[24];
@@ -519,10 +512,6 @@ extern "C"
 #if (defined(ARM_MATH_MVEI) || defined(ARM_MATH_HELIUM))
 extern const unsigned char hwLUT[256];
 #endif /* (defined(ARM_MATH_MVEI) || defined(ARM_MATH_HELIUM)) */
-
-#ifdef   __cplusplus
-}
-#endif
 
 #endif /*  ARM_COMMON_TABLES_H */
 

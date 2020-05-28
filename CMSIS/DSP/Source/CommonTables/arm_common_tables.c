@@ -8538,6 +8538,10 @@ const uint64_t twiddleCoefF64_4096[8192] = {
 
 #endif /* !defined(ARM_DSP_CONFIG_TABLES) || defined(ARM_ALL_FFT_TABLES) */
 
+/**
+  @brief  Floating-point Twiddle factors Table Generation
+*/
+
 #if !defined(ARM_DSP_CONFIG_TABLES) || defined(ARM_ALL_FFT_TABLES) || defined(ARM_TABLE_TWIDDLECOEF_F32_16)
 /**
   @par

@@ -14,10 +14,8 @@ class TransformCF64:public Client::Suite
 
             Client::RefPattern<float64_t> ref;
 
-            arm_cfft_instance_f64 varInstCfftF64;
+            const arm_cfft_instance_f64 *instCfftF64;
 
             int ifft;
-
-            arm_status status;
             
     };

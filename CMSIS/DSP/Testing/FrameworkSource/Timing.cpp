@@ -69,8 +69,9 @@ unsigned long sectionCounter=0;
 void initCycleMeasurement()
 {
 #ifdef CORTEXM
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk;
     SysTick->LOAD = SYSTICK_INITIAL_VALUE;
+    SysTick->VAL = 0;
+    SysTick->CTRL = 0;
 #endif 
 
 #ifdef CORTEXA
@@ -106,17 +107,15 @@ void cycleMeasurementStart()
 {
 #ifndef EXTBENCH
 #ifdef CORTEXM
-    /* 
-    TODO:
-    This code is likely to be wrong. Don't rely on it for benchmarks.
-
-    */
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk;
+   
+    SysTick->CTRL = 0;
     SysTick->LOAD = SYSTICK_INITIAL_VALUE;
+    SysTick->VAL = 0;
 
     SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk;  
 
     while(SysTick->VAL == 0);
+    
 
     startCycles = SysTick->VAL;
 
@@ -138,7 +137,7 @@ void cycleMeasurementStop()
 {
 #ifndef EXTBENCH
 #ifdef CORTEXM
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk;
+    SysTick->CTRL = 0;
     SysTick->LOAD = SYSTICK_INITIAL_VALUE;
 #endif
 #endif
@@ -148,7 +147,16 @@ Testing::cycles_t getCycles()
 {
 #ifdef CORTEXM
     uint32_t v = SysTick->VAL;
-    return(startCycles - v);
+    Testing::cycles_t result;
+    if (v < startCycles)
+    {
+      result = startCycles - v;
+    }
+    else
+    {
+      result = SYSTICK_INITIAL_VALUE - (v - startCycles);
+    }
+    return(result);
 #endif 
 
 #ifdef CORTEXA

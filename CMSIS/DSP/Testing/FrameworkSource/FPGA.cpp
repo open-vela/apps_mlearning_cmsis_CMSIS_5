@@ -34,9 +34,11 @@
 #include <string>
 #include <cstddef>
 #include "FPGA.h"
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+
 #include "Generators.h"
+#include "arm_math.h"
+#include "arm_math_f16.h"
 
 namespace Client
 {
@@ -202,7 +204,7 @@ namespace Client
         switch(kind)
         {
           case 1:
-             printf("S: t \n");
+             printf("S: t %s\n","");
              break;
           case 2:
              printf("S: s %ld\n",this->currentId);
@@ -211,7 +213,7 @@ namespace Client
              printf("S: g %ld\n",this->currentId);
              break;
           default:
-             printf("S: u\n");
+             printf("S: u%s\n","");
         }
 
         
@@ -279,7 +281,7 @@ namespace Client
 
     void FPGA::EndGroup()
     {
-       printf("S: p\n");
+       printf("S: p%s\n","");
        this->path->pop_back();
     }
 
@@ -540,6 +542,28 @@ namespace Client
 
     }
 
+#if !defined( __CC_ARM ) && defined(ARM_FLOAT16_SUPPORTED)
+    void FPGA::ImportPattern_f16(Testing::PatternID_t id,char* p,Testing::nbSamples_t nb)
+    {
+        unsigned long offset,i;
+
+        offset=this->getPatternOffset(id);
+
+        const char *patternStart = this->m_patterns + offset;
+        const float16_t *src = (const float16_t*)patternStart;
+        float16_t *dst = (float16_t*)p;
+
+        if (dst)
+        {
+           for(i=0; i < nb; i++)
+           {
+               *dst++ = *src++;
+           }
+        }
+
+    }
+#endif
+
     void FPGA::ImportPattern_q63(Testing::PatternID_t id,char* p,Testing::nbSamples_t nb)
     {
         unsigned long offset,i;
@@ -719,6 +743,27 @@ namespace Client
         }
     }
 
+#if !defined( __CC_ARM ) && defined(ARM_FLOAT16_SUPPORTED)
+    void FPGA::DumpPattern_f16(Testing::outputID_t id,Testing::nbSamples_t nb, float16_t* data)
+    {
+        std::string fileName = this->getOutputPath(id); 
+        if (data)
+        {
+            printf("D: %s\n",fileName.c_str());
+            Testing::nbSamples_t i=0;
+            uint16_t t;
+            float16_t v;
+            for(i=0; i < nb; i++)
+            {
+               v = data[i];
+               t = TOINT16(v);
+               printf("D: 0x0000%04x\n",t);
+            }
+            printf("D: END\n");
+        }
+    }
+#endif
+    
     void FPGA::DumpPattern_q63(Testing::outputID_t id,Testing::nbSamples_t nb, q63_t* data)
     {
         std::string fileName = this->getOutputPath(id); 

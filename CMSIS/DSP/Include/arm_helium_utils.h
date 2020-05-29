@@ -29,6 +29,11 @@
 #ifndef _ARM_UTILS_HELIUM_H_
 #define _ARM_UTILS_HELIUM_H_
 
+
+#ifdef   __cplusplus
+extern "C"
+{
+#endif
 /***************************************
 
 Definitions available for MVEF and MVEI
@@ -58,6 +63,21 @@ __STATIC_FORCEINLINE float32_t vecAddAcrossF32Mve(float32x4_t in)
     return acc;
 }
 
+__STATIC_FORCEINLINE float16_t vecAddAcrossF16Mve(float16x8_t in)
+{
+    float16x8_t tmpVec;
+    float16_t acc;
+
+    tmpVec = (float16x8_t) vrev32q_s16((int16x8_t) in);
+    in = vaddq_f16(tmpVec, in);
+    tmpVec = (float16x8_t) vrev64q_s32((int32x4_t) in);
+    in = vaddq_f16(tmpVec, in);
+    acc = vgetq_lane_f16(in, 0) + vgetq_lane_f16(in, 4);
+
+    return acc;
+}
+
+
 /* newton initial guess */
 #define INVSQRT_MAGIC_F32           0x5f3759df
 
@@ -81,7 +101,6 @@ Definitions available for MVEI only
 
 ***************************************/
 #if defined (ARM_MATH_HELIUM) || defined(ARM_MATH_MVEI)
-
 
 #include "arm_common_tables.h"
 
@@ -230,11 +249,11 @@ __STATIC_INLINE q31x4_t FAST_VSQRT_Q31(q31x4_t vecIn)
     vecIdx = vecNrm >> 24;
     vecIdx = vecIdx << 1;
 
-    vecTmp0 = vldrwq_gather_shifted_offset_s32(sqrtTable_Q31, vecIdx);
+    vecTmp0 = vldrwq_gather_shifted_offset_s32(sqrtTable_Q31, (uint32x4_t)vecIdx);
 
     vecIdx = vecIdx + 1;
 
-    vecTmp1 = vldrwq_gather_shifted_offset_s32(sqrtTable_Q31, vecIdx);
+    vecTmp1 = vldrwq_gather_shifted_offset_s32(sqrtTable_Q31, (uint32x4_t)vecIdx);
 
     vecTmp1 = vqrdmulhq(vecTmp1, vecNrm);
     vecTmp0 = vecTmp0 - vecTmp1;
@@ -295,11 +314,11 @@ __STATIC_INLINE q15x8_t FAST_VSQRT_Q15(q15x8_t vecIn)
     vecIdx = vecNrm >> 8;
     vecIdx = vecIdx << 1;
 
-    vecTmp0 = vldrhq_gather_shifted_offset_s16(sqrtTable_Q15, vecIdx);
+    vecTmp0 = vldrhq_gather_shifted_offset_s16(sqrtTable_Q15, (uint16x8_t)vecIdx);
 
     vecIdx = vecIdx + 1;
 
-    vecTmp1 = vldrhq_gather_shifted_offset_s16(sqrtTable_Q15, vecIdx);
+    vecTmp1 = vldrhq_gather_shifted_offset_s16(sqrtTable_Q15, (uint16x8_t)vecIdx);
 
     vecTmp1 = vqrdmulhq(vecTmp1, vecNrm);
     vecTmp0 = vecTmp0 - vecTmp1;
@@ -344,5 +363,9 @@ __STATIC_INLINE q15x8_t FAST_VSQRT_Q15(q15x8_t vecIn)
 #endif
 
 #endif /* defined (ARM_MATH_HELIUM) || defined(ARM_MATH_MVEI) */
+
+#ifdef   __cplusplus
+}
+#endif
 
 #endif

@@ -50,3 +50,8 @@ void test_stride2pad1_arm_depthwise_conv_s8_opt(void)
 {
   stride2pad1_arm_depthwise_conv_s8_opt();
 }
+
+void test_depthwise_eq_in_out_ch_arm_depthwise_conv_s8_opt(void)
+{
+  depthwise_eq_in_out_ch_arm_depthwise_conv_s8_opt();
+}

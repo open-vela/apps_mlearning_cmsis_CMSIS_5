@@ -1911,6 +1911,11 @@ Contact cmsis@arm.com to ask for an extension. These values can be used in the e
     <td>http://www.arm.com</td>
   </tr>
   <tr>
+    <td class="XML-Token">ArmChina:160</td>
+    <td>Arm China</td>
+    <td>http://www.armchina.com</td>
+  </tr>
+  <tr>
     <td class="XML-Token">ArteryTek:143</td>
     <td>ArteryTek</td>
     <td>http://www.arterytek.com</td>
@@ -2073,7 +2078,7 @@ Contact cmsis@arm.com to ask for an extension. These values can be used in the e
   <tr>
     <td class="XML-Token">Realtek Semiconductor:124</td>
     <td>Realtek Semiconductor</td>
-    <td>http://www.realtek.com.tw</td>
+    <td>http://www.realtek.com</td>
   </tr>
   <tr>
     <td class="XML-Token">Redpine Signals:125</td>

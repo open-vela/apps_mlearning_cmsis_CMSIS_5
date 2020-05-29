@@ -31,6 +31,7 @@ import threading
 import subprocess
 
 from os import path
+from termcolor import colored
 
 OUTPUT = "Output/"
 BASE_PATH = "../../"
@@ -45,7 +46,9 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Run CMSIS-NN unit tests.",
                                      epilog="Runs on all connected HW supported by Mbed.")
     parser.add_argument('--testdir', type=str, default='TESTRUN', help="prefix of output dir name")
-    parser.add_argument('--compiler', type=str, default='GCC_ARM', choices=['GCC_ARM', 'ARMC6'])
+    parser.add_argument('-s', '--specific-test', type=str, default=None, help="run a specific test, e.g."
+                        " test_arm_convolve_s8, default is to run all tests")
+    parser.add_argument('-c', '--compiler', type=str, default='GCC_ARM', choices=['GCC_ARM', 'ARMC6'])
     args = parser.parse_args()
     return args
 
@@ -157,6 +160,7 @@ def test_target(target, args, main_test):
                              ' --source ' + CMSIS_PATH + 'DSP/Include/'
                              ' --source ' + CMSIS_PATH + 'Core/Include/'
                              ' --source ' + CMSIS_PATH + 'NN/Source/ConvolutionFunctions/'
+                             ' --source ' + CMSIS_PATH + 'NN/Source/PoolingFunctions/'
                              ' --source ' + CMSIS_PATH + 'NN/Source/NNSupportFunctions/'
                              + cmsis_flags +
                              additional_options,
@@ -184,7 +188,6 @@ def test_target_with_unity(target, args, main_test):
     timeout = 30
     inputQueue = queue.Queue()
     tests = copy.deepcopy(target["tests"])
-    result = []
 
     try:
         ser = serial.Serial(port, baudrate, timeout=timeout)
@@ -212,7 +215,6 @@ def test_target_with_unity(target, args, main_test):
             except IndexError:
                 pass
             if test in tests:
-                result.append("{}: {}".format(target["name"], test_result))
                 tests.remove(test)
                 target[test]["tested"] = True
                 if test_result == test + ':PASS':
@@ -223,10 +225,6 @@ def test_target_with_unity(target, args, main_test):
     stop_thread = True
     serial_thread.join()
     ser.close()
-
-    print()
-    for res in result:
-        print(res)
 
 
 def print_summary(targets):
@@ -240,6 +238,9 @@ def print_summary(targets):
     tested = 0
     expected = 0
     return_code = 3
+    verdict_pass = colored('[ PASSED ]', 'green')
+    verdict_fail = colored('[ FAILED ]', 'red')
+    verdict_error = colored('[ ERROR ]', 'red')
 
     print("-----------------------------------------------------------------------------------------------------------")
 
@@ -249,37 +250,45 @@ def print_summary(targets):
             expected += 1
             if target[test]["tested"]:
                 tested += 1
-            else:
-                print("ERROR: Test {} for target {} not found".format(test, target["name"]))
             if target[test]["pass"]:
                 passed += 1
             else:
                 failed += 1
 
     if tested != expected:
-        print("ERROR: Not all tests found!")
-        print("Expected: {} Actual: {}".format(expected, tested))
+        print("{} Not all tests found".format(verdict_error))
+        print("{} Expected: {} Actual: {}".format(verdict_error, expected, tested))
         return_code = 2
     elif tested == passed:
         return_code = 0
     else:
         return_code = 1
 
-    print("Summary: {} tests in total passed on {} targets ({})".
-          format(passed, len(targets), ', '.join([t['name'] for t in targets])))
+    # print all test cases
+    sorted_tc = []
+    for target in targets:
+        for test in target["tests"]:
+            if not target[test]["tested"]:
+                tc_verdict = verdict_error
+            elif target[test]["pass"]:
+                tc_verdict = verdict_pass
+            else:
+                tc_verdict = verdict_fail
+            sorted_tc.append("{} {}: {}".format(tc_verdict, target["name"], test))
+    sorted_tc.sort()
+    for tc in sorted_tc:
+        print(tc)
 
-    # Print those that failed
-    if failed > 0:
-        print()
-        for target in targets:
-            for test in target["tests"]:
-                if not target[test]["pass"]:
-                    print("{}: {} failed".format(target["name"], test))
-
+    total = 0
     if (passed > 0):
-        print("{:.0f}% tests passed, {} tests failed out of {}".format(passed/expected*100, failed, expected))
+        total = passed / expected
+    if (total == 1.0):
+        verdict = verdict_pass
     else:
-        print("0% tests passed, {} tests failed out of {}".format(failed, tested))
+        verdict = verdict_fail
+    print("{} Summary: {} tests in total passed on {} targets ({})".
+          format(verdict, passed, len(targets), ', '.join([t['name'] for t in targets])))
+    print("{} {:.0f}% tests passed, {} tests failed out of {}".format(verdict, total*100, failed, expected))
 
     return return_code
 
@@ -301,7 +310,8 @@ def test_targets(args):
         return 3
 
     download_unity()
-    if not parse_tests(targets, main_tests):
+
+    if not parse_tests(targets, main_tests, args.specific_test):
         print("No tests found?!")
         return 4
 
@@ -365,19 +375,27 @@ def download_unity(force=False):
     shutil.rmtree(download_dir)
 
 
-def parse_tests(targets, main_tests):
+def parse_tests(targets, main_tests, specific_test=None):
     """
     Generate test runners and parse it to know what to expect from the serial console
     Return True if successful
     """
+    test_found = False
     directory = 'TestCases'
     for dir in next(os.walk(directory))[1]:
         if re.search(r'test_arm', dir):
+            if specific_test and dir != specific_test:
+                continue
+            test_found = True
             testpath = directory + '/' + dir + '/Unity/'
-            main_tests.append(testpath)
+            ut_test_file = None
             for content in os.listdir(testpath):
                 if re.search(r'unity_test_arm', content):
                     ut_test_file = content
+            if ut_test_file is None:
+                print("Warning: invalid path: ", testpath)
+                continue
+            main_tests.append(testpath)
             ut_test_file_runner = path.splitext(ut_test_file)[0] + '_runner' + path.splitext(ut_test_file)[1]
             test_code = testpath + ut_test_file
             test_runner_path = testpath + 'TestRunner/'
@@ -393,6 +411,8 @@ def parse_tests(targets, main_tests):
             test_found = parse_test(test_runner, targets)
             if not test_found:
                 return False
+    if not test_found:
+        return False
     return True
 
 

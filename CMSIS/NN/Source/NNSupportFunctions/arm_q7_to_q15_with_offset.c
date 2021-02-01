@@ -39,7 +39,10 @@
  * @{
  */
 
-void arm_q7_to_q15_with_offset(const q7_t *src, q15_t *dst, uint32_t block_size, q15_t offset)
+void arm_q7_to_q15_with_offset(const q7_t *src,
+                               q15_t *dst,
+                               uint32_t block_size,
+                               q15_t offset)
 {
     int block_cnt;
 

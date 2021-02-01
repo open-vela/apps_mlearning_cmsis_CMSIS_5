@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/support_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupSupport
@@ -44,7 +44,7 @@
   @param[in]     blockSize  number of samples in each vector
   @return        none
  */
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 void arm_copy_q31(
   const q31_t * pSrc,
         q31_t * pDst,

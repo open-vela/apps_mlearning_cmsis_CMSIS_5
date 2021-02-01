@@ -1,6 +1,7 @@
 #include "SupportBarTestsF32.h"
 #include <stdio.h>
 #include "Error.h"
+#include "arm_math.h"
 #include "Test.h"
 
 
@@ -36,7 +37,6 @@
   
     void SupportBarTestsF32::setUp(Testing::testID_t id,std::vector<Testing::param_t>& paramsArgs,Client::PatternMgr *mgr)
     {
-        (void)paramsArgs;
         dims.reload(SupportBarTestsF32::DIM_S16_ID,mgr);
 
         const int16_t *dimsp=dims.ptr();
@@ -62,6 +62,5 @@
 
     void SupportBarTestsF32::tearDown(Testing::testID_t id,Client::PatternMgr *mgr)
     {
-       (void)id;
        output.dump(mgr);
     }

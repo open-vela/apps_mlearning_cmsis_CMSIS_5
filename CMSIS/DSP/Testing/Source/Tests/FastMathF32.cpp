@@ -1,9 +1,8 @@
-#include "arm_vec_math.h"
-
 #include "FastMathF32.h"
 #include <stdio.h>
-
 #include "Error.h"
+#include "arm_math.h"
+#include "arm_vec_math.h"
 #include "Test.h"
 
 
@@ -20,8 +19,9 @@ a double precision computation.
     void FastMathF32::test_cos_f32()
     {
         const float32_t *inp  = input.ptr();
+        float32_t *refp  = ref.ptr();
         float32_t *outp  = output.ptr();
-        unsigned long i;
+        int i;
 
         for(i=0; i < ref.nbSamples(); i++)
         {
@@ -36,8 +36,9 @@ a double precision computation.
     void FastMathF32::test_sin_f32()
     {
         const float32_t *inp  = input.ptr();
+        float32_t *refp  = ref.ptr();
         float32_t *outp  = output.ptr();
-        unsigned long i;
+        int i;
 
         for(i=0; i < ref.nbSamples(); i++)
         {
@@ -52,9 +53,10 @@ a double precision computation.
     void FastMathF32::test_sqrt_f32()
     {
         const float32_t *inp  = input.ptr();
+        float32_t *refp  = ref.ptr();
         float32_t *outp  = output.ptr();
         arm_status status;
-        unsigned long i;
+        int i;
 
         for(i=0; i < ref.nbSamples(); i++)
         {
@@ -98,7 +100,6 @@ a double precision computation.
   
     void FastMathF32::setUp(Testing::testID_t id,std::vector<Testing::param_t>& paramsArgs,Client::PatternMgr *mgr)
     {
-        (void)paramsArgs;
         switch(id)
         {
             case FastMathF32::TEST_COS_F32_1:
@@ -205,7 +206,6 @@ a double precision computation.
 
     void FastMathF32::tearDown(Testing::testID_t id,Client::PatternMgr *mgr)
     {
-      (void)id;
       output.dump(mgr);
       
     }

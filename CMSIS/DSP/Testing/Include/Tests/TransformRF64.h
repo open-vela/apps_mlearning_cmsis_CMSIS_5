@@ -1,8 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/transform_functions.h"
-
 class TransformRF64:public Client::Suite
     {
         public:

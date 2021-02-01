@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/complex_math_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupCmplxMath
@@ -50,7 +50,7 @@
                    Results outside of the allowable Q31 range[0x80000000 0x7FFFFFFF] are saturated.
  */
 
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 void arm_cmplx_mult_real_q31(
   const q31_t * pSrcCmplx,
   const q31_t * pSrcReal,

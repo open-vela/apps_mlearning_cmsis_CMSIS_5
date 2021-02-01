@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/filtering_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupFilters
@@ -125,11 +125,11 @@ void arm_biquad_cascade_stereo_df2T_f32(
             /*
              * load {d1a, d1b, d1a, d1b}
              */
-            stateVec0 = (f32x4_t)vldrwq_gather_shifted_offset((uint32_t const *) scratch, loadIdxVec);
+            stateVec0 = vldrwq_gather_shifted_offset((uint32_t const *) scratch, loadIdxVec);
             /*
              * load {in0 in1 in0 in1}
              */
-            inVec = (f32x4_t)vldrwq_gather_shifted_offset((uint32_t const *) pIn, loadIdxVec);
+            inVec = vldrwq_gather_shifted_offset((uint32_t const *) pIn, loadIdxVec);
 
             stateVec0 = vfmaq(stateVec0, inVec, b0);
             *pOut++ = vgetq_lane(stateVec0, 0);

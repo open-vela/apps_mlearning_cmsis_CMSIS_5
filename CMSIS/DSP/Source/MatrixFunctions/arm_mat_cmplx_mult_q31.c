@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/matrix_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupMatrix
@@ -56,7 +56,7 @@
                    to avoid overflows, as a total of numColsA additions are performed internally.
                    The 2.62 accumulator is right shifted by 31 bits and saturated to 1.31 format to yield the final result.
  */
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 
 #include "arm_helium_utils.h"
 

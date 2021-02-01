@@ -25,13 +25,13 @@
  * limitations under the License.
  */
 
-#include "dsp/distance_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
 
 /**
-  @addtogroup CosineDist
+  @addtogroup FloatDist
   @{
  */
 
@@ -64,5 +64,5 @@ float32_t arm_cosine_distance_f32(const float32_t *pA,const float32_t *pB, uint3
 
 
 /**
- * @} end of CosineDist group
+ * @} end of FloatDist group
  */

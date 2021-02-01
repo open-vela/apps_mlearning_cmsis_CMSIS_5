@@ -26,8 +26,8 @@
  * limitations under the License.
  */
 #include "ArrayMemory.h"
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 namespace Client {
@@ -40,9 +40,7 @@ namespace Client {
          this->m_bufferLength = bufferLength;
          this->m_generation=0;
          this->memError=false;
-         #if !defined(BENCHMARK)
          memset((void*)ptr, 0, bufferLength);
-         #endif
      }
 
      // By default there is alignment and  tail
@@ -56,9 +54,7 @@ namespace Client {
          this->m_bufferLength = bufferLength;
          this->m_generation=0;
          this->memError=false;
-         #if !defined(BENCHMARK)
          memset((void*)ptr, 0, bufferLength);
-         #endif
         }
      
      bool ArrayMemory::HasMemError()
@@ -127,7 +123,7 @@ namespace Client {
             char *p=ptr + length;
             bool isEmpty=true;
     
-            for(unsigned long i=0; i < this->getTailSize() ; i++)
+            for(int i=0; i < this->getTailSize() ; i++)
             {
                 //printf("%d\n",p[i]);
                 if (p[i] != 0)
@@ -153,15 +149,7 @@ namespace Client {
     */
     void ArrayMemory::FreeMemory()
     {
-        #if !defined(BENCHMARK)
-           /*
-            In benchmark mode, memory is not clearer between
-            tests. It is faster when running on cycle model or RTL.
-            In benchmark mode, we don't tests so having a memory not
-            in a clean state is not a problem.
-           */
-           memset(this->m_ptr, 0, this->m_bufferLength);
-        #endif
+        memset(this->m_ptr, 0, this->m_bufferLength);
         this->m_currentPtr=this->m_ptr;
         this->m_generation++;
         this->memError=false;

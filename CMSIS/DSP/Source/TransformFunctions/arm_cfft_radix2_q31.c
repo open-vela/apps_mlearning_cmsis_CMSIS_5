@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/transform_functions.h"
+#include "arm_math.h"
 
 void arm_radix2_butterfly_q31(
         q31_t * pSrc,

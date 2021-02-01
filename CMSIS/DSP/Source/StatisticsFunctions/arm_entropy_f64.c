@@ -24,12 +24,12 @@
  * limitations under the License.
  */
 
-#include "dsp/statistics_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
 /**
- * @addtogroup Entropy
+ * @addtogroup groupStats
  * @{
  */
 
@@ -67,5 +67,5 @@ float64_t arm_entropy_f64(const float64_t * pSrcA, uint32_t blockSize)
 }
 
 /**
- * @} end of Entropy group
+ * @} end of groupStats group
  */

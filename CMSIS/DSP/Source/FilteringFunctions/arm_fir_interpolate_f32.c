@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/filtering_functions.h"
+#include "arm_math.h"
 
 /**
   @defgroup FIR_Interpolate Finite Impulse Response (FIR) Interpolator

@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/matrix_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupMatrix
@@ -45,7 +45,7 @@
                    - \ref ARM_MATH_SUCCESS       : Operation successful
                    - \ref ARM_MATH_SIZE_MISMATCH : Matrix size check failed
  */
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 
 #include "arm_helium_utils.h"
 

@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/basic_math_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupMath
@@ -51,7 +51,7 @@
                    These are multiplied to yield a 2.14 intermediate result and this is shifted with saturation to 1.7 format.
  */
 
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 
 #include "arm_helium_utils.h"
 

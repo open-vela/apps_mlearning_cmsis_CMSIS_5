@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/filtering_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupFilters
@@ -54,7 +54,7 @@
                    After all multiply-accumulates are performed, the 2.62 accumulator is truncated to 1.32 format and then saturated to 1.31 format.
  */
 
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 
 #include "arm_helium_utils.h"
 void arm_fir_interpolate_q31(

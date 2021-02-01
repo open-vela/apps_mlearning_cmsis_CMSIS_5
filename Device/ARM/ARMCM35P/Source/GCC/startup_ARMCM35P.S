@@ -1,11 +1,11 @@
-/******************************************************************************
+/**************************************************************************//**
  * @file     startup_ARMCM35P.S
- * @brief    CMSIS-Core Device Startup File for Cortex-M35P Device
- * @version  V1.2.0
- * @date     16. December 2020
+ * @brief    CMSIS-Core(M) Device Startup File for Cortex-M35P Device
+ * @version  V1.0.1
+ * @date     23. July 2019
  ******************************************************************************/
 /*
- * Copyright (c) 2009-2020 Arm Limited. All rights reserved.
+ * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -25,19 +25,13 @@
                 .syntax  unified
                 .arch    armv8-m.main
 
-                #define __INITIAL_SP     __StackTop
-                #define __STACK_LIMIT    __StackLimit
-                #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-                #define __STACK_SEAL     __StackSeal
-                #endif
-
                 .section .vectors
                 .align   2
                 .globl   __Vectors
                 .globl   __Vectors_End
                 .globl   __Vectors_Size
 __Vectors:
-                .long    __INITIAL_SP                       /*     Initial Stack Pointer */
+                .long    __StackTop                         /*     Top of Stack */
                 .long    Reset_Handler                      /*     Reset Handler */
                 .long    NMI_Handler                        /* -14 NMI Handler */
                 .long    HardFault_Handler                  /* -13 Hard Fault Handler */
@@ -81,18 +75,8 @@ __Vectors_End:
                 .globl   Reset_Handler
                 .fnstart
 Reset_Handler:
-                ldr      r0, =__INITIAL_SP
-                msr      psp, r0
-              
-                ldr      r0, =__STACK_LIMIT
+                ldr      r0, =__StackLimit
                 msr      msplim, r0
-                msr      psplim, r0
-
-                #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
-                ldr      r0, =__STACK_SEAL
-                ldr      r1, =0xFEF5EDA5U
-                strd     r1,r1,[r0,#0]
-                #endif
 
                 bl       SystemInit
 
@@ -102,13 +86,12 @@ Reset_Handler:
 .L_loop0:
                 cmp      r4, r5
                 bge      .L_loop0_done
-                ldr      r1, [r4]                /* source address */   
-                ldr      r2, [r4, #4]            /* destination address */
-                ldr      r3, [r4, #8]            /* word count */
-                lsl      r3, r3, #2              /* byte count */
+                ldr      r1, [r4]
+                ldr      r2, [r4, #4]
+                ldr      r3, [r4, #8]
 
 .L_loop0_0:
-                subs     r3, #4                  /* decrement byte count */
+                subs     r3, #4
                 ittt     ge
                 ldrge    r0, [r1, r3]
                 strge    r0, [r2, r3]
@@ -124,13 +107,12 @@ Reset_Handler:
 .L_loop2:
                 cmp      r3, r4
                 bge      .L_loop2_done
-                ldr      r1, [r3]                /* destination address */
-                ldr      r2, [r3, #4]            /* word count */
-                lsl      r2, r2, #2              /* byte count */
+                ldr      r1, [r3]
+                ldr      r2, [r3, #4]
                 movs     r0, 0
 
 .L_loop2_0:
-                subs     r2, #4                  /* decrement byte count */
+                subs     r2, #4
                 itt      ge
                 strge    r0, [r1, r2]
                 bge      .L_loop2_0
@@ -143,7 +125,6 @@ Reset_Handler:
 
                 .fnend
                 .size    Reset_Handler, . - Reset_Handler
-
 
 /* The default macro is not used for HardFault_Handler
  * because this results in a poor debug illusion.
@@ -198,5 +179,6 @@ Default_Handler:
                 Set_Default_Handler  Interrupt7_Handler
                 Set_Default_Handler  Interrupt8_Handler
                 Set_Default_Handler  Interrupt9_Handler
+
 
                 .end

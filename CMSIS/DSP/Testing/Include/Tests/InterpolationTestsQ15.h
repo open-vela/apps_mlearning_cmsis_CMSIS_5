@@ -1,9 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/interpolation_functions.h"
-
-
 class InterpolationTestsQ15:public Client::Suite
     {
         public:

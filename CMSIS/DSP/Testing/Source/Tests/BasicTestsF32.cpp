@@ -15,6 +15,7 @@ a double precision computation.
 #define GET_F32_PTR() \
 const float32_t *inp1=input1.ptr(); \
 const float32_t *inp2=input2.ptr(); \
+float32_t *refp=ref.ptr(); \
 float32_t *outp=output.ptr();
 
     void BasicTestsF32::test_add_f32()
@@ -63,8 +64,6 @@ float32_t *outp=output.ptr();
     {
         GET_F32_PTR();
 
-        (void)inp2;
-
         arm_negate_f32(inp1,outp,input1.nbSamples());
 
         ASSERT_EMPTY_TAIL(output);
@@ -79,8 +78,6 @@ float32_t *outp=output.ptr();
     {
         GET_F32_PTR();
 
-        (void)inp2;
-
         arm_offset_f32(inp1,0.5,outp,input1.nbSamples());
 
         ASSERT_EMPTY_TAIL(output);
@@ -94,8 +91,6 @@ float32_t *outp=output.ptr();
     void BasicTestsF32::test_scale_f32()
     {
         GET_F32_PTR();
-
-        (void)inp2;
 
         arm_scale_f32(inp1,0.5,outp,input1.nbSamples());
 
@@ -130,8 +125,6 @@ float32_t *outp=output.ptr();
     {
         GET_F32_PTR();
 
-        (void)inp2;
-
         arm_abs_f32(inp1,outp,input1.nbSamples());
 
         ASSERT_EMPTY_TAIL(output);
@@ -146,8 +139,6 @@ float32_t *outp=output.ptr();
     void BasicTestsF32::setUp(Testing::testID_t id,std::vector<Testing::param_t>& params,Client::PatternMgr *mgr)
     {
       
-       (void)params;
-
        Testing::nbSamples_t nb=MAX_NB_SAMPLES; 
 
        
@@ -302,6 +293,5 @@ float32_t *outp=output.ptr();
 
     void BasicTestsF32::tearDown(Testing::testID_t id,Client::PatternMgr *mgr)
     {
-        (void)id;
         output.dump(mgr);
     }

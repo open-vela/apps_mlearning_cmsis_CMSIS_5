@@ -24,13 +24,13 @@
  * limitations under the License.
  */
 
-#include "dsp/support_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
 
 /**
-  @ingroup barycenter
+  @ingroup groupSupport
  */
 
 
@@ -408,5 +408,5 @@ void arm_barycenter_f32(const float32_t *in, const float32_t *weights, float32_t
 #endif /* defined(ARM_MATH_MVEF) && !defined(ARM_MATH_AUTOVECTORIZE) */
 
 /**
- * @} end of barycenter group
+ * @} end of groupSupport group
  */

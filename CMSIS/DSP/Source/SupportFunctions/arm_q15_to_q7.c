@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/support_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupSupport
@@ -50,7 +50,7 @@
       pDst[n] = (q7_t) pSrc[n] >> 8;   0 <= n < blockSize.
   </pre>
  */
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 void arm_q15_to_q7(
   const q15_t * pSrc,
         q7_t * pDst,

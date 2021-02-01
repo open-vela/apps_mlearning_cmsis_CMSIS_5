@@ -1,8 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/controller_functions.h"
-
 class ControllerF32:public Client::Suite
     {
         public:

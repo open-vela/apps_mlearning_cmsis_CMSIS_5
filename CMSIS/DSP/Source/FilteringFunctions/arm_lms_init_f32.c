@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/filtering_functions.h"
+#include "arm_math.h"
 
 /**
   @addtogroup LMS

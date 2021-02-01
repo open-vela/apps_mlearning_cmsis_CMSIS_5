@@ -1,8 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/matrix_functions.h"
-
 class BinaryTestsQ31:public Client::Suite
     {
         public:

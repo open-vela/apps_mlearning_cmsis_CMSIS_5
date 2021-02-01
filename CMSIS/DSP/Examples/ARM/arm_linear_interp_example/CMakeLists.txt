@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.14)
+cmake_minimum_required (VERSION 3.6)
 project (arm_linear_interp_example VERSION 0.1)
 
 

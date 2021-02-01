@@ -24,13 +24,13 @@
  * limitations under the License.
  */
 
-#include "dsp/svm_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
 
 /**
- * @addtogroup rbfsvm
+ * @addtogroup groupSVM
  * @{
  */
 
@@ -517,5 +517,5 @@ void arm_svm_rbf_predict_f32(
 #endif /* defined(ARM_MATH_MVEF) && !defined(ARM_MATH_AUTOVECTORIZE) */
 
 /**
- * @} end of rbfsvm group
+ * @} end of groupSVM group
  */

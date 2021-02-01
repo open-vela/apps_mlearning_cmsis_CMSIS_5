@@ -1,3 +1,4 @@
+#include "arm_math.h"
 #include "StatsTestsQ31.h"
 #include <stdio.h>
 #include "Error.h"
@@ -181,7 +182,6 @@ a double precision computation.
   
     void StatsTestsQ31::setUp(Testing::testID_t id,std::vector<Testing::param_t>& paramsArgs,Client::PatternMgr *mgr)
     {
-        (void)paramsArgs;
         switch(id)
         {
             case StatsTestsQ31::TEST_MAX_Q31_1:
@@ -455,7 +455,6 @@ a double precision computation.
 
     void StatsTestsQ31::tearDown(Testing::testID_t id,Client::PatternMgr *mgr)
     {
-      (void)id;
       switch(id)
       {
             case StatsTestsQ31::TEST_MAX_Q31_1:

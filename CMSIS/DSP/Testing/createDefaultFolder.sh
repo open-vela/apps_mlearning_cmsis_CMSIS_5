@@ -2,5 +2,3 @@ mkdir FullBenchmark
 mkdir Output
 mkdir GeneratedInclude
 mkdir GeneratedSource
-mkdir GeneratedIncludeBench
-mkdir GeneratedSourceBench

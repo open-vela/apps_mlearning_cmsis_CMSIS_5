@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/filtering_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupFilters
@@ -55,7 +55,7 @@
   @remark
                    Refer to \ref arm_conv_opt_q7() for a faster implementation of this function.
  */
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 #include "arm_helium_utils.h"
 
 #include "arm_vec_filtering.h"

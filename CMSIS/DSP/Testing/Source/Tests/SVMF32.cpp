@@ -6,6 +6,7 @@
 void SVMF32::test_svm_linear_predict_f32()
 {
       const float32_t *inp  = samples.ptr();
+      int32_t *refp         = ref.ptr();
       int32_t *outp         = output.ptr();
       int32_t *result;
 
@@ -26,6 +27,7 @@ void SVMF32::test_svm_linear_predict_f32()
 void SVMF32::test_svm_polynomial_predict_f32()
 {
       const float32_t *inp  = samples.ptr();
+      int32_t *refp         = ref.ptr();
       int32_t *outp         = output.ptr();
       int32_t *result;
 
@@ -45,6 +47,7 @@ void SVMF32::test_svm_polynomial_predict_f32()
 void SVMF32::test_svm_rbf_predict_f32()
 {
       const float32_t *inp  = samples.ptr();
+      int32_t *refp         = ref.ptr();
       int32_t *outp         = output.ptr();
       int32_t *result;
 
@@ -64,6 +67,7 @@ void SVMF32::test_svm_rbf_predict_f32()
 void SVMF32::test_svm_sigmoid_predict_f32()
 {
       const float32_t *inp  = samples.ptr();
+      int32_t *refp         = ref.ptr();
       int32_t *outp         = output.ptr();
       int32_t *result;
 
@@ -85,7 +89,6 @@ void SVMF32::setUp(Testing::testID_t id,std::vector<Testing::param_t>& testparam
       
       int kind;
       Testing::nbSamples_t nb=MAX_NB_SAMPLES; 
-      (void)testparams;
 
       switch(id)
       {
@@ -129,7 +132,6 @@ void SVMF32::setUp(Testing::testID_t id,std::vector<Testing::param_t>& testparam
           }
           break;
 
-#if 0
           case SVMF32::TEST_SVM_RBF_PREDICT_F32_5:
           {
              
@@ -139,7 +141,6 @@ void SVMF32::setUp(Testing::testID_t id,std::vector<Testing::param_t>& testparam
              ref.reload(SVMF32::REF5_S32_ID,mgr,nb);
           }
           break;
-#endif
       }
 
 
@@ -183,7 +184,6 @@ void SVMF32::setUp(Testing::testID_t id,std::vector<Testing::param_t>& testparam
        switch(id)
        {
           case SVMF32::TEST_SVM_LINEAR_PREDICT_F32_1:
-          //case SVMF32::TEST_SVM_RBF_PREDICT_F32_5:
           {
              
              arm_svm_linear_init_f32(&linear, 
@@ -214,6 +214,7 @@ void SVMF32::setUp(Testing::testID_t id,std::vector<Testing::param_t>& testparam
           break;
 
           case SVMF32::TEST_SVM_RBF_PREDICT_F32_3:
+          case SVMF32::TEST_SVM_RBF_PREDICT_F32_5:
           {
              
              arm_svm_rbf_init_f32(&rbf, 
@@ -252,7 +253,6 @@ void SVMF32::setUp(Testing::testID_t id,std::vector<Testing::param_t>& testparam
 
 void SVMF32::tearDown(Testing::testID_t id,Client::PatternMgr *mgr)
 {
-        (void)id;
         output.dump(mgr);
 }
 

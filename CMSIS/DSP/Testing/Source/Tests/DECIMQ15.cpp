@@ -36,6 +36,7 @@ a double precision computation.
             this->blocksize = pConfig[2];
             this->refsize = pConfig[3];
 
+
             pConfig += 4;
 
             this->status=arm_fir_decimate_init_q15(&(this->S),
@@ -44,6 +45,8 @@ a double precision computation.
                pCoefs,
                state.ptr(),
                this->blocksize);
+
+
 
             ASSERT_TRUE(this->status == ARM_MATH_SUCCESS);
 
@@ -126,7 +129,6 @@ a double precision computation.
     void DECIMQ15::setUp(Testing::testID_t id,std::vector<Testing::param_t>& params,Client::PatternMgr *mgr)
     {
       
-       (void)params;
        config.reload(DECIMQ15::CONFIGSDECIMQ15_ID,mgr);
        
        
@@ -163,6 +165,5 @@ a double precision computation.
 
     void DECIMQ15::tearDown(Testing::testID_t id,Client::PatternMgr *mgr)
     {
-        (void)id;
         output.dump(mgr);
     }

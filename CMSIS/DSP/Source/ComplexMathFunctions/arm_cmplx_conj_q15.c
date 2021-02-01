@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/complex_math_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupCmplxMath
@@ -50,7 +50,7 @@
  */
 
 
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 void arm_cmplx_conj_q15(
   const q15_t * pSrc,
         q15_t * pDst,

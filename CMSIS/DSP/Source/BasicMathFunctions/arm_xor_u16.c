@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/basic_math_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupMath
@@ -63,7 +63,7 @@ void arm_xor_u16(
     uint32_t blkCnt;      /* Loop counter */
 
 #if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
-    uint16x8_t vecSrcA, vecSrcB;
+    q15x8_t vecSrcA, vecSrcB;
 
     /* Compute 8 outputs at a time */
     blkCnt = blockSize >> 3;

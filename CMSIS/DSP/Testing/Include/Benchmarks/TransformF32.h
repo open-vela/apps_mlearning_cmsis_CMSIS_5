@@ -1,8 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/transform_functions.h"
-
 class TransformF32:public Client::Suite
     {
         public:
@@ -14,7 +11,6 @@ class TransformF32:public Client::Suite
             Client::Pattern<float32_t> samples;
 
             Client::LocalPattern<float32_t> output;
-            Client::LocalPattern<float32_t> tmp;
             Client::LocalPattern<float32_t> state;
             
             int nbSamples;
@@ -24,12 +20,9 @@ class TransformF32:public Client::Suite
             float32_t *pSrc;
             float32_t *pDst;
             float32_t *pState;
-            float32_t *pTmp;
 
-            arm_cfft_instance_f32 cfftInstance;
+            const arm_cfft_instance_f32 *cfftInstance;
             arm_rfft_fast_instance_f32 rfftFastInstance;
-
-            arm_status status;
 
             arm_dct4_instance_f32 dct4Instance;
             arm_rfft_instance_f32 rfftInstance;

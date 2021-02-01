@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/controller_functions.h"
+#include "arm_math.h"
 #include "arm_common_tables.h"
 
 /**

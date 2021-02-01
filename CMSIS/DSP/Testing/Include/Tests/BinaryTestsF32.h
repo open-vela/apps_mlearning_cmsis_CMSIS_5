@@ -1,8 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/matrix_functions.h"
-
 class BinaryTestsF32:public Client::Suite
     {
         public:

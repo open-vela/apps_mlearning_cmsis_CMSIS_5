@@ -1,8 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/filtering_functions.h"
-
 class FIRQ31:public Client::Suite
     {
         public:

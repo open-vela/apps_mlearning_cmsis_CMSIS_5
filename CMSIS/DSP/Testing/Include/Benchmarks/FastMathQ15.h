@@ -1,8 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/fast_math_functions.h"
-
 class FastMathQ15:public Client::Suite
     {
         public:

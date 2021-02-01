@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/matrix_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupMatrix
@@ -57,7 +57,7 @@
   @par
                    Refer to \ref arm_mat_mult_fast_q15() for a faster but less precise version of this function.
  */
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 
 #define MVE_ASRL_SAT16(acc, shift)          ((sqrshrl_sat48(acc, -(32-shift)) >> 32) & 0xffffffff)
 

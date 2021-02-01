@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/transform_functions.h"
+#include "arm_math.h"
 
 /**
   @addtogroup DCT4_IDCT4

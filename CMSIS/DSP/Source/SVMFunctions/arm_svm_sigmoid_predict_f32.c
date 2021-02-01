@@ -24,12 +24,12 @@
  * limitations under the License.
  */
 
-#include "dsp/svm_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
 /**
- * @addtogroup sigmoidsvm
+ * @addtogroup groupSVM
  * @{
  */
 
@@ -481,5 +481,5 @@ void arm_svm_sigmoid_predict_f32(
 #endif /* defined(ARM_MATH_MVEF) && !defined(ARM_MATH_AUTOVECTORIZE) */
 
 /**
- * @} end of sigmoidsvm group
+ * @} end of groupSVM group
  */

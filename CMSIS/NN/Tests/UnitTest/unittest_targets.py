@@ -31,12 +31,11 @@ import threading
 import subprocess
 
 from os import path
-from termcolor import colored
 
 OUTPUT = "Output/"
 BASE_PATH = "../../"
 CMSIS_PATH = "../../../../../"
-UNITY_PATH = "Unity/"
+UNITY_PATH = "../Unity/"
 UNITY_BASE = BASE_PATH + UNITY_PATH
 UNITY_SRC = UNITY_BASE + "src/"
 CMSIS_FLAGS = " -DARM_MATH_DSP -DARM_MATH_LOOPUNROLL"
@@ -46,14 +45,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Run CMSIS-NN unit tests.",
                                      epilog="Runs on all connected HW supported by Mbed.")
     parser.add_argument('--testdir', type=str, default='TESTRUN', help="prefix of output dir name")
-    parser.add_argument('-s', '--specific-test', type=str, default=None, help="Run a specific test, e.g."
-                        " -s TestCases/test_arm_avgpool_s8 (also this form will work: -s test_arm_avgpool_s8)."
-                        " So basically the different options can be listed with:"
-                        " ls -d TestCases/test_* -1")
-    parser.add_argument('-c', '--compiler', type=str, default='GCC_ARM', choices=['GCC_ARM', 'ARMC6'])
-    parser.add_argument('--download-and-generate-test-runners', dest='download_and_generate', action='store_true',
-                        help="Just download Unity and generate test runners if needed")
-
+    parser.add_argument('--compiler', type=str, default='GCC_ARM', choices=['GCC_ARM', 'ARMC6'])
     args = parser.parse_args()
     return args
 
@@ -106,22 +98,14 @@ def detect_architecture(target_name, target_json):
         with open(target_json, "r") as read_file:
             data = json.load(read_file)
 
-            if 'core' in data[target_name]:
-                core = data[target_name]['core']
-            elif 'inherits' in data[target_name]:
-                target_inherits = data[target_name]['inherits'][0]
-                core = data[target_inherits]['core']
-            else:
-                raise Exception("Cannot detect architecture")
-
-            if core:
-                arch = core[:9]
-                if core[:8] == 'Cortex-M':
+            if data[target_name]['core']:
+                arch = data[target_name]['core'][:9]
+                if data[target_name]['core'][:8] == 'Cortex-M':
                     return arch
-            error_handler(168, 'Unsupported target: {} with architecture: {}'.format(
+            error_handler(668, 'Unsupported target: {} with architecture: {}'.format(
                 target_name, arch))
     except Exception as e:
-        error_handler(167, e)
+        error_handler(667, e)
 
     return arch
 
@@ -142,14 +126,11 @@ def test_target(target, args, main_test):
 
     try:
         target_json = 'mbed-os/targets/targets.json'
-        mbed_path = BASE_PATH + 'Mbed/'
 
         if not path.exists("mbed-os.lib"):
             print("Initializing mbed in {}".format(os.getcwd()))
-            shutil.copyfile(mbed_path + 'mbed-os.lib', 'mbed-os.lib')
-            shutil.copyfile(mbed_path + 'mbed_app.json', 'mbed_app.json')
-            run_command('mbed config root .')
-            run_command('mbed deploy')
+            run_command('mbed new .')
+            shutil.copyfile(BASE_PATH + 'Profiles/mbed_app.json', 'mbed_app.json')
 
         arch = detect_architecture(target_model, target_json)
         if arch == 'Cortex-M4' or arch == 'Cortex-M7':
@@ -165,7 +146,7 @@ def test_target(target, args, main_test):
         test = ''
         additional_options = ' --source ' + BASE_PATH + main_test + \
                              ' --source ' + UNITY_SRC + \
-                             ' --profile ' + mbed_path + 'release.json' + \
+                             ' --profile ' + BASE_PATH + 'Profiles/release.json' + \
                              ' -f'
 
         result = run_command("mbed {} -v -m ".format(mbed_command) + target_model + ' -t ' + compiler +
@@ -176,15 +157,13 @@ def test_target(target, args, main_test):
                              ' --source ' + CMSIS_PATH + 'DSP/Include/'
                              ' --source ' + CMSIS_PATH + 'Core/Include/'
                              ' --source ' + CMSIS_PATH + 'NN/Source/ConvolutionFunctions/'
-                             ' --source ' + CMSIS_PATH + 'NN/Source/PoolingFunctions/'
                              ' --source ' + CMSIS_PATH + 'NN/Source/NNSupportFunctions/'
-                             ' --source ' + CMSIS_PATH + 'NN/Source/FullyConnectedFunctions/'
                              + cmsis_flags +
                              additional_options,
                              flash_error_msg, die=die)
 
     except Exception as e:
-        error_handler(166, e)
+        error_handler(666, e)
 
     os.chdir(start_dir)
     return result
@@ -205,11 +184,12 @@ def test_target_with_unity(target, args, main_test):
     timeout = 30
     inputQueue = queue.Queue()
     tests = copy.deepcopy(target["tests"])
+    result = []
 
     try:
         ser = serial.Serial(port, baudrate, timeout=timeout)
     except Exception as e:
-        error_handler(169, "serial exception: {}".format(e))
+        error_handler(669, "serial exception: {}".format(e))
 
     # Clear read buffer
     time.sleep(0.1)  # Workaround in response to: open() returns before port is ready
@@ -232,6 +212,7 @@ def test_target_with_unity(target, args, main_test):
             except IndexError:
                 pass
             if test in tests:
+                result.append("{}: {}".format(target["name"], test_result))
                 tests.remove(test)
                 target[test]["tested"] = True
                 if test_result == test + ':PASS':
@@ -242,6 +223,10 @@ def test_target_with_unity(target, args, main_test):
     stop_thread = True
     serial_thread.join()
     ser.close()
+
+    print()
+    for res in result:
+        print(res)
 
 
 def print_summary(targets):
@@ -255,9 +240,6 @@ def print_summary(targets):
     tested = 0
     expected = 0
     return_code = 3
-    verdict_pass = colored('[ PASSED ]', 'green')
-    verdict_fail = colored('[ FAILED ]', 'red')
-    verdict_error = colored('[ ERROR ]', 'red')
 
     print("-----------------------------------------------------------------------------------------------------------")
 
@@ -267,45 +249,37 @@ def print_summary(targets):
             expected += 1
             if target[test]["tested"]:
                 tested += 1
+            else:
+                print("ERROR: Test {} for target {} not found".format(test, target["name"]))
             if target[test]["pass"]:
                 passed += 1
             else:
                 failed += 1
 
     if tested != expected:
-        print("{} Not all tests found".format(verdict_error))
-        print("{} Expected: {} Actual: {}".format(verdict_error, expected, tested))
+        print("ERROR: Not all tests found!")
+        print("Expected: {} Actual: {}".format(expected, tested))
         return_code = 2
     elif tested == passed:
         return_code = 0
     else:
         return_code = 1
 
-    # print all test cases
-    sorted_tc = []
-    for target in targets:
-        for test in target["tests"]:
-            if not target[test]["tested"]:
-                tc_verdict = verdict_error
-            elif target[test]["pass"]:
-                tc_verdict = verdict_pass
-            else:
-                tc_verdict = verdict_fail
-            sorted_tc.append("{} {}: {}".format(tc_verdict, target["name"], test))
-    sorted_tc.sort()
-    for tc in sorted_tc:
-        print(tc)
+    print("Summary: {} tests in total passed on {} targets ({})".
+          format(passed, len(targets), ', '.join([t['name'] for t in targets])))
 
-    total = 0
+    # Print those that failed
+    if failed > 0:
+        print()
+        for target in targets:
+            for test in target["tests"]:
+                if not target[test]["pass"]:
+                    print("{}: {} failed".format(target["name"], test))
+
     if (passed > 0):
-        total = passed / expected
-    if (total == 1.0):
-        verdict = verdict_pass
+        print("{:.0f}% tests passed, {} tests failed out of {}".format(passed/expected*100, failed, expected))
     else:
-        verdict = verdict_fail
-    print("{} Summary: {} tests in total passed on {} targets ({})".
-          format(verdict, passed, len(targets), ', '.join([t['name'] for t in targets])))
-    print("{} {:.0f}% tests passed, {} tests failed out of {}".format(verdict, total*100, failed, expected))
+        print("0% tests passed, {} tests failed out of {}".format(failed, tested))
 
     return return_code
 
@@ -320,20 +294,16 @@ def test_targets(args):
     targets = []
     main_tests = []
 
-    if not args.download_and_generate:
-        detect_targets(targets)
-        if len(targets) == 0:
-            print("No targets detected!")
-            return 3
+    detect_targets(targets)
+
+    if len(targets) == 0:
+        print("No targets detected!")
+        return 3
 
     download_unity()
-
-    if not parse_tests(targets, main_tests, args.specific_test):
+    if not parse_tests(targets, main_tests):
         print("No tests found?!")
         return 4
-
-    if args.download_and_generate:
-        return result
 
     for target in targets:
         for tst in main_tests:
@@ -375,19 +345,19 @@ def download_unity(force=False):
     for line in process.stdout:
         pass
     if not line:
-        error_handler(171)
+        error_handler(671)
     try:
         m = re.search('\'(.+?)\'', line.strip())
     except AttributeError as e:
-        error_handler(173, e)
+        error_handler(673, e)
     downloaded_file = download_dir + m.group(1)
     os.chdir(current_dir)
     try:
         filename_base = downloaded_file.split('-')[0]
     except IndexError as e:
-        error_handler(174, e)
+        error_handler(674, e)
     if not filename_base:
-        error_handler(175)
+        error_handler(675)
     run_command("tar xzf "+downloaded_file+" -C "+unity_dir+" --strip-components=1")
     os.chdir(current_dir)
 
@@ -395,53 +365,19 @@ def download_unity(force=False):
     shutil.rmtree(download_dir)
 
 
-def parse_generated_test_runner(test_runner):
-    parsed_functions = ['setUp', 'tearDown', 'resetTest', 'verifyTest']
-
-    def is_func_to_parse(func):
-        for f in parsed_functions:
-            if f in func:
-                return True
-        return False
-
-    with open(test_runner, "r") as f:
-        lines = f.readlines()
-    with open(test_runner, "w") as f:
-        for line in lines:
-            sline = line.strip('\n')
-            if not re.search(r"\(void\);", sline):
-                f.write(line)
-            else:
-                if not is_func_to_parse(sline):
-                    f.write(line)
-
-
-def parse_tests(targets, main_tests, specific_test=None):
+def parse_tests(targets, main_tests):
     """
-    Generate test runners, extract and return path to unit test(s).
-    Also parse generated test runners to avoid warning: redundant redeclaration.
-    Return True if successful.
+    Generate test runners and parse it to know what to expect from the serial console
+    Return True if successful
     """
-    test_found = False
     directory = 'TestCases'
-
-    if specific_test and '/' in specific_test:
-        specific_test = specific_test.strip(directory).replace('/', '')
-
     for dir in next(os.walk(directory))[1]:
         if re.search(r'test_arm', dir):
-            if specific_test and dir != specific_test:
-                continue
-            test_found = True
             testpath = directory + '/' + dir + '/Unity/'
-            ut_test_file = None
+            main_tests.append(testpath)
             for content in os.listdir(testpath):
                 if re.search(r'unity_test_arm', content):
                     ut_test_file = content
-            if ut_test_file is None:
-                print("Warning: invalid path: ", testpath)
-                continue
-            main_tests.append(testpath)
             ut_test_file_runner = path.splitext(ut_test_file)[0] + '_runner' + path.splitext(ut_test_file)[1]
             test_code = testpath + ut_test_file
             test_runner_path = testpath + 'TestRunner/'
@@ -457,11 +393,6 @@ def parse_tests(targets, main_tests, specific_test=None):
             test_found = parse_test(test_runner, targets)
             if not test_found:
                 return False
-
-            parse_generated_test_runner(test_runner)
-
-    if not test_found:
-        return False
     return True
 
 
@@ -472,7 +403,7 @@ def parse_test(test_runner, targets):
     try:
         read_file = open(test_runner, "r")
     except IOError as e:
-        error_handler(170, e)
+        error_handler(670, e)
     else:
         with read_file:
             for line in read_file:

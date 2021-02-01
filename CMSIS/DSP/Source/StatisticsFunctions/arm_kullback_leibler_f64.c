@@ -24,12 +24,12 @@
  * limitations under the License.
  */
 
-#include "dsp/statistics_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
 /**
- * @addtogroup Kullback-Leibler
+ * @addtogroup groupStats
  * @{
  */
 
@@ -69,5 +69,5 @@ float64_t arm_kullback_leibler_f64(const float64_t * pSrcA, const float64_t * pS
 }
 
 /**
- * @} end of Kullback-Leibler group
+ * @} end of groupStats group
  */

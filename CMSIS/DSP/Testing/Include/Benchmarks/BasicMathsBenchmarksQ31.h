@@ -1,8 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/basic_math_functions.h"
-
 class BasicMathsBenchmarksQ31:public Client::Suite
     {
         public:

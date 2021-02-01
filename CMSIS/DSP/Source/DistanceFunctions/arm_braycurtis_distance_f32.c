@@ -25,14 +25,25 @@
  * limitations under the License.
  */
 
-#include "dsp/distance_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
 
 
 /**
-  @addtogroup braycurtis
+ * @ingroup groupDistance
+ * @{
+ */
+
+/**
+ * @defgroup FloatDist Float Distances
+ *
+ * Distances between two vectors of float values.
+ */
+
+/**
+  @addtogroup FloatDist
   @{
  */
 
@@ -180,6 +191,9 @@ float32_t arm_braycurtis_distance_f32(const float32_t *pA,const float32_t *pB, u
 
 
 /**
- * @} end of braycurtis group
+ * @} end of FloatDist group
  */
 
+/**
+ * @} end of groupDistance group
+ */

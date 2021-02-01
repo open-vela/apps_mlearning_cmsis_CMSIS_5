@@ -17,6 +17,7 @@ a double precision computation.
     void ComplexTestsQ15::test_cmplx_conj_q15()
     {
         const q15_t *inp1=input1.ptr();
+        q15_t *refp=ref.ptr();
         q15_t *outp=output.ptr();
 
         arm_cmplx_conj_q15(inp1,outp,input1.nbSamples() >> 1  );
@@ -56,6 +57,7 @@ a double precision computation.
     void ComplexTestsQ15::test_cmplx_mag_q15()
     {
         const q15_t *inp1=input1.ptr();
+        q15_t *refp=ref.ptr();
         q15_t *outp=output.ptr();
 
         arm_cmplx_mag_q15(inp1,outp,input1.nbSamples()  >> 1 );
@@ -72,6 +74,7 @@ a double precision computation.
     void ComplexTestsQ15::test_cmplx_mag_squared_q15()
     {
         const q15_t *inp1=input1.ptr();
+        q15_t *refp=ref.ptr();
         q15_t *outp=output.ptr();
 
         arm_cmplx_mag_squared_q15(inp1,outp,input1.nbSamples()  >> 1 );
@@ -89,6 +92,7 @@ a double precision computation.
     {
         const q15_t *inp1=input1.ptr();
         const q15_t *inp2=input2.ptr();
+        q15_t *refp=ref.ptr();
         q15_t *outp=output.ptr();
 
         arm_cmplx_mult_cmplx_q15(inp1,inp2,outp,input1.nbSamples()  >> 1 );
@@ -106,6 +110,7 @@ a double precision computation.
     {
         const q15_t *inp1=input1.ptr();
         const q15_t *inp2=input2.ptr();
+        q15_t *refp=ref.ptr();
         q15_t *outp=output.ptr();
 
         arm_cmplx_mult_real_q15(inp1,inp2,outp,input1.nbSamples()  >> 1 );
@@ -122,7 +127,6 @@ a double precision computation.
     void ComplexTestsQ15::setUp(Testing::testID_t id,std::vector<Testing::param_t>& params,Client::PatternMgr *mgr)
     {
       
-       (void)params;
        Testing::nbSamples_t nb=MAX_NB_SAMPLES; 
 
        

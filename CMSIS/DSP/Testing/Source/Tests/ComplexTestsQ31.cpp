@@ -17,6 +17,7 @@ a double precision computation.
     void ComplexTestsQ31::test_cmplx_conj_q31()
     {
         const q31_t *inp1=input1.ptr();
+        q31_t *refp=ref.ptr();
         q31_t *outp=output.ptr();
 
         arm_cmplx_conj_q31(inp1,outp,input1.nbSamples() >> 1 );
@@ -48,7 +49,7 @@ a double precision computation.
 
         ASSERT_NEAR_EQ(dotOutput,dotRef,ABS_ERROR_Q63);
 
-        ASSERT_EMPTY_TAIL(dotOutput);
+         ASSERT_EMPTY_TAIL(dotOutput);
 
        
     } 
@@ -56,6 +57,7 @@ a double precision computation.
     void ComplexTestsQ31::test_cmplx_mag_q31()
     {
         const q31_t *inp1=input1.ptr();
+        q31_t *refp=ref.ptr();
         q31_t *outp=output.ptr();
 
         arm_cmplx_mag_q31(inp1,outp,input1.nbSamples()  >> 1 );
@@ -71,6 +73,7 @@ a double precision computation.
     void ComplexTestsQ31::test_cmplx_mag_squared_q31()
     {
         const q31_t *inp1=input1.ptr();
+        q31_t *refp=ref.ptr();
         q31_t *outp=output.ptr();
 
         arm_cmplx_mag_squared_q31(inp1,outp,input1.nbSamples()  >> 1 );
@@ -88,6 +91,7 @@ a double precision computation.
     {
         const q31_t *inp1=input1.ptr();
         const q31_t *inp2=input2.ptr();
+        q31_t *refp=ref.ptr();
         q31_t *outp=output.ptr();
 
         arm_cmplx_mult_cmplx_q31(inp1,inp2,outp,input1.nbSamples()  >> 1 );
@@ -105,6 +109,7 @@ a double precision computation.
     {
         const q31_t *inp1=input1.ptr();
         const q31_t *inp2=input2.ptr();
+        q31_t *refp=ref.ptr();
         q31_t *outp=output.ptr();
 
         arm_cmplx_mult_real_q31(inp1,inp2,outp,input1.nbSamples()  >> 1 );
@@ -122,7 +127,6 @@ a double precision computation.
     {
       
        Testing::nbSamples_t nb=MAX_NB_SAMPLES; 
-       (void)params;
 
        
        switch(id)
@@ -315,7 +319,6 @@ a double precision computation.
 
     void ComplexTestsQ31::tearDown(Testing::testID_t id,Client::PatternMgr *mgr)
     {
-       (void)id;
        switch(id)
        {
          case ComplexTestsQ31::TEST_CMPLX_DOT_PROD_Q31_4:

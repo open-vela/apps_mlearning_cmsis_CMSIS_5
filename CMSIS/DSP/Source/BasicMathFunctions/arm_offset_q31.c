@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/basic_math_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupMath
@@ -50,7 +50,7 @@
                    Results outside of the allowable Q31 range [0x80000000 0x7FFFFFFF] are saturated.
  */
 
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 
 #include "arm_helium_utils.h"
 
@@ -114,13 +114,29 @@ void arm_offset_q31(
     /* C = A + offset */
 
     /* Add offset and store result in destination buffer. */
+#if defined (ARM_MATH_DSP)
     *pDst++ = __QADD(*pSrc++, offset);
-    
+#else
+    *pDst++ = (q31_t) clip_q63_to_q31((q63_t) * pSrc++ + offset);
+#endif
+
+#if defined (ARM_MATH_DSP)
     *pDst++ = __QADD(*pSrc++, offset);
-    
+#else
+    *pDst++ = (q31_t) clip_q63_to_q31((q63_t) * pSrc++ + offset);
+#endif
+
+#if defined (ARM_MATH_DSP)
     *pDst++ = __QADD(*pSrc++, offset);
-    
+#else
+    *pDst++ = (q31_t) clip_q63_to_q31((q63_t) * pSrc++ + offset);
+#endif
+
+#if defined (ARM_MATH_DSP)
     *pDst++ = __QADD(*pSrc++, offset);
+#else
+    *pDst++ = (q31_t) clip_q63_to_q31((q63_t) * pSrc++ + offset);
+#endif
 
     /* Decrement loop counter */
     blkCnt--;

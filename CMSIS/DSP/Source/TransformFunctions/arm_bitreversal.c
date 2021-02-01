@@ -26,9 +26,8 @@
  * limitations under the License.
  */
 
-#include "dsp/transform_functions.h"
+#include "arm_math.h"
 #include "arm_common_tables.h"
-
 
 /**
   @brief         In-place floating-point bit reversal function.

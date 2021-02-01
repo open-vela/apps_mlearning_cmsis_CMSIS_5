@@ -24,23 +24,13 @@
  * limitations under the License.
  */
 
-#include "dsp/svm_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
-/**
-  @ingroup groupSVM
- */
 
 /**
-  @defgroup rbfsvm RBF SVM
-
-  RBF SVM classifier
- */
-
-
-/**
- * @addtogroup rbfsvm
+ * @addtogroup groupSVM
  * @{
  */
 
@@ -85,5 +75,5 @@ void arm_svm_rbf_init_f32(arm_svm_rbf_instance_f32 *S,
 
 
 /**
- * @} end of rbfsvm group
+ * @} end of groupSVM group
  */

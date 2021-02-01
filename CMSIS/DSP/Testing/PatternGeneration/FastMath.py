@@ -28,7 +28,7 @@ def writeTests(config,format):
     vals[0] = -0.4
     sqrtvals[0] = 0.0
     
-    if format != 0 and format != 16:
+    if format != 0:
         angles=np.concatenate((a1,a2,a1))
         angles = angles / (2*math.pi)
     config.writeInput(1, angles,"Angles")
@@ -43,7 +43,7 @@ def writeTests(config,format):
     config.writeInput(1, samples,"Samples")
 
 
-def writeTestsFloat(config,format):
+def writeTestsF32(config,format):
     writeTests(config,format)
 
     data1 = np.random.randn(20)
@@ -61,16 +61,10 @@ def writeTestsFloat(config,format):
     v = np.exp(samples)
     config.writeReference(1, v,"Exp")
 
-    # For benchmarks and other tests
+    # For benchmarks
     samples=np.random.randn(NBSAMPLES)
     samples = np.abs(Tools.normalize(samples))
     config.writeInput(1, samples,"Samples")
-
-    v = 1.0 / samples
-    config.writeReference(1, v,"Inverse")
-
-
-
 
     
 def generatePatterns():
@@ -78,13 +72,11 @@ def generatePatterns():
     PARAMDIR = os.path.join("Parameters","DSP","FastMath","FastMath")
     
     configf32=Tools.Config(PATTERNDIR,PARAMDIR,"f32")
-    configf16=Tools.Config(PATTERNDIR,PARAMDIR,"f16")
     configq31=Tools.Config(PATTERNDIR,PARAMDIR,"q31")
     configq15=Tools.Config(PATTERNDIR,PARAMDIR,"q15")
     
     
-    writeTestsFloat(configf32,0)
-    writeTestsFloat(configf16,16)
+    writeTestsF32(configf32,0)
     writeTests(configq31,31)
     writeTests(configq15,15)
 

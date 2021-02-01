@@ -25,12 +25,12 @@
  * limitations under the License.
  */
 
-#include "dsp/distance_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
 /**
-  @addtogroup Manhattan
+  @addtogroup FloatDist
   @{
  */
 
@@ -151,5 +151,5 @@ float32_t arm_cityblock_distance_f32(const float32_t *pA,const float32_t *pB, ui
 #endif
 
 /**
- * @} end of Manhattan group
+ * @} end of FloatDist group
  */

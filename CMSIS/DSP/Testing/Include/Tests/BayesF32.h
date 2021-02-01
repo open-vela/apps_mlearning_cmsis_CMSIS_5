@@ -1,8 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/bayes_functions.h"
-
 class BayesF32:public Client::Suite
     {
         public:

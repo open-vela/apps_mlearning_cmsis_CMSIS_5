@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/transform_functions.h"
+#include "arm_math.h"
 
 extern void arm_bitreversal_f32(
         float32_t * pSrc,
@@ -48,8 +48,6 @@ void arm_radix4_butterfly_inverse_f32(
         float32_t onebyfftLen);
 
 
-
-
 /**
   @ingroup groupTransforms
  */
@@ -58,7 +56,6 @@ void arm_radix4_butterfly_inverse_f32(
   @addtogroup ComplexFFT
   @{
  */
-
 
 /**
   @brief         Processing function for the floating-point Radix-4 CFFT/CIFFT.

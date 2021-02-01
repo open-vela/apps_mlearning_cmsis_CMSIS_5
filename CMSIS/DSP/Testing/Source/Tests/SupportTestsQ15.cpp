@@ -1,6 +1,7 @@
 #include "SupportTestsQ15.h"
 #include <stdio.h>
 #include "Error.h"
+#include "arm_math.h"
 #include "Test.h"
 
 #define SNR_THRESHOLD 120
@@ -48,6 +49,7 @@
     void SupportTestsQ15::test_q15_float()
     {
        const q15_t *inp = inputQ15.ptr();
+       float32_t *refp = refF32.ptr();
        float32_t *outp = outputF32.ptr();
        
       
@@ -62,6 +64,7 @@
     void SupportTestsQ15::test_q15_q31()
     {
        const q15_t *inp = inputQ15.ptr();
+       q31_t *refp = refQ31.ptr();
        q31_t *outp = outputQ31.ptr();
        
       
@@ -76,6 +79,7 @@
     void SupportTestsQ15::test_q15_q7()
     {
        const q15_t *inp = inputQ15.ptr();
+       q7_t *refp = refQ7.ptr();
        q7_t *outp = outputQ7.ptr();
        
       
@@ -95,6 +99,8 @@
         q31_t result=0;
 
         result = read_q15x2((q15_t*)testReadQ15);
+
+        printf("%08X\n",result);
 
         ASSERT_TRUE(result == 0x0001FFFE);
 
@@ -155,7 +161,6 @@
     void SupportTestsQ15::setUp(Testing::testID_t id,std::vector<Testing::param_t>& paramsArgs,Client::PatternMgr *mgr)
     {
 
-        (void)paramsArgs;
         switch(id)
         {
  
@@ -284,7 +289,6 @@
 
     void SupportTestsQ15::tearDown(Testing::testID_t id,Client::PatternMgr *mgr)
     {
-      (void)id;
       switch(id)
       {
  

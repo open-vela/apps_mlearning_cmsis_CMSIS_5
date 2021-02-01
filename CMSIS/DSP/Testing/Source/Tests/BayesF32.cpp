@@ -1,6 +1,7 @@
 #include "BayesF32.h"
 #include <stdio.h>
 #include "Error.h"
+#include "arm_math.h"
 #include "Test.h"
 
 
@@ -33,7 +34,7 @@
     {
 
 
-       (void)paramsArgs;
+       
 
        switch(id)
        {
@@ -81,7 +82,6 @@
 
     void BayesF32::tearDown(Testing::testID_t id,Client::PatternMgr *mgr)
     {
-        (void)id;
         outputProbas.dump(mgr);
         outputPredicts.dump(mgr);
     }

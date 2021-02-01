@@ -25,14 +25,14 @@
  * limitations under the License.
  */
 
-#include "dsp/distance_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
 
 
 /**
-  @addtogroup Correlation
+  @addtogroup FloatDist
   @{
  */
 
@@ -78,5 +78,5 @@ float32_t arm_correlation_distance_f32(float32_t *pA,float32_t *pB, uint32_t blo
 
 
 /**
- * @} end of Correlation group
+ * @} end of FloatDist group
  */

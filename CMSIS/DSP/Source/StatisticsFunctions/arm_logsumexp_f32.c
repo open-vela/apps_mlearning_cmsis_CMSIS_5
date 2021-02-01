@@ -24,13 +24,13 @@
  * limitations under the License.
  */
 
-#include "dsp/statistics_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
 
 /**
- * @addtogroup LogSumExp
+ * @addtogroup groupStats
  * @{
  */
 
@@ -271,5 +271,5 @@ float32_t arm_logsumexp_f32(const float32_t *in, uint32_t blockSize)
 #endif /* defined(ARM_MATH_MVEF) && !defined(ARM_MATH_AUTOVECTORIZE) */
 
 /**
- * @} end of LogSumExp group
+ * @} end of groupStats group
  */

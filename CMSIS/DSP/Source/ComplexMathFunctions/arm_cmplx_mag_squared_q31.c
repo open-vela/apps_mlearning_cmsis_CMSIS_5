@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/complex_math_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupCmplxMath
@@ -49,7 +49,7 @@
                    Input down scaling is not required.
  */
 
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 
 void arm_cmplx_mag_squared_q31(
   const q31_t * pSrc,

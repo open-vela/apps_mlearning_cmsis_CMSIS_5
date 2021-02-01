@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-#include "dsp/svm_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
@@ -33,7 +33,7 @@
 #endif
 
 /**
- * @addtogroup polysvm
+ * @addtogroup groupSVM
  * @{
  */
 
@@ -484,5 +484,5 @@ void arm_svm_polynomial_predict_f32(
 
 
 /**
- * @} end of polysvm group
+ * @} end of groupSVM group
  */

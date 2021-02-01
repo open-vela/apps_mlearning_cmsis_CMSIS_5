@@ -24,24 +24,16 @@
  * limitations under the License.
  */
 
-#include "dsp/svm_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
-/**
-  @ingroup groupSVM
- */
 
 /**
-  @defgroup polysvm Polynomial SVM
-
-  Polynomial SVM classifier
- */
-
-/**
- * @addtogroup polysvm
+ * @addtogroup groupSVM
  * @{
  */
+
 
 
 /**
@@ -91,5 +83,5 @@ void arm_svm_polynomial_init_f32(arm_svm_polynomial_instance_f32 *S,
 
 
 /**
- * @} end of polysvm group
+ * @} end of groupSVM group
  */

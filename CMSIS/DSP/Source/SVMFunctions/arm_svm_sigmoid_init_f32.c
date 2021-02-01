@@ -24,22 +24,13 @@
  * limitations under the License.
  */
 
-#include "dsp/svm_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
-/**
-  @ingroup groupSVM
- */
 
 /**
-  @defgroup sigmoidsvm Sigmoid SVM
-
-  Sigmoid SVM classifier
- */
-
-/**
- * @addtogroup sigmoidsvm
+ * @addtogroup groupSVM
  * @{
  */
 
@@ -86,5 +77,5 @@ void arm_svm_sigmoid_init_f32(arm_svm_sigmoid_instance_f32 *S,
 
 
 /**
- * @} end of sigmoidsvm group
+ * @} end of groupSVM group
  */

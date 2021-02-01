@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/statistics_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupStats
@@ -54,7 +54,7 @@
                    full precision of the intermediate multiplication is preserved.
                    Finally, the return result is in 16.48 format.
  */
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 void arm_power_q31(
   const q31_t * pSrc,
         uint32_t blockSize,

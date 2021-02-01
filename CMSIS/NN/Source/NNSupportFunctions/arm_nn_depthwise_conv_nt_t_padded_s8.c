@@ -21,13 +21,14 @@
  * Title:        arm_nn_depthwise_conv_nt_t_padded_s8.c
  * Description:  Depthwise convolution with padded matrices.
  *
- * $Date:        09. October 2020
- * $Revision:    V.1.0.2
+ * $Date:        March 17, 2020
+ * $Revision:    V.1.0.1
  *
  * Target Processor:  Cortex-M processors with MVE extension
  * -------------------------------------------------------------------- */
 
-#include "arm_nnsupportfunctions.h"
+#include "arm_math.h"
+#include "arm_nnfunctions.h"
 
 /**
  * @ingroup groupSupport
@@ -39,12 +40,12 @@
  */
 
 /*
- * Depthwise convolution of transposed rhs matrix with 4 lhs matrices. One or more of the rhs matrices are padded.
- * Dimensions are the same for lhs and rhs.
- *
- * Refer header file for details.
- *
- */
+   * Depthwise convolution of transposed rhs matrix with 4 lhs matrices. One or more of the rhs matrices are padded.
+   * Dimensions are the same for lhs and rhs.
+   *
+   * Refer header file for details.
+   *
+   */
 
 q7_t *arm_nn_depthwise_conv_nt_t_padded_s8(const q7_t *lhs,
                                            const q7_t *rhs,

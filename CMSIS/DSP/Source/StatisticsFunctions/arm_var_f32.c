@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/statistics_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupStats

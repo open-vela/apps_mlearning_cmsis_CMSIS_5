@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/support_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupSupport
@@ -51,7 +51,7 @@
   </pre>
  */
 
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 void arm_q7_to_q15(
   const q7_t * pSrc,
         q15_t * pDst,

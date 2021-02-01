@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/statistics_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupStats
@@ -46,7 +46,7 @@
   @param[out]    pIndex     index of minimum value returned here
   @return        none
  */
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 
 #include "arm_helium_utils.h"
 

@@ -25,18 +25,17 @@
  * limitations under the License.
  */
 
-#include "dsp/distance_functions.h"
+#include "arm_math.h"
 #include <limits.h>
 #include <math.h>
 
 
 /**
-  @addtogroup JensenShannon
+  @addtogroup FloatDist
   @{
  */
 
 #if !defined(ARM_MATH_MVEF) || defined(ARM_MATH_AUTOVECTORIZE)
-/// @private
 __STATIC_INLINE float32_t rel_entr(float32_t x, float32_t y)
 {
     return (x * logf(x / y));
@@ -241,5 +240,5 @@ float32_t arm_jensenshannon_distance_f32(const float32_t *pA,const float32_t *pB
 #endif /* defined(ARM_MATH_MVEF) && !defined(ARM_MATH_AUTOVECTORIZE) */
 
 /**
- * @} end of JensenShannon group
+ * @} end of FloatDist group
  */

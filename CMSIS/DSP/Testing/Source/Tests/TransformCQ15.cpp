@@ -1,6 +1,8 @@
 #include "TransformCQ15.h"
 #include <stdio.h>
 #include "Error.h"
+#include "arm_math.h"
+#include "arm_const_structs.h"
 #include "Test.h"
 
 #define SNR_THRESHOLD 30
@@ -40,7 +42,7 @@
              this->ifft,
              1);
 
-        for(unsigned long i=0; i < outputfft.nbSamples();i++)
+        for(int i=0; i < outputfft.nbSamples();i++)
         {
           refp[i] >>= this->scaling;
         }
@@ -57,7 +59,7 @@
     {
 
 
-       (void)paramsArgs;
+       
 
        switch(id)
        {
@@ -489,6 +491,5 @@
 
     void TransformCQ15::tearDown(Testing::testID_t id,Client::PatternMgr *mgr)
     {
-        (void)id;
         outputfft.dump(mgr);
     }

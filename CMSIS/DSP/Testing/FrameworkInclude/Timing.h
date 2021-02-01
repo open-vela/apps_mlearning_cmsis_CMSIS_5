@@ -2,9 +2,7 @@
 #define _TIMING_H_
 
 #include "Test.h"
-#include "arm_math_types.h"
-#include "arm_math_types_f16.h"
-
+#include "arm_math.h"
 void initCycleMeasurement();
 void cycleMeasurementStart();
 void cycleMeasurementStop();

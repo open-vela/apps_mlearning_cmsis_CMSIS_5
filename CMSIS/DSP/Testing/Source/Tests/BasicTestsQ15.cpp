@@ -20,11 +20,13 @@ a double precision computation.
 #define GET_Q15_PTR() \
 const q15_t *inp1=input1.ptr(); \
 const q15_t *inp2=input2.ptr(); \
+q15_t *refp=ref.ptr(); \
 q15_t *outp=output.ptr();
 
 #define GET_LOGICAL_UINT16_PTR() \
 const uint16_t *inp1=inputLogical1.ptr(); \
 const uint16_t *inp2=inputLogical2.ptr(); \
+uint16_t *refp=refLogical.ptr(); \
 uint16_t *outp=outputLogical.ptr();
 
 
@@ -75,6 +77,7 @@ uint16_t *outp=outputLogical.ptr();
     void BasicTestsQ15::test_negate_q15()
     {
         const q15_t *inp1=input1.ptr();
+        q15_t *refp=ref.ptr();
         q15_t *outp=output.ptr();
 
         arm_negate_q15(inp1,outp,input1.nbSamples());
@@ -90,6 +93,7 @@ uint16_t *outp=outputLogical.ptr();
     void BasicTestsQ15::test_offset_q15()
     {
         const q15_t *inp1=input1.ptr();
+        q15_t *refp=ref.ptr();
         q15_t *outp=output.ptr();
 
         arm_offset_q15(inp1,this->scalar,outp,input1.nbSamples());
@@ -105,6 +109,7 @@ uint16_t *outp=outputLogical.ptr();
     void BasicTestsQ15::test_scale_q15()
     {
         const q15_t *inp1=input1.ptr();
+        q15_t *refp=ref.ptr();
         q15_t *outp=output.ptr();
 
         arm_scale_q15(inp1,this->scalar,0,outp,input1.nbSamples());
@@ -123,6 +128,7 @@ uint16_t *outp=outputLogical.ptr();
 
         const q15_t *inp1=input1.ptr();
         const q15_t *inp2=input2.ptr();
+        q63_t *refp=dotRef.ptr(); 
         q63_t *outp=dotOutput.ptr();
 
         arm_dot_prod_q15(inp1,inp2,input1.nbSamples(),&r);
@@ -141,8 +147,6 @@ uint16_t *outp=outputLogical.ptr();
     {
         GET_Q15_PTR();
 
-        (void)inp2;
-
         arm_abs_q15(inp1,outp,input1.nbSamples());
 
         ASSERT_EMPTY_TAIL(output);
@@ -156,8 +160,8 @@ uint16_t *outp=outputLogical.ptr();
     void BasicTestsQ15::test_shift_q15()
     {
         const q15_t *inp1=input1.ptr();
+        q15_t *refp=ref.ptr();
         q15_t *outp=output.ptr();
-
 
         arm_shift_q15(inp1,1,outp,input1.nbSamples());
 
@@ -197,8 +201,6 @@ uint16_t *outp=outputLogical.ptr();
     {
         GET_LOGICAL_UINT16_PTR();
 
-        (void)inp2;
-
         arm_not_u16(inp1,outp,inputLogical1.nbSamples());
         
         ASSERT_EMPTY_TAIL(outputLogical);
@@ -226,8 +228,6 @@ uint16_t *outp=outputLogical.ptr();
        Testing::nbSamples_t nb=MAX_NB_SAMPLES; 
 
        this->scalar = ONEHALF;
-
-       (void)params;
 
        
        switch(id)

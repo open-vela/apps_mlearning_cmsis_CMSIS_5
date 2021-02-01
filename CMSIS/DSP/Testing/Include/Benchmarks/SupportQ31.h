@@ -1,8 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/support_functions.h"
-
 class SupportQ31:public Client::Suite
     {
         public:

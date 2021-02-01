@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/statistics_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupStats
@@ -53,7 +53,7 @@
                    Finally, the accumulator is truncated to yield a result of 1.7 format.
  */
 
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 
 void arm_mean_q7(
   const q7_t * pSrc,

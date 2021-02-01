@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/filtering_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupFilters
@@ -57,7 +57,7 @@
                    Refer to \ref arm_fir_decimate_fast_q15() for a faster but less precise implementation of this function.
  */
 
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 
 #include "arm_helium_utils.h"
 
@@ -534,8 +534,9 @@ void arm_fir_decimate_q15(
 
   /* Points to the start of the state buffer */
   pStateCur = S->pState;
+
   i = (numTaps - 1U) >> 2U;
- 
+
   /* copy data */
   while (i > 0U)
   {

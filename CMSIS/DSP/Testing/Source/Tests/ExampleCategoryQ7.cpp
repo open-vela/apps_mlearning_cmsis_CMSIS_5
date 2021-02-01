@@ -13,6 +13,7 @@
     {
         const q7_t *inp1=input1.ptr();
         const q7_t *inp2=input2.ptr();
+        q7_t *refp=ref.ptr();
         q7_t *outp=output.ptr();
 
         arm_add_q7(inp1,inp2,outp,input1.nbSamples());
@@ -31,7 +32,7 @@
     {
       
        Testing::nbSamples_t nb=MAX_NB_SAMPLES; 
-       (void)params;
+
        
        switch(id)
        {
@@ -52,6 +53,5 @@
 
     void ExampleCategoryQ7::tearDown(Testing::testID_t id,Client::PatternMgr *mgr)
     {
-        (void)id;
         output.dump(mgr);
     }

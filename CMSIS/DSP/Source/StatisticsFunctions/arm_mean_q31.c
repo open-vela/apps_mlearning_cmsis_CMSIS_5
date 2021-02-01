@@ -26,7 +26,7 @@
  * limitations under the License.
  */
 
-#include "dsp/statistics_functions.h"
+#include "arm_math.h"
 
 /**
   @ingroup groupStats
@@ -52,7 +52,7 @@
                    full precision of intermediate result is preserved.
                    Finally, the accumulator is truncated to yield a result of 1.31 format.
  */
-#if defined(ARM_MATH_MVEI) && !defined(ARM_MATH_AUTOVECTORIZE)
+#if defined(ARM_MATH_MVEI)
 void arm_mean_q31(
   const q31_t * pSrc,
         uint32_t blockSize,

@@ -1,8 +1,5 @@
 #include "Test.h"
 #include "Pattern.h"
-
-#include "dsp/distance_functions.h"
-
 class DistanceTestsU32:public Client::Suite
     {
         public:

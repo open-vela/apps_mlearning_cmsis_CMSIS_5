@@ -161,7 +161,7 @@ class Parser:
         self.id = 0
 
     def parse(self, filePath):
-        string = Word(alphanums+"_ =+()")
+        string = Word(alphanums+"_ =+")
         ident = Word( alphas+"_", alphanums+"_" )
 
         path = Word(alphanums+"_/.")
@@ -182,8 +182,7 @@ class Parser:
 
         paramValue = Literal("->") + ident("PARAMID")
 
-        messFormat = Word(alphanums + " _/")
-        message = messFormat("message")
+        message = string("message")
 
         testField = ((Keyword("oldID") + "=" + integer("INT")) | (Keyword("truc") + "=" + integer("INT"))).setParseAction(parseField)
         testData = (Literal("{") + OneOrMore(testField)("fields") + Literal("}")).setParseAction(parseTestFields)
